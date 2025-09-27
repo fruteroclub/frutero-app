@@ -27,7 +27,7 @@ async function testSchema() {
       primaryRole: 'Full Stack Developer',
       githubUsername: 'testhacker',
     }).returning();
-    console.log('✅ Profile created for user');
+    console.log('✅ Profile created for user:', profile.firstName);
     
     // Test 3: Create a program
     console.log('\n3️⃣ Creating program...');
@@ -89,7 +89,7 @@ async function testSchema() {
       points: 100,
       tierReachedId: tier.id,
     }).returning();
-    console.log('✅ Badge awarded to user');
+    console.log('✅ Badge awarded to user:', userBadge.points, 'points');
     
     // Test 8: Create a quest
     console.log('\n8️⃣ Creating quest...');
@@ -126,7 +126,7 @@ async function testSchema() {
       authorId: user.id,
       postId: post.id,
     }).returning();
-    console.log('✅ Comment created');
+    console.log('✅ Comment created:', comment.content);
     
     // Test 11: Create proof of community
     console.log('\n1️⃣1️⃣ Creating proof of community...');
@@ -150,7 +150,7 @@ async function testSchema() {
       role: 'PARTICIPANT',
       status: 'ACTIVE',
     }).returning();
-    console.log('✅ User enrolled in program');
+    console.log('✅ User enrolled in program:', enrollment.role);
     
     console.log('\n🎉 All tests passed! Schema is working correctly.');
     console.log('\n📊 Summary:');
