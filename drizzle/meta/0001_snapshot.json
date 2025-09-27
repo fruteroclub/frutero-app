@@ -1,6 +1,6 @@
 {
-  "id": "7cc5a6c5-87a5-4e62-ada0-dc73cb3a71f4",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "0462191c-5e0e-40c8-aec4-273935919801",
+  "prevId": "7cc5a6c5-87a5-4e62-ada0-dc73cb3a71f4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -209,6 +209,113 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.mentorships": {
+      "name": "mentorships",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "mentor_id": {
+          "name": "mentor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "session_notes": {
+          "name": "session_notes",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mentor_rating": {
+          "name": "mentor_rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "participant_rating": {
+          "name": "participant_rating",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mentorships_mentor_id_users_id_fk": {
+          "name": "mentorships_mentor_id_users_id_fk",
+          "tableFrom": "mentorships",
+          "tableTo": "users",
+          "columnsFrom": [
+            "mentor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "mentorships_participant_id_users_id_fk": {
+          "name": "mentorships_participant_id_users_id_fk",
+          "tableFrom": "mentorships",
+          "tableTo": "users",
+          "columnsFrom": [
+            "participant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "unique_mentorship": {
+          "name": "unique_mentorship",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mentor_id",
+            "participant_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -739,6 +846,25 @@
           "primaryKey": false,
           "notNull": false
         },
+        "organizer": {
+          "name": "organizer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tracks": {
+          "name": "tracks",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "submission_deadline": {
+          "name": "submission_deadline",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1132,6 +1258,18 @@
         "difficulty": {
           "name": "difficulty",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "available_from": {
+          "name": "available_from",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -1574,6 +1712,19 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "submission_text": {
+          "name": "submission_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "submission_urls": {
+          "name": "submission_urls",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
         },
         "started_at": {
           "name": "started_at",
