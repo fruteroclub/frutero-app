@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectBySlug } from '@/lib/jam/projects'
+import { getProjectBySlug } from '@/server/controllers/projects'
 
 export async function GET(
   request: NextRequest,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findProjectByCode } from '@/lib/jam/onboarding';
+import { findProjectByCode } from '@/server/controllers/onboarding';
 
 export async function GET(request: NextRequest) {
   try {

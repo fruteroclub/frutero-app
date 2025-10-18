@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { projects, projectMembers } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { generateUniqueSlug } from '@/lib/jam/projects';
+import { generateUniqueSlug } from '@/server/controllers/projects';
 
 /**
  * POST /api/jam/projects - Create new project

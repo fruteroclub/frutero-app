@@ -1,6 +1,6 @@
-import { db } from '@/db';
-import { projects, projectMembers, programProjects } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { db } from '@/db'
+import { projects, projectMembers, programProjects } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 
 /**
  * Generate URL-friendly slug from project name
@@ -9,29 +9,29 @@ export function generateSlug(name: string): string {
   return name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+|-+$/g, '')
 }
 
 /**
  * Generate unique slug with collision handling
  */
 export async function generateUniqueSlug(name: string): Promise<string> {
-  let slug = generateSlug(name);
-  let counter = 1;
+  let slug = generateSlug(name)
+  let counter = 1
 
   while (true) {
     const existing = await db
       .select()
       .from(projects)
       .where(eq(projects.slug, slug))
-      .limit(1);
+      .limit(1)
 
     if (existing.length === 0) {
-      return slug;
+      return slug
     }
 
-    slug = `${generateSlug(name)}-${counter}`;
-    counter++;
+    slug = `${generateSlug(name)}-${counter}`
+    counter++
   }
 }
 
@@ -43,9 +43,9 @@ export async function getProjectBySlug(slug: string) {
     .select()
     .from(projects)
     .where(eq(projects.slug, slug))
-    .limit(1);
+    .limit(1)
 
-  return project || null;
+  return project || null
 }
 
 /**
@@ -59,9 +59,9 @@ export async function getProjectMembers(projectId: string) {
       joinedAt: projectMembers.joinedAt,
     })
     .from(projectMembers)
-    .where(eq(projectMembers.projectId, projectId));
+    .where(eq(projectMembers.projectId, projectId))
 
-  return members;
+  return members
 }
 
 /**
@@ -71,7 +71,7 @@ export async function getProjectPrograms(projectId: string) {
   const programs = await db
     .select()
     .from(programProjects)
-    .where(eq(programProjects.projectId, projectId));
+    .where(eq(programProjects.projectId, projectId))
 
-  return programs;
+  return programs
 }
