@@ -32,7 +32,7 @@ export function JamNav() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:fixed lg:top-24 lg:bottom-0 lg:left-0 lg:flex lg:w-64 lg:flex-col">
+      <aside className="hidden lg:fixed lg:top-24 lg:bottom-0 lg:left-0 lg:flex lg:w-56 lg:flex-col">
         <div className="flex h-full flex-col gap-y-6 overflow-y-auto px-6 py-8">
           {/* Logo */}
           <Link href="/jam/dashboard" className="text-xl font-bold">
