@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   FolderPlus,
+  Grid3x3,
 } from 'lucide-react'
 import { NavLink } from './NavLink'
 import { Button } from '@/components/ui/button'
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/button'
 const NAV_ITEMS = [
   { href: '/jam/dashboard', label: 'Dashboard', icon: Home },
   { href: '/jam/projects/create', label: 'Crear Proyecto', icon: FolderPlus },
+  { href: '/jam/projects', label: 'Explorar Proyectos', icon: Grid3x3 },
   { href: '/jam/quests', label: 'Quests', icon: Target },
   { href: '/jam/programs', label: 'Programs', icon: Calendar },
   { href: '/jam/mentors', label: 'Mentors', icon: Users },
