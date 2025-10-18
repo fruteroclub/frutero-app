@@ -51,10 +51,12 @@ bun lint
 - **React**: 19.0.0 (latest)
 - **Styling**: Tailwind CSS v4 with OKLCH color system
 - **UI Components**: Shadcn/ui with Radix UI primitives
-- **TypeScript**: Strict configuration with `@/*` path mapping
+- **TypeScript**: Strict configuration with `@/*` path mapping - **CRITICAL: NEVER use `any` type**
 - **Icons**: Lucide React
 - **Notifications**: Sonner for toast messages
 - **Data Fetching**: TanStack Query (React Query) - **ALWAYS use for API calls**
+- **ORM**: Drizzle ORM with PostgreSQL
+- **Validation**: Zod schemas for input validation
 
 ### Component Architecture
 
@@ -272,133 +274,211 @@ const createProject = useMutation({
 
 ## API Development Standards
 
-### API Response Format - MANDATORY
+### Architecture Layers
 
-**ALWAYS use standardized response utilities** from `@/lib/api/responses` and error classes from `@/lib/api/errors`.
-
-**Response Structure**:
-- Success responses: `{ success: true, data: T, message?: string }`
-- Error responses: `{ success: false, error: string, details?: any }`
-- Paginated: `{ success: true, data: T[], pagination: {...} }`
-
-❌ **WRONG - Do NOT return raw NextResponse.json:**
-```typescript
-export async function GET() {
-  const data = await db.select().from(projects);
-  return NextResponse.json(data);  // ❌ No standard format
-}
-
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-  return NextResponse.json({ error: 'Invalid' }, { status: 400 });  // ❌ Inconsistent
-}
+**3-Layer Architecture**:
+```
+Frontend (Client) → Services → API Routes → Controllers → Database
 ```
 
-✅ **CORRECT - Use standard utilities:**
-```typescript
-import { successResponse, createdResponse, errorResponse } from '@/lib/api/responses';
-import { ValidationError, NotFoundError } from '@/lib/api/errors';
+1. **Frontend**: React components use TanStack Query
+2. **Services** (`src/services/`): Frontend service layer for API calls
+3. **API Routes** (`src/app/api/`): Next.js API routes (thin, delegate to controllers)
+4. **Controllers** (`src/server/controllers/`): Business logic + database operations
+5. **Database**: Drizzle ORM with PostgreSQL
 
-export async function GET() {
-  try {
-    const data = await db.select().from(projects);
-    return successResponse(data);
-  } catch (error) {
-    return errorResponse('Failed to fetch projects', 500);
-  }
-}
+### Directory Structure
 
-export async function POST(request: NextRequest) {
-  try {
-    const data = await request.json();
-
-    if (!data.name) {
-      throw new ValidationError('Name is required');
-    }
-
-    const project = await createProject(data);
-    return createdResponse(project, 'Project created successfully');
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      return errorResponse(error.message, 400);
-    }
-    return errorResponse('Failed to create project', 500);
-  }
-}
-```
-
-### API Architecture Patterns
-
-**Directory Structure**:
 ```
 src/
-├── app/api/jam/               # JAM platform API routes
-│   ├── projects/
-│   │   ├── route.ts          # GET, POST /api/jam/projects
-│   │   └── [slug]/
-│   │       ├── route.ts      # GET /api/jam/projects/:slug
-│   │       ├── members/
-│   │       │   └── route.ts  # GET /api/jam/projects/:slug/members
-│   │       └── programs/
-│   │           └── route.ts  # GET /api/jam/projects/:slug/programs
-│   ├── dashboard/route.ts
-│   └── profile/route.ts
-├── lib/
-│   ├── api/                   # API utilities (responses, errors)
-│   └── jam/                   # Business logic / service layer
-│       ├── projects.ts       # Project utilities
-│       └── onboarding.ts     # Onboarding utilities
+├── app/api/                  # API routes (Next.js)
+│   ├── jam/
+│   │   ├── projects/route.ts
+│   │   ├── dashboard/route.ts
+│   │   └── profile/route.ts
+│   └── users/
+│       └── [id]/route.ts
+├── services/                 # Frontend service layer
+│   ├── users-services.ts
+│   └── projects-services.ts  # Add your services here
+├── server/
+│   ├── controllers/          # Backend controllers
+│   │   ├── user-controller.ts
+│   │   └── project-controller.ts  # Add your controllers here
+│   ├── schema/               # Zod validation schemas
+│   │   └── user-services-schema.ts
+│   └── utils/                # Server utilities
+│       └── index.ts          # AppError class
+├── types/api-v1/             # Shared types
+│   └── index.ts              # ServiceResponse<T>, User, etc.
+└── lib/
+    └── jam/                  # JAM-specific utilities
+        ├── projects.ts       # Utility functions
+        └── onboarding.ts
 ```
 
-**Service Layer Pattern**:
-- Keep API routes thin - delegate business logic to `/lib/jam/` services
-- Use transactions for multi-table operations
-- Separate data access from business logic
+### TypeScript Rules - CRITICAL
 
-**Next.js 15 Async Params**:
+**NEVER use `any` type**. Always use proper types.
+
+❌ **WRONG**:
 ```typescript
-// ✅ Correct - Async params in Next.js 15
+function getData(): any { }  // NEVER!
+const data: any = await fetch(); // NEVER!
+return response as any; // NEVER!
+```
+
+✅ **CORRECT**:
+```typescript
+import { ServiceResponse, Project } from '@/types/api-v1';
+
+function getData(): ServiceResponse<Project> { }
+const data: Project = await fetch();
+return response as ServiceResponse<Project>;
+```
+
+### API Response Format
+
+**Use `ServiceResponse<T>` from `@/types/api-v1`**:
+
+```typescript
+export interface ServiceResponse<T> {
+  data?: T | null
+  success?: boolean
+  error?: Error | null
+  errorMsg?: string
+}
+```
+
+### Frontend Services Pattern
+
+**Location**: `src/services/{feature}-services.ts`
+
+```typescript
+import { ServiceResponse, Project } from '@/types/api-v1';
+import { handleResponse } from '@/lib/utils';
+
+export async function getProjectBySlug(
+  slug: string
+): Promise<ServiceResponse<Project>> {
+  try {
+    const response = await fetch(`/api/jam/projects/${slug}`);
+    return handleResponse<Project>(response);
+  } catch (error) {
+    const message = error instanceof Error
+      ? error.message
+      : 'Network error fetching project';
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    };
+  }
+}
+```
+
+### Backend Controllers Pattern
+
+**Location**: `src/server/controllers/{feature}-controller.ts`
+
+```typescript
+import { db } from '@/db';
+import { projects } from '@/db/schema';
+import { AppError } from '@/server/utils';
+import { eq } from 'drizzle-orm';
+import type { InferSelectModel } from 'drizzle-orm';
+
+type Project = InferSelectModel<typeof projects>;
+
+export class ProjectController {
+  static async findBySlug(slug: string): Promise<Project> {
+    try {
+      const [project] = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.slug, slug))
+        .limit(1);
+
+      if (!project) {
+        throw new AppError('Project not found', 404);
+      }
+
+      return project;
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      console.error('Error finding project:', error);
+      throw new AppError('Failed to fetch project', 500);
+    }
+  }
+}
+```
+
+### API Routes Pattern
+
+**Keep routes thin - delegate to controllers**:
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { ProjectController } from '@/server/controllers/project-controller';
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = await context.params;
-  // ... use slug
+  try {
+    const { slug } = await context.params;
+    const project = await ProjectController.findBySlug(slug);
+    return NextResponse.json(project);
+  } catch (error) {
+    const statusCode = error instanceof AppError ? error.statusCode : 500;
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    return NextResponse.json({ error: message }, { status: statusCode });
+  }
 }
 ```
 
-### Error Handling Best Practices
+### Validation with Zod
 
-**Use error classes**:
+**Location**: `src/server/schema/{feature}-schema.ts`
+
 ```typescript
-import {
-  ValidationError,
-  NotFoundError,
-  UnauthorizedError,
-  ForbiddenError,
-  ConflictError,
-} from '@/lib/api/errors';
+import { z } from 'zod';
 
-// Throw specific errors
-if (!data.name) throw new ValidationError('Name is required');
-if (!project) throw new NotFoundError('Project not found');
-if (project.adminId !== userId) throw new ForbiddenError();
+export const createProjectSchema = z.object({
+  name: z.string().min(1).max(100),
+  description: z.string().min(10).max(500),
+  category: z.string().optional(),
+  stage: z.enum(['IDEA', 'PROTOTYPE', 'BUILD', 'PROJECT']).default('IDEA'),
+});
+
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 ```
 
-**Handle errors consistently**:
+### Error Handling
+
+**Use `AppError` from `@/server/utils`**:
+
 ```typescript
-try {
-  // ... operation
-} catch (error) {
-  if (error instanceof ValidationError) {
-    return errorResponse(error.message, 400, error.details);
-  }
-  if (error instanceof NotFoundError) {
-    return errorResponse(error.message, 404);
-  }
-  // Generic fallback
-  console.error('Unexpected error:', error);
-  return errorResponse('Internal server error', 500);
+import { AppError } from '@/server/utils';
+
+// Throw with status code
+throw new AppError('Project not found', 404);
+throw new AppError('Unauthorized', 401);
+throw new AppError('Validation failed', 400, { field: 'name' });
+```
+
+### Next.js 15 Async Params
+
+**All dynamic routes use Promise params**:
+
+```typescript
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+  // ... use id
 }
 ```
 
