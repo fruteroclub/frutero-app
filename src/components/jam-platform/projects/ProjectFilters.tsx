@@ -54,14 +54,17 @@ export function ProjectFilters({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">Todas</SelectItem>
+              <SelectItem value="DeFi">DeFi/Decentralized Finance</SelectItem>
+              <SelectItem value="RWA">RWA/Real World Assets</SelectItem>
+              <SelectItem value="Consumer">Consumer Apps</SelectItem>
+              <SelectItem value="Stablecoins">Stablecoins</SelectItem>
+              <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+              <SelectItem value="PublicGoods">Public Goods</SelectItem>
+              <SelectItem value="AI">AI</SelectItem>
               <SelectItem value="Web3">Web3/Blockchain</SelectItem>
-              <SelectItem value="DeFi">DeFi</SelectItem>
               <SelectItem value="NFT">NFT/Digital Art</SelectItem>
               <SelectItem value="Gaming">Gaming</SelectItem>
               <SelectItem value="Social">Social</SelectItem>
-              <SelectItem value="Infrastructure">Infrastructure</SelectItem>
-              <SelectItem value="AI">AI/ML</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>

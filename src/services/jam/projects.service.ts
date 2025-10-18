@@ -13,6 +13,15 @@ export interface Project {
   adminId: string
   website?: string
   walletAddress?: string
+  // New hackathon fields
+  repositoryUrl?: string
+  videoUrl?: string
+  productionUrl?: string
+  pitchDeckUrl?: string
+  avatarUrl?: string
+  xUsername?: string
+  // Member count for display
+  members?: { userId: string; role: string }[]
   createdAt: string
   updatedAt: string
 }
