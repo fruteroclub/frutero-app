@@ -26,6 +26,16 @@ function PrivyProviderComponent({ children }: { children: ReactNode }) {
             createOnLogin: 'all-users',
           },
         },
+        appearance: {
+          // Wallet display preferences
+          showWalletLoginFirst: false,
+          walletList: ['metamask', 'coinbase_wallet', 'rainbow', 'wallet_connect'],
+        },
+        legal: {
+          // Simplify legal text to avoid complex HTML nesting
+          termsAndConditionsUrl: 'https://frutero.club/terms',
+          privacyPolicyUrl: 'https://frutero.club/privacy',
+        },
       }}
     >
       <QueryClientProvider client={queryClient}>
