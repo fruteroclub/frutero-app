@@ -20,6 +20,7 @@ import {
 import { getProjectPrograms, type ProgramParticipation } from '@/services/jam/programs.service'
 import { StageIndicator } from '@/components/jam-platform/stages/StageIndicator'
 import { StageAdvancementCard } from '@/components/jam-platform/stages/StageAdvancementCard'
+import { StageAdvancementAlert } from '@/components/jam-platform/stages/StageAdvancementAlert'
 import type { ProjectStage } from '@/lib/jam/stages'
 
 interface ProjectPageProps {
@@ -94,6 +95,9 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           >
             ← Volver al Dashboard
           </Link>
+
+          {/* Stage Advancement Alert (Admin Only) */}
+          {isAdmin && <StageAdvancementAlert projectSlug={project.slug} />}
 
           {/* Project Header */}
           <div className="space-y-4">
