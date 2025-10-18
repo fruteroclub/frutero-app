@@ -27,8 +27,8 @@ const MENU_ITEMS: MenuItemType[] = [
     isMobileOnly: false,
   },
   {
-    displayText: 'mobil3',
-    href: '/programa',
+    displayText: 'jam',
+    href: '/jam/dashboard',
     isMobileOnly: false,
   },
   { displayText: 'recursos', href: '/recursos', isMobileOnly: false },
