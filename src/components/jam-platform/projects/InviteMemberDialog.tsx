@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { UserPlus } from 'lucide-react'
+import { addProjectMember } from '@/services/jam/projects.service'
 
 interface InviteMemberDialogProps {
   projectSlug: string
@@ -25,20 +26,7 @@ export function InviteMemberDialog({ projectSlug }: InviteMemberDialogProps) {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: async (data: { userId: string }) => {
-      const res = await fetch(`/api/jam/projects/${projectSlug}/members`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: data.userId, role: 'MEMBER' }),
-      })
-
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || 'Failed to add member')
-      }
-
-      return res.json()
-    },
+    mutationFn: (userId: string) => addProjectMember(projectSlug, userId, 'MEMBER'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-members', projectSlug] })
       setOpen(false)
@@ -48,7 +36,7 @@ export function InviteMemberDialog({ projectSlug }: InviteMemberDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    mutation.mutate({ userId })
+    mutation.mutate(userId)
   }
 
   return (

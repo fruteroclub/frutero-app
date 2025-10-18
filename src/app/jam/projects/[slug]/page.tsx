@@ -11,6 +11,13 @@ import { Button } from '@/components/ui/button'
 import { Users, Calendar, ExternalLink } from 'lucide-react'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
+import {
+  getProject,
+  getProjectMembers,
+  type Project,
+  type ProjectMember,
+} from '@/services/jam/projects.service'
+import { getProjectPrograms, type ProgramParticipation } from '@/services/jam/programs.service'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -18,57 +25,27 @@ interface ProjectPageProps {
   }>
 }
 
-interface ProjectMember {
-  userId: string
-  role: string
-  joinedAt: Date
-}
-
-interface ProgramProject {
-  id: string
-  programId: string
-  status: string
-  program?: {
-    name: string
-  }
-}
-
 export default function ProjectPage({ params }: ProjectPageProps) {
   const { user } = useAppAuth()
   const { slug } = use(params)
 
   // Fetch project data
-  const { data: project, isLoading: projectLoading } = useQuery({
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
     queryKey: ['project', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}`)
-      if (!res.ok) {
-        if (res.status === 404) return null
-        throw new Error('Failed to fetch project')
-      }
-      return res.json()
-    },
+    queryFn: () => getProject(slug),
   })
 
   // Fetch project members
-  const { data: members = [], isLoading: membersLoading } = useQuery({
+  const { data: members = [], isLoading: membersLoading } = useQuery<ProjectMember[]>({
     queryKey: ['project-members', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/members`)
-      if (!res.ok) throw new Error('Failed to fetch members')
-      return res.json()
-    },
+    queryFn: () => getProjectMembers(slug),
     enabled: !!project,
   })
 
   // Fetch project programs
-  const { data: programs = [], isLoading: programsLoading } = useQuery({
+  const { data: programs = [], isLoading: programsLoading } = useQuery<ProgramParticipation[]>({
     queryKey: ['project-programs', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/programs`)
-      if (!res.ok) throw new Error('Failed to fetch programs')
-      return res.json()
-    },
+    queryFn: () => getProjectPrograms(slug),
     enabled: !!project,
   })
 
@@ -218,13 +195,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {programs.map((pp: ProgramProject) => (
+                    {programs.map((pp: ProgramParticipation) => (
                       <div
                         key={pp.id}
                         className="flex items-center justify-between rounded-md border p-3"
                       >
                         <span className="text-sm">
-                          {pp.program?.name || pp.programId}
+                          {pp.program.name}
                         </span>
                         <Badge variant="outline" className="text-xs">
                           {pp.status}

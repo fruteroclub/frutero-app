@@ -2,16 +2,10 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ExternalLink } from 'lucide-react'
+import type { Project } from '@/services/jam/projects.service'
 
 interface ProjectCardProps {
-  project: {
-    id: string
-    name: string
-    slug: string
-    description: string
-    category: string | null
-    stage: string
-  }
+  project: Project
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
