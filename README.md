@@ -14,7 +14,7 @@ nuestra visión es crear un ecosistema vibrante donde los builders puedan conect
 - **Next.js** con App Router para una estructura y enrutamiento óptimos.
 - **Shadcn** para componentes de UI bien diseñados y reutilizables.
 - **Bun** como runtime para builds más rápidas y mejor rendimiento.
-- pre-configurado para diferentes soluciones/SDKs para manejar la creación y conexión de wallets.
+- pre-configurado para **Dynamic Wallet** (impulsado por [dynamic.xyz](https://dynamic.xyz)) para manejar la creación y conexión de wallets.
 
 ## primeros pasos
 
@@ -29,8 +29,8 @@ nuestra visión es crear un ecosistema vibrante donde los builders puedan conect
 1. **clona el repositorio:**
 
    ```bash
-   git clone https://github.com/fruteroclub/frutero-app.git
-   cd frutero-app
+   git clone https://github.com/fruteroclub/poktapok.git
+   cd poktapok
    ```
 
 2. **instala las dependencias usando Bun:**
@@ -41,13 +41,13 @@ nuestra visión es crear un ecosistema vibrante donde los builders puedan conect
 
 3. **configura las variables de entorno:**
 
-   crea un archivo `.env` en la raíz de tu proyecto y añade las variables de acuerdo a tus necesidades, ejemplo:
+   crea un archivo `.env` en la raíz de tu proyecto y añade las siguientes variables:
 
    ```plaintext
    NEXT_PUBLIC_DYNAMIC_API_KEY=tu_dynamic_api_key
    ```
 
-   en este ejemplo, debes reemplazar `tu_dynamic_api_key` con tu clave API de [dynamic.xyz](https://dynamic.xyz).
+   reemplaza `tu_dynamic_api_key` con tu clave API de [dynamic.xyz](https://dynamic.xyz).
 
 ### ejecutando el proyecto
 
