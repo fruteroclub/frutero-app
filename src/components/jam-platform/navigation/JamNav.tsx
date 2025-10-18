@@ -15,6 +15,7 @@ import {
   Grid3x3,
   Shield,
   CheckSquare,
+  LayoutDashboard,
 } from 'lucide-react'
 import { NavLink } from './NavLink'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
 ]
 
 const ADMIN_NAV_ITEMS = [
+  { href: '/jam/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/jam/admin/quests', label: 'Gestionar Quests', icon: Target },
   { href: '/jam/admin/verifications', label: 'Verificaciones', icon: CheckSquare },
 ]
