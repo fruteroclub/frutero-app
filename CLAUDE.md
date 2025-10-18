@@ -270,6 +270,138 @@ const createProject = useMutation({
 - Server Components (can fetch directly in async components)
 - Non-API side effects (DOM manipulation, event listeners, etc.)
 
+## API Development Standards
+
+### API Response Format - MANDATORY
+
+**ALWAYS use standardized response utilities** from `@/lib/api/responses` and error classes from `@/lib/api/errors`.
+
+**Response Structure**:
+- Success responses: `{ success: true, data: T, message?: string }`
+- Error responses: `{ success: false, error: string, details?: any }`
+- Paginated: `{ success: true, data: T[], pagination: {...} }`
+
+❌ **WRONG - Do NOT return raw NextResponse.json:**
+```typescript
+export async function GET() {
+  const data = await db.select().from(projects);
+  return NextResponse.json(data);  // ❌ No standard format
+}
+
+export async function POST(request: NextRequest) {
+  const data = await request.json();
+  return NextResponse.json({ error: 'Invalid' }, { status: 400 });  // ❌ Inconsistent
+}
+```
+
+✅ **CORRECT - Use standard utilities:**
+```typescript
+import { successResponse, createdResponse, errorResponse } from '@/lib/api/responses';
+import { ValidationError, NotFoundError } from '@/lib/api/errors';
+
+export async function GET() {
+  try {
+    const data = await db.select().from(projects);
+    return successResponse(data);
+  } catch (error) {
+    return errorResponse('Failed to fetch projects', 500);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const data = await request.json();
+
+    if (!data.name) {
+      throw new ValidationError('Name is required');
+    }
+
+    const project = await createProject(data);
+    return createdResponse(project, 'Project created successfully');
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return errorResponse(error.message, 400);
+    }
+    return errorResponse('Failed to create project', 500);
+  }
+}
+```
+
+### API Architecture Patterns
+
+**Directory Structure**:
+```
+src/
+├── app/api/jam/               # JAM platform API routes
+│   ├── projects/
+│   │   ├── route.ts          # GET, POST /api/jam/projects
+│   │   └── [slug]/
+│   │       ├── route.ts      # GET /api/jam/projects/:slug
+│   │       ├── members/
+│   │       │   └── route.ts  # GET /api/jam/projects/:slug/members
+│   │       └── programs/
+│   │           └── route.ts  # GET /api/jam/projects/:slug/programs
+│   ├── dashboard/route.ts
+│   └── profile/route.ts
+├── lib/
+│   ├── api/                   # API utilities (responses, errors)
+│   └── jam/                   # Business logic / service layer
+│       ├── projects.ts       # Project utilities
+│       └── onboarding.ts     # Onboarding utilities
+```
+
+**Service Layer Pattern**:
+- Keep API routes thin - delegate business logic to `/lib/jam/` services
+- Use transactions for multi-table operations
+- Separate data access from business logic
+
+**Next.js 15 Async Params**:
+```typescript
+// ✅ Correct - Async params in Next.js 15
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await context.params;
+  // ... use slug
+}
+```
+
+### Error Handling Best Practices
+
+**Use error classes**:
+```typescript
+import {
+  ValidationError,
+  NotFoundError,
+  UnauthorizedError,
+  ForbiddenError,
+  ConflictError,
+} from '@/lib/api/errors';
+
+// Throw specific errors
+if (!data.name) throw new ValidationError('Name is required');
+if (!project) throw new NotFoundError('Project not found');
+if (project.adminId !== userId) throw new ForbiddenError();
+```
+
+**Handle errors consistently**:
+```typescript
+try {
+  // ... operation
+} catch (error) {
+  if (error instanceof ValidationError) {
+    return errorResponse(error.message, 400, error.details);
+  }
+  if (error instanceof NotFoundError) {
+    return errorResponse(error.message, 404);
+  }
+  // Generic fallback
+  console.error('Unexpected error:', error);
+  return errorResponse('Internal server error', 500);
+}
+```
+
 ## Content & Communication Guidelines
 
 ### Language Considerations
