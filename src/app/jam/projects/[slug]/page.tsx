@@ -52,26 +52,24 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   // Fetch project members
   const { data: members = [], isLoading: membersLoading } = useQuery({
-    queryKey: ['project-members', project?.id],
+    queryKey: ['project-members', slug],
     queryFn: async () => {
-      if (!project?.id) return []
-      const res = await fetch(`/api/jam/projects/${project.id}/members`)
+      const res = await fetch(`/api/jam/projects/${slug}/members`)
       if (!res.ok) throw new Error('Failed to fetch members')
       return res.json()
     },
-    enabled: !!project?.id,
+    enabled: !!project,
   })
 
   // Fetch project programs
   const { data: programs = [], isLoading: programsLoading } = useQuery({
-    queryKey: ['project-programs', project?.id],
+    queryKey: ['project-programs', slug],
     queryFn: async () => {
-      if (!project?.id) return []
-      const res = await fetch(`/api/jam/projects/${project.id}/programs`)
+      const res = await fetch(`/api/jam/projects/${slug}/programs`)
       if (!res.ok) throw new Error('Failed to fetch programs')
       return res.json()
     },
-    enabled: !!project?.id,
+    enabled: !!project,
   })
 
   if (projectLoading || membersLoading || programsLoading) {
