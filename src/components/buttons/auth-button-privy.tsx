@@ -96,8 +96,12 @@ export default function AuthButton({
         // Update auth context with database user data
         loginToContext(fruteroUser)
 
-        // Redirect to profile page
-        router.push('/profile')
+        // Only redirect if this is a fresh login (not already authenticated)
+        if (!wasAlreadyAuthenticated) {
+          // Redirect to profile page for new logins
+          router.push('/profile')
+        }
+
         if (!isNewUser) {
           toast.success('Sesión iniciada correctamente')
         } else {
