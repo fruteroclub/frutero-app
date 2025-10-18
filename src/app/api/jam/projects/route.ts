@@ -14,6 +14,12 @@ import { generateUniqueSlug } from '@/server/controllers/projects';
  * - stage: 'IDEA' | 'PROTOTYPE' | 'BUILD' | 'PROJECT' (optional, default: 'IDEA')
  * - walletAddress: string (optional)
  * - website: string (optional)
+ * - repositoryUrl: string (optional) - GitHub repository
+ * - videoUrl: string (optional) - Demo video (Loom, YouTube, etc.)
+ * - productionUrl: string (optional) - Live deployment URL
+ * - pitchDeckUrl: string (optional) - Pitch deck presentation
+ * - avatarUrl: string (optional) - Project logo/avatar
+ * - xUsername: string (optional) - Twitter/X handle
  * - adminId: string (required) - User ID of creator
  */
 export async function POST(request: NextRequest) {
@@ -44,6 +50,13 @@ export async function POST(request: NextRequest) {
           stage: data.stage || 'IDEA',
           walletAddress: data.walletAddress || null,
           website: data.website || null,
+          // Hackathon submission fields
+          repositoryUrl: data.repositoryUrl || null,
+          videoUrl: data.videoUrl || null,
+          productionUrl: data.productionUrl || null,
+          pitchDeckUrl: data.pitchDeckUrl || null,
+          avatarUrl: data.avatarUrl || null,
+          xUsername: data.xUsername || null,
           adminId: data.adminId,
         })
         .returning();
@@ -118,6 +131,12 @@ export async function GET(request: NextRequest) {
  * - stage: string (optional)
  * - walletAddress: string (optional)
  * - website: string (optional)
+ * - repositoryUrl: string (optional) - GitHub repository
+ * - videoUrl: string (optional) - Demo video
+ * - productionUrl: string (optional) - Live deployment URL
+ * - pitchDeckUrl: string (optional) - Pitch deck presentation
+ * - avatarUrl: string (optional) - Project logo/avatar
+ * - xUsername: string (optional) - Twitter/X handle
  */
 export async function PATCH(request: NextRequest) {
   try {
@@ -163,6 +182,13 @@ export async function PATCH(request: NextRequest) {
     if (data.stage !== undefined) updates.stage = data.stage;
     if (data.walletAddress !== undefined) updates.walletAddress = data.walletAddress;
     if (data.website !== undefined) updates.website = data.website;
+    // Hackathon submission fields
+    if (data.repositoryUrl !== undefined) updates.repositoryUrl = data.repositoryUrl;
+    if (data.videoUrl !== undefined) updates.videoUrl = data.videoUrl;
+    if (data.productionUrl !== undefined) updates.productionUrl = data.productionUrl;
+    if (data.pitchDeckUrl !== undefined) updates.pitchDeckUrl = data.pitchDeckUrl;
+    if (data.avatarUrl !== undefined) updates.avatarUrl = data.avatarUrl;
+    if (data.xUsername !== undefined) updates.xUsername = data.xUsername;
 
     // Update project
     const [updatedProject] = await db
