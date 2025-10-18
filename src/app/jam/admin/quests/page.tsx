@@ -7,15 +7,15 @@ import PageWrapper from '@/components/layout/page-wrapper'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ArrowLeft, Plus, Shield, Calendar, DollarSign } from 'lucide-react'
+import { ArrowLeft, Plus, Calendar, DollarSign } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
+import { AdminProtected } from '@/components/auth/AdminProtected'
 import { AdminQuestForm } from '@/components/jam-platform/admin/AdminQuestForm'
 import { getAllQuests, type Quest } from '@/services/jam/quests.service'
 import { useAppAuth } from '@/store/auth-context'
 
 export default function AdminQuestsPage() {
-  const { user, isAppAuthenticated } = useAppAuth()
+  const { isAppAuthenticated } = useAppAuth()
   const [showCreateForm, setShowCreateForm] = useState(false)
 
   // Fetch all quests
@@ -34,34 +34,15 @@ export default function AdminQuestsPage() {
     refetch()
   }
 
-  // Check if user is admin
-  if (!user?.isAdmin) {
-    return (
-      <PageWrapper>
-        <div className="page py-6">
-          <div className="sticky top-0 z-10">
-            <JamNav />
-          </div>
-          <div className="container max-w-6xl pl-64">
-            <Alert variant="destructive">
-              <Shield className="h-4 w-4" />
-              <AlertDescription>
-                No tienes permisos de administrador para acceder a esta página.
-              </AlertDescription>
-            </Alert>
-          </div>
-        </div>
-      </PageWrapper>
-    )
-  }
-
   return (
     <PageWrapper>
       <div className="page py-6">
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container space-y-4 pl-64">
+        <div className="container max-w-6xl pl-64">
+          <AdminProtected>
+            <div className="space-y-4">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
@@ -228,6 +209,8 @@ export default function AdminQuestsPage() {
               </CardContent>
             </Card>
           </div>
+            </div>
+          </AdminProtected>
         </div>
       </div>
     </PageWrapper>

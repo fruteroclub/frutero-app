@@ -2,10 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useAppAuth } from '@/store/auth-context'
-import { redirect, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
+import { AdminProtected } from '@/components/auth/AdminProtected'
 import { VerificationQueue } from '@/components/jam-platform/admin/VerificationQueue'
 import { VerificationStats } from '@/components/jam-platform/admin/VerificationStats'
 import { Card, CardContent } from '@/components/ui/card'
@@ -26,7 +27,7 @@ async function getSubmissions(adminId: string, status: string) {
 }
 
 export default function VerificationDashboardPage() {
-  const { user, isAppAuthenticated, isLoading: authLoading } = useAppAuth()
+  const { user, isAppAuthenticated } = useAppAuth()
   const searchParams = useSearchParams()
   const statusFilter = searchParams.get('status') || 'SUBMITTED'
 
@@ -41,38 +42,15 @@ export default function VerificationDashboardPage() {
     enabled: isAppAuthenticated && !!user,
   })
 
-  // Check if user is admin (client-side check)
-  // TODO: Add proper admin check once we have it in the schema
-  const isAdmin = user?.isAdmin === true
-
-  if (authLoading) {
-    return (
-      <PageWrapper>
-        <div className="page py-6">
-          <div className="sticky top-0 z-10">
-            <JamNav />
-          </div>
-          <div className="container max-w-6xl pl-64">
-            <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          </div>
-        </div>
-      </PageWrapper>
-    )
-  }
-
-  if (!isAppAuthenticated || !isAdmin) {
-    redirect('/jam/dashboard')
-  }
-
   return (
     <PageWrapper>
       <div className="page py-6">
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container max-w-6xl space-y-6 pl-64">
+        <div className="container max-w-6xl pl-64">
+          <AdminProtected>
+            <div className="space-y-6">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -121,6 +99,8 @@ export default function VerificationDashboardPage() {
           ) : (
             <VerificationQueue submissions={submissions} onVerified={() => refetch()} />
           )}
+            </div>
+          </AdminProtected>
         </div>
       </div>
     </PageWrapper>
