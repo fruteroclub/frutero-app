@@ -13,7 +13,12 @@ interface NavLinkProps {
 
 export function NavLink({ href, label, icon: Icon }: NavLinkProps) {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(href + '/');
+
+  // Check if this link should be active
+  // Handle special case: /jam/projects/create should NOT activate /jam/projects
+  const isActive = pathname === href ||
+    (pathname.startsWith(href + '/') &&
+     !(href === '/jam/projects' && pathname.startsWith('/jam/projects/create')));
 
   return (
     <Link
