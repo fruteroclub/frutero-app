@@ -14,7 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 import {
   Github,
   Video,
@@ -22,7 +28,7 @@ import {
   Presentation,
   Image as ImageIcon,
   Twitter,
-  Wallet
+  Wallet,
 } from 'lucide-react'
 
 interface ProjectFormProps {
@@ -98,7 +104,8 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
           {initialData?.id ? 'Editar Proyecto' : 'Detalles del Proyecto'}
         </CardTitle>
         <CardDescription>
-          Completa la información de tu proyecto para la submission del hackathon
+          Completa la información de tu proyecto para la submission del
+          hackathon
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -115,7 +122,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold">Información Básica</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground">
                 Datos principales de tu proyecto
               </p>
             </div>
@@ -123,7 +130,8 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="name">
-                  Nombre del Proyecto <span className="text-destructive">*</span>
+                  Nombre del Proyecto{' '}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -172,11 +180,15 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="DeFi">DeFi/Decentralized Finance</SelectItem>
+                    <SelectItem value="DeFi">
+                      DeFi/Decentralized Finance
+                    </SelectItem>
                     <SelectItem value="RWA">RWA/Real World Assets</SelectItem>
                     <SelectItem value="Consumer">Consumer Apps</SelectItem>
                     <SelectItem value="Stablecoins">Stablecoins</SelectItem>
-                    <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+                    <SelectItem value="Infrastructure">
+                      Infrastructure
+                    </SelectItem>
                     <SelectItem value="PublicGoods">Public Goods</SelectItem>
                     <SelectItem value="AI">AI</SelectItem>
                   </SelectContent>
@@ -236,7 +248,10 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="repositoryUrl" className="flex items-center gap-2">
+                <Label
+                  htmlFor="repositoryUrl"
+                  className="flex items-center gap-2"
+                >
                   <Github className="h-4 w-4" />
                   Repositorio GitHub <span className="text-destructive">*</span>
                 </Label>
@@ -253,7 +268,10 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="productionUrl" className="flex items-center gap-2">
+                <Label
+                  htmlFor="productionUrl"
+                  className="flex items-center gap-2"
+                >
                   <Globe className="h-4 w-4" />
                   URL de Producción <span className="text-destructive">*</span>
                 </Label>
@@ -273,7 +291,10 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pitchDeckUrl" className="flex items-center gap-2">
+                <Label
+                  htmlFor="pitchDeckUrl"
+                  className="flex items-center gap-2"
+                >
                   <Presentation className="h-4 w-4" />
                   Pitch Deck
                 </Label>
@@ -369,7 +390,10 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="walletAddress" className="flex items-center gap-2">
+                <Label
+                  htmlFor="walletAddress"
+                  className="flex items-center gap-2"
+                >
                   <Wallet className="h-4 w-4" />
                   Wallet del Equipo
                 </Label>
@@ -397,7 +421,11 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={mutation.isPending} className="flex-1">
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="flex-1"
+            >
               {mutation.isPending
                 ? initialData?.id
                   ? 'Actualizando...'
