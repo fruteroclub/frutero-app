@@ -11,6 +11,7 @@ import {
   jsonb,
   decimal,
   unique,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -32,6 +33,10 @@ export const programTypeEnum = pgEnum('program_type', [
 
 export const programStatusEnum = pgEnum('program_status', [
   'PLANNED', 'ACTIVE', 'COMPLETED', 'RECURRING'
+]);
+
+export const projectQuestStatusEnum = pgEnum('project_quest_status', [
+  'NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'VERIFIED', 'REJECTED'
 ]);
 
 // ============================================
@@ -105,7 +110,7 @@ export const programs = pgTable('programs', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-// 4. Projects - User projects
+// 4. Projects - User projects (supports solo or team)
 export const projects = pgTable('projects', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull().unique(),
@@ -128,7 +133,7 @@ export const projects = pgTable('projects', {
   xUsername: text('x_username'),
   telegramUsername: text('telegram_username'),
   adminId: text('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
+  walletAddress: text('wallet_address').unique(), // Team treasury wallet for bounties
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -148,7 +153,7 @@ export const badges = pgTable('badges', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-// 6. Quests - Challenges and tasks
+// 6. Quests - Challenges and tasks (supports individual and team quests)
 export const quests = pgTable('quests', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: text('title').notNull(),
@@ -161,6 +166,9 @@ export const quests = pgTable('quests', {
   // JAM Platform enhancements
   availableFrom: timestamp('available_from'), // Quest availability window
   dueDate: timestamp('due_date'), // Quest deadline
+  questType: text('quest_type').notNull().default('INDIVIDUAL'), // 'INDIVIDUAL', 'TEAM', 'BOTH'
+  bountyUsd: integer('bounty_usd'), // USD bounty amount for team quests
+  maxSubmissions: integer('max_submissions'), // Max times quest can be claimed (null = unlimited)
   badgeId: uuid('badge_id').references(() => badges.id, { onDelete: 'set null' }),
   projectId: uuid('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
@@ -291,7 +299,7 @@ export const programUsers = pgTable('program_users', {
   uniqueProgramUser: unique('program_user_unique').on(table.programId, table.userId),
 }));
 
-// User quest progress
+// User quest progress (individual quests)
 export const userQuests = pgTable('user_quests', {
   id: uuid('id').primaryKey().defaultRandom(),
   status: userQuestStatusEnum('status').notNull().default('NOT_STARTED'),
@@ -309,20 +317,72 @@ export const userQuests = pgTable('user_quests', {
   uniqueUserQuest: unique('user_quest_unique').on(table.userId, table.questId),
 }));
 
+// Project participation in programs (many-to-many)
+export const programProjects = pgTable('program_projects', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('ACTIVE'), // 'ACTIVE', 'COMPLETED', 'WITHDRAWN'
+  joinedAt: timestamp('joined_at').notNull().defaultNow(),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  uniqueProgramProject: unique('program_project_unique').on(table.programId, table.projectId),
+}));
+
+// Project team members (many-to-many)
+export const projectMembers = pgTable('project_members', {
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: text('role').notNull().default('MEMBER'), // 'ADMIN', 'MEMBER'
+  joinedAt: timestamp('joined_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.projectId, table.userId] }),
+}));
+
+// Project quest submissions (team quests with verification)
+export const projectQuests = pgTable('project_quests', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  questId: uuid('quest_id').notNull().references(() => quests.id, { onDelete: 'cascade' }),
+  // Submission data
+  status: projectQuestStatusEnum('status').notNull().default('NOT_STARTED'),
+  progress: integer('progress').notNull().default(0), // 0-100 percentage
+  submissionLink: text('submission_link'),
+  submissionText: text('submission_text'),
+  submittedAt: timestamp('submitted_at'),
+  submittedBy: text('submitted_by').references(() => users.id), // Team member who submitted
+  // Verification workflow
+  isVerified: boolean('is_verified').default(false),
+  verifiedBy: text('verified_by').references(() => users.id), // Admin/judge who verified
+  verificationNotes: text('verification_notes'),
+  verifiedAt: timestamp('verified_at'),
+  // Payment tracking
+  paymentTxHash: text('payment_tx_hash'), // On-chain transaction hash
+  paidAt: timestamp('paid_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  uniqueProjectQuest: unique('project_quest_unique').on(table.projectId, table.questId),
+}));
+
 // ============================================
 // RELATIONS - Simplified structure
 // ============================================
 
 export const usersRelations = relations(users, ({ one, many }) => ({
-  profile: one(profiles, { 
-    fields: [users.id], 
-    references: [profiles.userId] 
+  profile: one(profiles, {
+    fields: [users.id],
+    references: [profiles.userId]
   }),
-  proofOfCommunity: one(proofOfCommunities, { 
-    fields: [users.id], 
-    references: [proofOfCommunities.userId] 
+  proofOfCommunity: one(proofOfCommunities, {
+    fields: [users.id],
+    references: [proofOfCommunities.userId]
   }),
   projects: many(projects),
+  projectMemberships: many(projectMembers),
   posts: many(posts),
   comments: many(comments),
   badges: many(userBadges),
@@ -342,21 +402,20 @@ export const profilesRelations = relations(profiles, ({ one }) => ({
 
 export const programsRelations = relations(programs, ({ many }) => ({
   users: many(programUsers),
-  projects: many(projects),
+  projects: many(programProjects),
   quests: many(quests),
   badges: many(badges),
   posts: many(posts),
 }));
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
-  admin: one(users, { 
-    fields: [projects.adminId], 
-    references: [users.id] 
+  admin: one(users, {
+    fields: [projects.adminId],
+    references: [users.id]
   }),
-  program: one(programs, { 
-    fields: [projects.programId], 
-    references: [programs.id] 
-  }),
+  programs: many(programProjects),
+  members: many(projectMembers),
+  questSubmissions: many(projectQuests),
   quests: many(quests),
   badges: many(badges),
   posts: many(posts),
@@ -378,19 +437,20 @@ export const badgesRelations = relations(badges, ({ one, many }) => ({
 }));
 
 export const questsRelations = relations(quests, ({ one, many }) => ({
-  badge: one(badges, { 
-    fields: [quests.badgeId], 
-    references: [badges.id] 
+  badge: one(badges, {
+    fields: [quests.badgeId],
+    references: [badges.id]
   }),
-  project: one(projects, { 
-    fields: [quests.projectId], 
-    references: [projects.id] 
+  project: one(projects, {
+    fields: [quests.projectId],
+    references: [projects.id]
   }),
-  program: one(programs, { 
-    fields: [quests.programId], 
-    references: [programs.id] 
+  program: one(programs, {
+    fields: [quests.programId],
+    references: [programs.id]
   }),
-  users: many(userQuests),
+  userSubmissions: many(userQuests),
+  projectSubmissions: many(projectQuests),
   rewards: many(rewards),
 }));
 
@@ -495,14 +555,55 @@ export const proofOfCommunitiesRelations = relations(proofOfCommunities, ({ one 
 }));
 
 export const mentorshipsRelations = relations(mentorships, ({ one }) => ({
-  mentor: one(users, { 
-    fields: [mentorships.mentorId], 
+  mentor: one(users, {
+    fields: [mentorships.mentorId],
     references: [users.id],
     relationName: 'userMentoring'
   }),
-  participant: one(users, { 
-    fields: [mentorships.participantId], 
+  participant: one(users, {
+    fields: [mentorships.participantId],
     references: [users.id],
     relationName: 'userMentorships'
+  }),
+}));
+
+export const programProjectsRelations = relations(programProjects, ({ one }) => ({
+  program: one(programs, {
+    fields: [programProjects.programId],
+    references: [programs.id],
+  }),
+  project: one(projects, {
+    fields: [programProjects.projectId],
+    references: [projects.id],
+  }),
+}));
+
+export const projectMembersRelations = relations(projectMembers, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectMembers.projectId],
+    references: [projects.id],
+  }),
+  user: one(users, {
+    fields: [projectMembers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const projectQuestsRelations = relations(projectQuests, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectQuests.projectId],
+    references: [projects.id],
+  }),
+  quest: one(quests, {
+    fields: [projectQuests.questId],
+    references: [quests.id],
+  }),
+  submitter: one(users, {
+    fields: [projectQuests.submittedBy],
+    references: [users.id],
+  }),
+  verifier: one(users, {
+    fields: [projectQuests.verifiedBy],
+    references: [users.id],
   }),
 }));
