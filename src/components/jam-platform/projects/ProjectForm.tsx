@@ -1,37 +1,36 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+} from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface ProjectFormProps {
-  userId: string;
+  userId: string
   initialData?: {
-    id?: string;
-    name?: string;
-    description?: string;
-    category?: string;
-    stage?: string;
-    walletAddress?: string;
-    website?: string;
-  };
+    id?: string
+    name?: string
+    description?: string
+    category?: string
+    stage?: string
+    walletAddress?: string
+    website?: string
+  }
 }
 
 export function ProjectForm({ userId, initialData }: ProjectFormProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -40,38 +39,36 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
     stage: initialData?.stage || 'IDEA',
     walletAddress: initialData?.walletAddress || '',
     website: initialData?.website || '',
-  });
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
+  const mutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
       const response = await fetch('/api/jam/projects', {
         method: initialData?.id ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          ...data,
           adminId: userId,
           ...(initialData?.id && { id: initialData.id }),
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save project');
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save project')
       }
 
-      const project = await response.json();
-      router.push(`/jam/projects/${project.slug}`);
-    } catch (err) {
-      console.error('Failed to save project:', err);
-      setError(err instanceof Error ? err.message : 'Failed to save project');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return response.json()
+    },
+    onSuccess: (project) => {
+      router.push(`/jam/projects/${project.slug}`)
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate(formData)
+  }
 
   return (
     <Card>
@@ -82,30 +79,36 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-destructive/10 border border-destructive p-3 text-sm text-destructive">
-              {error}
+          {mutation.error && (
+            <div className="rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+              {mutation.error instanceof Error
+                ? mutation.error.message
+                : 'Failed to save project'}
             </div>
           )}
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="name">Nombre del Proyecto</Label>
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Awesome DApp"
               required
               maxLength={100}
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="description">Descripción</Label>
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               placeholder="¿Qué estás construyendo? (2-3 oraciones)"
               required
               maxLength={500}
@@ -113,11 +116,13 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
             />
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="category">Categoría</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData({ ...formData, category: value })}
+              onValueChange={(value) =>
+                setFormData({ ...formData, category: value })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona una categoría" />
@@ -135,11 +140,13 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
             </Select>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="stage">Etapa del Proyecto</Label>
             <Select
               value={formData.stage}
-              onValueChange={(value) => setFormData({ ...formData, stage: value })}
+              onValueChange={(value) =>
+                setFormData({ ...formData, stage: value })
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -153,38 +160,46 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
             </Select>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="wallet">Wallet del Equipo (Opcional)</Label>
             <Input
               id="wallet"
               type="text"
               value={formData.walletAddress}
-              onChange={(e) => setFormData({ ...formData, walletAddress: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, walletAddress: e.target.value })
+              }
               placeholder="0x... (para recibir pagos de bounties)"
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Dirección de wallet para recibir bounties de quests del equipo
             </p>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="website">Sitio Web (Opcional)</Label>
             <Input
               id="website"
               type="url"
               value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, website: e.target.value })
+              }
               placeholder="https://tuproyecto.com"
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading
-              ? initialData?.id ? 'Actualizando...' : 'Creando...'
-              : initialData?.id ? 'Actualizar Proyecto' : 'Crear Proyecto'}
+          <Button type="submit" disabled={mutation.isPending} className="w-full">
+            {mutation.isPending
+              ? initialData?.id
+                ? 'Actualizando...'
+                : 'Creando...'
+              : initialData?.id
+                ? 'Actualizar Proyecto'
+                : 'Crear Proyecto'}
           </Button>
         </form>
       </CardContent>
     </Card>
-  );
+  )
 }
