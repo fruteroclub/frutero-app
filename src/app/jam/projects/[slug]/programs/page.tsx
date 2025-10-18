@@ -9,25 +9,13 @@ import { ProgramParticipationCard } from '@/components/jam-platform/programs/Pro
 import { JoinProgramDialog } from '@/components/jam-platform/programs/JoinProgramDialog'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-
-interface ProjectProgram {
-  id: string
-  status: 'ACTIVE' | 'COMPLETED' | 'WITHDRAWN'
-  joinedAt: string
-  completedAt?: string
-  program: {
-    id: string
-    name: string
-    description: string
-    startDate: string
-    endDate?: string
-  }
-}
-
-interface ProjectMember {
-  userId: string
-  role: string
-}
+import {
+  getProject,
+  getProjectMembers,
+  type Project,
+  type ProjectMember,
+} from '@/services/jam/projects.service'
+import { getProjectPrograms, type ProgramParticipation } from '@/services/jam/programs.service'
 
 interface ProgramsPageProps {
   params: Promise<{ slug: string }>
@@ -37,45 +25,26 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
   const { user } = useAppAuth()
   const { slug } = use(params)
 
-  const { data: project, isLoading: projectLoading } = useQuery({
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
     queryKey: ['project', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}`)
-      if (!res.ok) {
-        if (res.status === 404) return null
-        throw new Error('Failed to fetch project')
-      }
-      return res.json()
-    },
+    queryFn: () => getProject(slug),
   })
 
-  const { data: activePrograms = [], isLoading: activeProgramsLoading } = useQuery({
+  const { data: activePrograms = [], isLoading: activeProgramsLoading } = useQuery<ProgramParticipation[]>({
     queryKey: ['project-programs', slug, 'ACTIVE'],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/programs?status=ACTIVE`)
-      if (!res.ok) throw new Error('Failed to fetch active programs')
-      return res.json()
-    },
+    queryFn: () => getProjectPrograms(slug, 'ACTIVE'),
     enabled: !!project,
   })
 
-  const { data: completedPrograms = [], isLoading: completedProgramsLoading } = useQuery({
+  const { data: completedPrograms = [], isLoading: completedProgramsLoading } = useQuery<ProgramParticipation[]>({
     queryKey: ['project-programs', slug, 'COMPLETED'],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/programs?status=COMPLETED`)
-      if (!res.ok) throw new Error('Failed to fetch completed programs')
-      return res.json()
-    },
+    queryFn: () => getProjectPrograms(slug, 'COMPLETED'),
     enabled: !!project,
   })
 
-  const { data: members = [] } = useQuery({
+  const { data: members = [] } = useQuery<ProjectMember[]>({
     queryKey: ['project-members', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/members`)
-      if (!res.ok) throw new Error('Failed to fetch members')
-      return res.json()
-    },
+    queryFn: () => getProjectMembers(slug),
     enabled: !!project,
   })
 
@@ -105,7 +74,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
   }
 
   const isAdmin = members.find(
-    (m: ProjectMember) => m.userId === user?.id && m.role === 'ADMIN'
+    (m) => m.userId === user?.id && m.role === 'ADMIN'
   )
 
   const isLoading = activeProgramsLoading || completedProgramsLoading
@@ -154,7 +123,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
                 </Card>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
-                  {activePrograms.map((pp: ProjectProgram) => (
+                  {activePrograms.map((pp: ProgramParticipation) => (
                     <ProgramParticipationCard
                       key={pp.id}
                       programParticipation={pp}
@@ -171,7 +140,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
               <section>
                 <h2 className="text-2xl font-semibold mb-4">Programas Completados</h2>
                 <div className="grid gap-4 md:grid-cols-2">
-                  {completedPrograms.map((pp: ProjectProgram) => (
+                  {completedPrograms.map((pp: ProgramParticipation) => (
                     <ProgramParticipationCard
                       key={pp.id}
                       programParticipation={pp}

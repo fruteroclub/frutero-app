@@ -10,6 +10,12 @@ import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { TeamMemberList } from '@/components/jam-platform/projects/TeamMemberList'
 import { InviteMemberDialog } from '@/components/jam-platform/projects/InviteMemberDialog'
 import { Loader2 } from 'lucide-react'
+import {
+  getProject,
+  getProjectMembers,
+  type Project,
+  type ProjectMember,
+} from '@/services/jam/projects.service'
 
 interface TeamPageProps {
   params: Promise<{
@@ -22,26 +28,15 @@ export default function TeamPage({ params }: TeamPageProps) {
   const { slug } = use(params)
 
   // Fetch project
-  const { data: project, isLoading: projectLoading } = useQuery({
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
     queryKey: ['project', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}`)
-      if (!res.ok) {
-        if (res.status === 404) return null
-        throw new Error('Failed to fetch project')
-      }
-      return res.json()
-    },
+    queryFn: () => getProject(slug),
   })
 
   // Fetch team members
-  const { data: members = [], isLoading: membersLoading } = useQuery({
+  const { data: members = [], isLoading: membersLoading } = useQuery<ProjectMember[]>({
     queryKey: ['project-members', slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/projects/${slug}/members`)
-      if (!res.ok) throw new Error('Failed to fetch members')
-      return res.json()
-    },
+    queryFn: () => getProjectMembers(slug),
     enabled: !!project,
   })
 
@@ -67,7 +62,7 @@ export default function TeamPage({ params }: TeamPageProps) {
   }
 
   const isAdmin = members.find(
-    (m: { userId: string; role: string }) => m.userId === user?.id && m.role === 'ADMIN'
+    (m) => m.userId === user?.id && m.role === 'ADMIN'
   )
 
   return (

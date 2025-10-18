@@ -130,6 +130,7 @@ async function getUserProject(userId: string): Promise<ProjectInfo | null> {
 
   return {
     id: projectData.id,
+    slug: projectData.slug,
     name: projectData.name,
     stage: projectData.stage,
     memberCount: allMembers.length,

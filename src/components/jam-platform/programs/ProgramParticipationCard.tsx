@@ -11,20 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Calendar, CheckCircle2, MoreVertical, XCircle } from 'lucide-react'
-
-interface ProgramParticipation {
-  id: string
-  status: 'ACTIVE' | 'COMPLETED' | 'WITHDRAWN'
-  joinedAt: string
-  completedAt?: string
-  program: {
-    id: string
-    name: string
-    description: string
-    startDate: string
-    endDate?: string
-  }
-}
+import {
+  updateProgramStatus,
+  leaveProgram,
+  type ProgramParticipation,
+} from '@/services/jam/programs.service'
 
 interface ProgramParticipationCardProps {
   programParticipation: ProgramParticipation
@@ -42,40 +33,15 @@ export function ProgramParticipationCard({
   const queryClient = useQueryClient()
 
   const markCompleteMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(
-        `/api/jam/projects/${projectSlug}/programs/${programParticipation.program.id}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'COMPLETED' }),
-        }
-      )
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || 'Failed to mark as complete')
-      }
-      return res.json()
-    },
+    mutationFn: () =>
+      updateProgramStatus(projectSlug, programParticipation.program.id, 'COMPLETED'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
     },
   })
 
   const withdrawMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(
-        `/api/jam/projects/${projectSlug}/programs/${programParticipation.program.id}`,
-        {
-          method: 'DELETE',
-        }
-      )
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || 'Failed to withdraw')
-      }
-      return res.json()
-    },
+    mutationFn: () => leaveProgram(projectSlug, programParticipation.program.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
     },

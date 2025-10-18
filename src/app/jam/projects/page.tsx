@@ -8,6 +8,7 @@ import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { ProjectCard } from '@/components/jam-platform/projects/ProjectCard'
 import { ProjectFilters } from '@/components/jam-platform/projects/ProjectFilters'
 import { Loader2 } from 'lucide-react'
+import { getAllProjects, type Project } from '@/services/jam/projects.service'
 
 export default function ProjectsPage() {
   const { isAppAuthenticated, isLoading: authLoading } = useAppAuth()
@@ -15,18 +16,14 @@ export default function ProjectsPage() {
   const [categoryFilter, setCategoryFilter] = useState('ALL')
   const [stageFilter, setStageFilter] = useState('ALL')
 
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ['projects'],
-    queryFn: async () => {
-      const res = await fetch('/api/jam/projects')
-      if (!res.ok) throw new Error('Failed to fetch projects')
-      return res.json()
-    },
+    queryFn: getAllProjects,
     enabled: isAppAuthenticated,
   })
 
   // Client-side filtering
-  const filteredProjects = projects.filter((project: { name: string; description: string; category: string | null; stage: string }) => {
+  const filteredProjects = projects.filter((project) => {
     const matchesSearch =
       searchQuery === '' ||
       project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -96,7 +93,7 @@ export default function ProjectsPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredProjects.map((project: { id: string; name: string; slug: string; description: string; category: string | null; stage: string }) => (
+                {filteredProjects.map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}
               </div>
