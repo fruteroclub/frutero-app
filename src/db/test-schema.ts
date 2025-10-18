@@ -8,6 +8,7 @@ async function testSchema() {
     // Test 1: Create a user
     console.log('1️⃣ Creating test user...');
     const [user] = await db.insert(schema.users).values({
+      id: 'test-user-id-12345', // Required: TEXT id field
       username: 'test_hacker',
       displayName: 'Test Hacker',
       email: 'test@frutero.club',
