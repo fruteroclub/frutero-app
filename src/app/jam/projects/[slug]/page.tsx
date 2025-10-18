@@ -108,173 +108,161 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container max-w-4xl space-y-8 pb-2 pl-64">
-          {/* Project Header */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">{project.name}</h1>
-              <div className="flex items-center gap-2">
-                {project.category && <Badge>{project.category}</Badge>}
-                <Badge variant="outline">{project.stage}</Badge>
-              </div>
-            </div>
+        <div className="container max-w-2xl space-y-6 pl-64">
+          {/* Back Link */}
+          <Link
+            href="/jam/dashboard"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+          >
+            ← Volver al Dashboard
+          </Link>
 
-            {isAdmin && (
-              <Button asChild variant="outline">
-                <Link href={`/jam/projects/${project.slug}/edit`}>
-                  Editar Proyecto
-                </Link>
-              </Button>
-            )}
+          {/* Project Header */}
+          <div className="space-y-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="mb-2 text-3xl font-bold">{project.name}</h1>
+                <div className="flex items-center gap-2">
+                  {project.category && <Badge>{project.category}</Badge>}
+                  <Badge variant="outline">{project.stage}</Badge>
+                </div>
+              </div>
+
+              {isAdmin && (
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`/jam/projects/${project.slug}/edit`}>
+                    Editar
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Main Content */}
-            <div className="space-y-6 md:col-span-2">
+          {/* Main Content */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Sobre el Proyecto</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{project.description}</p>
+              </CardContent>
+            </Card>
+
+            {project.website && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Sobre el Proyecto</CardTitle>
+                  <CardTitle>Enlaces</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{project.description}</p>
+                  <a
+                    href={project.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-primary hover:underline"
+                  >
+                    {project.website}
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
                 </CardContent>
               </Card>
+            )}
 
-              {project.website && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Enlaces</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <a
-                      href={project.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-primary hover:underline"
-                    >
-                      {project.website}
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Team Members */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      Equipo ({members.length})
-                    </CardTitle>
-                    {isAdmin && (
-                      <Button size="sm" asChild>
-                        <Link href={`/jam/projects/${project.id}/team`}>
-                          Gestionar Equipo
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {members.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                      No hay miembros en el equipo aún
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {members.map((member: ProjectMember) => (
-                        <div
-                          key={member.userId}
-                          className="flex items-center gap-2"
-                        >
-                          <span>{member.userId}</span>
-                          {member.role === 'ADMIN' && (
-                            <Badge variant="secondary" className="text-xs">
-                              Admin
-                            </Badge>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-4">
-              {/* Programs */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Programas</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {programs.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                      No participa en programas aún
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {programs.map((pp: ProgramProject) => (
-                        <div key={pp.id} className="text-sm">
-                          {pp.program?.name || pp.programId}
-                          <Badge variant="outline" className="ml-2 text-xs">
-                            {pp.status}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            {/* Team Members */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Equipo ({members.length})
+                  </CardTitle>
                   {isAdmin && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="mt-3 w-full"
-                      asChild
-                    >
-                      <Link href={`/jam/projects/${project.id}/programs`}>
-                        Gestionar Programas
+                    <Button size="sm" variant="outline" asChild>
+                      <Link href={`/jam/projects/${project.id}/team`}>
+                        Gestionar
                       </Link>
                     </Button>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {members.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No hay miembros en el equipo aún
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {members.map((member: ProjectMember) => (
+                      <div
+                        key={member.userId}
+                        className="flex items-center justify-between rounded-md border p-3"
+                      >
+                        <span className="font-mono text-sm">
+                          {member.userId.slice(0, 20)}...
+                        </span>
+                        {member.role === 'ADMIN' && (
+                          <Badge variant="secondary" className="text-xs">
+                            Admin
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-              {/* Treasury */}
-              {project.walletAddress && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      Wallet del Equipo
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <code className="break-all text-xs">
-                      {project.walletAddress}
-                    </code>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Created */}
+            {/* Programs */}
+            {programs.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Calendar className="h-4 w-4" />
-                    Creado
-                  </CardTitle>
+                  <CardTitle>Programas</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">
-                    {new Date(project.createdAt).toLocaleDateString('es-ES', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                  <div className="space-y-2">
+                    {programs.map((pp: ProgramProject) => (
+                      <div
+                        key={pp.id}
+                        className="flex items-center justify-between rounded-md border p-3"
+                      >
+                        <span className="text-sm">
+                          {pp.program?.name || pp.programId}
+                        </span>
+                        <Badge variant="outline" className="text-xs">
+                          {pp.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Treasury Wallet */}
+            {project.walletAddress && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Treasury Wallet</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="break-all font-mono text-xs text-muted-foreground">
+                    {project.walletAddress}
                   </p>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Created Date */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4" />
+              <span>
+                Creado el{' '}
+                {new Date(project.createdAt).toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
             </div>
           </div>
         </div>
