@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import { cn } from '@/lib/utils'
 
 import '@/styles/globals.css'
-import '@/lib/error-filter'
-import AppProvider from '@/providers/app-provider'
+import OnchainProvider from '@/providers/onchain-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { fonts } from '@/lib/fonts'
 
@@ -27,7 +26,7 @@ export default function RootLayout({
           fonts.spaceGrotesk.variable,
         )}
       >
-        <AppProvider>{children}</AppProvider>
+        <OnchainProvider>{children}</OnchainProvider>
         <Toaster richColors />
       </body>
     </html>

@@ -1,8 +1,5 @@
-import { config } from 'dotenv'
-import { defineConfig } from 'drizzle-kit'
-
-// Load environment variables from .env.local
-config({ path: '.env.local' })
+import 'dotenv/config';
+import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
   out: './drizzle',
@@ -10,13 +7,7 @@ export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
-    ssl: false, // Railway proxy handles SSL
   },
-  verbose: true,
-  strict: true,
-  // Studio-specific configuration
-  breakpoints: true,
-  introspect: {
-    casing: 'preserve',
-  },
-})
+  verbose: true,  // 👈 Añadido para ver logs detallados
+  strict: true,   // 👈 Añadido para validación estricta
+});

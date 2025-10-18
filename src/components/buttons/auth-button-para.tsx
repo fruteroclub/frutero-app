@@ -1,13 +1,13 @@
 'use client'
 
 import { type Dispatch, type SetStateAction } from 'react'
-import {
-  useModal, // Modal control hook
-  useWallet, // Wallet info hook
-  useAccount, // Account connection hook
-  useCreateGuestWalletsState, // Guest wallet creation state
+import { 
+  useModal,                    // Modal control hook
+  useWallet,                   // Wallet info hook
+  useAccount,                  // Account connection hook
+  useCreateGuestWalletsState   // Guest wallet creation state
 } from '@getpara/react-sdk'
-import { useAppAuth } from '@/store/auth-context'
+import { useAppAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
@@ -26,36 +26,20 @@ export default function AuthButtonPara({
   setIsMenuOpen,
 }: AuthButtonProps) {
   // App-level auth state
-  const {
-    isAppAuthenticated,
-    login: appLogin,
-    logout: appLogout,
-  } = useAppAuth()
-
+  const { isAppAuthenticated, login: appLogin, logout: appLogout } = useAppAuth()
+  
   // Para SDK Hooks
-  const { openModal } = useModal() // Modal management
-  const { data: wallet, isLoading: walletLoading } = useWallet() // Wallet info
-  const { isConnected, connectionType, embedded } = useAccount() // Connection status
-  const { isPending: isCreatingGuestWallets, error: guestWalletError } =
-    useCreateGuestWalletsState() // Guest wallet state
+  const { openModal } = useModal()  // Modal management
+  const { data: wallet, isLoading: walletLoading } = useWallet()  // Wallet info
+  const { isConnected, connectionType, embedded } = useAccount()  // Connection status
+  const { isPending: isCreatingGuestWallets, error: guestWalletError } = useCreateGuestWalletsState()  // Guest wallet state
 
   // Handle opening Para modal and app login
   function handleAuth() {
     if (!isAppAuthenticated) {
       // If not app-authenticated, just log them into the app
       // Para wallet should already be connected from previous sessions
-      appLogin({
-        id: '123',
-        username: 'test',
-        displayName: 'test',
-        email: 'test@test.com',
-        bio: 'test',
-        website: 'test',
-        avatarUrl: 'test',
-        bannerUrl: 'test',
-        profile: null,
-        isAdmin: false,
-      })
+      appLogin()
       setIsMenuOpen?.(false)
       toast.success('¡Bienvenido de vuelta!')
     } else {
@@ -81,20 +65,16 @@ export default function AuthButtonPara({
   // Display wallet info when app-authenticated and Para connected
   if (isAppAuthenticated && isConnected && wallet) {
     const isGuest = connectionType === 'embedded' && !embedded?.email
-
+    
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm">
           {/* Use Para's display address method */}
           {wallet.id ? `${wallet.id.slice(0, 6)}...${wallet.id.slice(-4)}` : ''}
-          {isGuest && (
-            <span className="ml-1 text-xs text-muted-foreground">
-              (Invitado)
-            </span>
-          )}
+          {isGuest && <span className="ml-1 text-xs text-muted-foreground">(Invitado)</span>}
         </span>
         <Button
-          onClick={handleAuth} // Open modal for wallet management
+          onClick={handleAuth}  // Open modal for wallet management
           size="sm"
           variant="outline"
           className="font-funnel font-medium"
@@ -102,7 +82,7 @@ export default function AuthButtonPara({
           Gestionar
         </Button>
         <Button
-          onClick={handleLogout} // App logout functionality
+          onClick={handleLogout}  // App logout functionality
           size="sm"
           variant="ghost"
           className="font-funnel font-medium text-muted-foreground hover:text-foreground"
@@ -117,7 +97,7 @@ export default function AuthButtonPara({
   if (walletLoading || isCreatingGuestWallets) {
     return (
       <Button disabled size={size} className={className}>
-        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-current"></div>
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
         {isCreatingGuestWallets ? 'Creando billetera...' : 'Cargando...'}
       </Button>
     )
