@@ -192,10 +192,17 @@ export class UserControllerDrizzle {
     data: Partial<CreateUserInput>,
   ): Promise<User> {
     try {
+      // Filter out null/undefined values to avoid overwriting required fields
+      const updateData: Partial<typeof users.$inferInsert> = {}
+      if (data.username !== null && data.username !== undefined) updateData.username = data.username
+      if (data.displayName !== null && data.displayName !== undefined) updateData.displayName = data.displayName
+      if (data.email !== null && data.email !== undefined) updateData.email = data.email
+      if (data.appWallet !== null && data.appWallet !== undefined) updateData.avatarUrl = data.appWallet
+
       const [updatedUser] = await db
         .update(users)
         .set({
-          ...data,
+          ...updateData,
           updatedAt: new Date(),
         })
         .where(eq(users.id, id))
