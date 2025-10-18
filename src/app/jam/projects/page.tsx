@@ -61,14 +61,31 @@ export default function ProjectsPage() {
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container max-w-6xl space-y-6 pl-64">
-          <div>
-            <h1 className="text-3xl font-bold">Explorar Proyectos</h1>
-            <p className="text-muted-foreground mt-2">
-              Descubre proyectos de la comunidad y ofrece tu apoyo como mentor
-            </p>
+        <div className="container max-w-7xl space-y-8 pl-64">
+          {/* Hero Section */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Explorar Proyectos
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl">
+                Descubre proyectos increíbles de la comunidad, ofrece tu apoyo como mentor,
+                y colabora en el siguiente gran hackathon
+              </p>
+            </div>
+
+            {/* Stats bar */}
+            <div className="flex items-center gap-6 pt-2">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-sm text-muted-foreground">
+                  {projects.length} proyectos activos
+                </span>
+              </div>
+            </div>
           </div>
 
+          {/* Filters */}
           <ProjectFilters
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -78,21 +95,46 @@ export default function ProjectsPage() {
             onStageChange={setStageFilter}
           />
 
-          <div className="space-y-4">
+          {/* Results Section */}
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                {filteredProjects.length} proyecto{filteredProjects.length !== 1 ? 's' : ''} encontrado{filteredProjects.length !== 1 ? 's' : ''}
+              <p className="text-sm font-medium text-muted-foreground">
+                {filteredProjects.length === 0 ? 'No hay proyectos' : (
+                  <>
+                    Mostrando <span className="text-foreground font-bold">{filteredProjects.length}</span>{' '}
+                    {filteredProjects.length === 1 ? 'proyecto' : 'proyectos'}
+                  </>
+                )}
               </p>
             </div>
 
             {filteredProjects.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">
-                  No se encontraron proyectos con los filtros seleccionados
+              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+                <div className="rounded-full bg-muted p-6 mb-4">
+                  <svg
+                    className="h-12 w-12 text-muted-foreground"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">
+                  No se encontraron proyectos
+                </h3>
+                <p className="text-muted-foreground max-w-md">
+                  Intenta ajustar los filtros o realiza una búsqueda diferente para encontrar
+                  proyectos que coincidan con tus criterios
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProjects.map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}
