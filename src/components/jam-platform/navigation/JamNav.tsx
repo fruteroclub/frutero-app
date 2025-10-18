@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Home, Target, Calendar, Users, MessageSquare, User, Menu, X } from 'lucide-react';
+import { Home, Target, Calendar, Users, MessageSquare, User, Menu, X, FolderPlus } from 'lucide-react';
 import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { href: '/jam/dashboard', label: 'Dashboard', icon: Home },
+  { href: '/jam/projects/create', label: 'Crear Proyecto', icon: FolderPlus },
   { href: '/jam/quests', label: 'Quests', icon: Target },
   { href: '/jam/programs', label: 'Programs', icon: Calendar },
   { href: '/jam/mentors', label: 'Mentors', icon: Users },
