@@ -52,19 +52,11 @@ async function testSchema() {
       description: 'Testing the new schema with a DApp project',
       stage: 'PROTOTYPE',
       adminId: user.id,
+      programId: program.id,
       category: 'Web3',
       githubUsername: 'testdapp',
     }).returning();
     console.log('✅ Project created:', project.name);
-
-    // Test 4a: Link project to program (via programProjects junction)
-    console.log('\n4a️⃣ Linking project to program...');
-    await db.insert(schema.programProjects).values({
-      programId: program.id,
-      projectId: project.id,
-      status: 'ACTIVE',
-    });
-    console.log('✅ Project linked to program');
     
     // Test 5: Create a badge
     console.log('\n5️⃣ Creating badge...');
