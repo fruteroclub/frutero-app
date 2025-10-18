@@ -17,6 +17,16 @@ if (typeof window !== 'undefined') {
       return
     }
 
+    // Suppress hydration warnings from Privy's modal HTML nesting
+    // Privy's styled-components render <div> inside <p> tags in help text
+    if (
+      errorString.includes('cannot be a descendant of') &&
+      errorString.includes('HelpTextContainer') &&
+      errorString.includes('hydration')
+    ) {
+      return
+    }
+
     originalError.apply(console, args)
   }
 }
