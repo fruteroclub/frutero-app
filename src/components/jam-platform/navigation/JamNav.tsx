@@ -1,10 +1,20 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Home, Target, Calendar, Users, MessageSquare, User, Menu, X, FolderPlus } from 'lucide-react';
-import { NavLink } from './NavLink';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import Link from 'next/link'
+import {
+  Home,
+  Target,
+  Calendar,
+  Users,
+  MessageSquare,
+  User,
+  Menu,
+  X,
+  FolderPlus,
+} from 'lucide-react'
+import { NavLink } from './NavLink'
+import { Button } from '@/components/ui/button'
 
 const NAV_ITEMS = [
   { href: '/jam/dashboard', label: 'Dashboard', icon: Home },
@@ -14,18 +24,18 @@ const NAV_ITEMS = [
   { href: '/jam/mentors', label: 'Mentors', icon: Users },
   { href: '/jam/community', label: 'Community', icon: MessageSquare },
   { href: '/jam/profile', label: 'Profile', icon: User },
-];
+]
 
 export function JamNav() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:left-0 lg:top-24 lg:bottom-0">
-        <div className="flex flex-col gap-y-6 px-6 py-8 h-full overflow-y-auto">
+      <aside className="hidden lg:fixed lg:top-24 lg:bottom-0 lg:left-0 lg:flex lg:w-64 lg:flex-col">
+        <div className="flex h-full flex-col gap-y-6 overflow-y-auto px-6 py-8">
           {/* Logo */}
-          <Link href="/jam/dashboard" className="font-bold text-xl">
+          <Link href="/jam/dashboard" className="text-xl font-bold">
             Jam Platform
           </Link>
 
@@ -39,22 +49,26 @@ export function JamNav() {
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden sticky top-0 z-40 flex items-center gap-x-6 border-b bg-background px-4 py-4 sm:px-6">
+      <div className="sticky top-0 z-40 flex items-center gap-x-6 border-b bg-background px-4 py-4 sm:px-6 lg:hidden">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </Button>
-        <Link href="/jam/dashboard" className="font-bold text-lg">
+        <Link href="/jam/dashboard" className="text-lg font-bold">
           Jam Platform
         </Link>
       </div>
 
       {/* Mobile Sidebar */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-background/80 backdrop-blur-sm"
@@ -62,13 +76,13 @@ export function JamNav() {
           />
 
           {/* Sidebar */}
-          <div className="fixed inset-y-0 left-0 w-64 bg-background border-r">
+          <div className="fixed inset-y-0 left-0 w-64 border-r bg-background">
             <div className="flex flex-col gap-y-6 px-6 py-8">
               {/* Logo */}
               <div className="flex items-center justify-between">
                 <Link
                   href="/jam/dashboard"
-                  className="font-bold text-xl"
+                  className="text-xl font-bold"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Jam Platform
@@ -95,5 +109,5 @@ export function JamNav() {
         </div>
       )}
     </>
-  );
+  )
 }
