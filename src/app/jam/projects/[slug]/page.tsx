@@ -161,7 +161,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <div className="text-9xl font-bold text-primary/20">
+                  <div className="text-7xl font-bold text-primary/20">
                     {project.name.charAt(0).toUpperCase()}
                   </div>
                 </div>

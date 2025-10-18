@@ -35,7 +35,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
           <div className="sticky top-0 z-10">
             <JamNav />
           </div>
-          <div className="container max-w-3xl space-y-8 pl-64">
+          <div className="container w-4/5 space-y-8 pl-64">
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
@@ -64,11 +64,11 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container max-w-3xl space-y-8 pl-64">
+        <div className="container w-4/5 space-y-8 pl-64">
           {/* Back Link */}
           <Link
             href={`/jam/projects/${slug}`}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver al Proyecto
@@ -76,7 +76,9 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
 
           {/* Header */}
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Editar Proyecto</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Editar Proyecto
+            </h1>
             <p className="text-lg text-muted-foreground">
               Actualiza la información y recursos de tu proyecto
             </p>
