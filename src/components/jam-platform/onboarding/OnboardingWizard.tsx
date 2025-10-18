@@ -10,7 +10,7 @@ import { TrackSelectionStep } from './TrackSelectionStep';
 import { GoalsStep } from './GoalsStep';
 import { CompleteStep } from './CompleteStep';
 import { ProgressIndicator } from './ProgressIndicator';
-import type { OnboardingData } from '@/lib/jam/onboarding';
+import type { OnboardingData } from '@/server/controllers/onboarding';
 
 const STEPS = [
   { id: 'welcome', title: 'Welcome' },

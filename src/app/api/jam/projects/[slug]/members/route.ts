@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectBySlug, getProjectMembers } from '@/lib/jam/projects'
+import { getProjectBySlug, getProjectMembers } from '@/server/controllers/projects'
 import { db } from '@/db'
 import { projectMembers } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { completeOnboarding, type OnboardingData } from '@/lib/jam/onboarding';
+import { completeOnboarding, type OnboardingData } from '@/server/controllers/onboarding';
 
 export async function POST(request: NextRequest) {
   try {
