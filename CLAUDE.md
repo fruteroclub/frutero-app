@@ -54,6 +54,7 @@ bun lint
 - **TypeScript**: Strict configuration with `@/*` path mapping
 - **Icons**: Lucide React
 - **Notifications**: Sonner for toast messages
+- **Data Fetching**: TanStack Query (React Query) - **ALWAYS use for API calls**
 
 ### Component Architecture
 
@@ -197,10 +198,77 @@ Consider these factors when building:
 
 ### Anti-Patterns to Avoid
 - Pure speculation without execution plans
-- Individual glory over community success  
+- Individual glory over community success
 - Perfectionism that prevents shipping
 - Technology for technology's sake without user focus
 - Solutions seeking problems instead of problem-focused building
+
+## Data Fetching Rules
+
+### TanStack Query (React Query) - MANDATORY
+
+**CRITICAL RULE**: **NEVER use `useEffect` for fetching data from APIs**. Always use TanStack Query unless explicitly stated otherwise.
+
+**Why TanStack Query?**
+- Automatic caching and background refetching
+- Loading and error states handled automatically
+- Request deduplication
+- Optimistic updates support
+- Better performance and user experience
+
+**Examples:**
+
+❌ **WRONG - Do NOT use useEffect:**
+```typescript
+const [data, setData] = useState(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  fetch('/api/projects')
+    .then(res => res.json())
+    .then(data => setData(data));
+}, []);
+```
+
+✅ **CORRECT - Use TanStack Query:**
+```typescript
+import { useQuery } from '@tanstack/react-query';
+
+const { data, isLoading, error } = useQuery({
+  queryKey: ['projects'],
+  queryFn: async () => {
+    const res = await fetch('/api/projects');
+    if (!res.ok) throw new Error('Failed to fetch');
+    return res.json();
+  },
+});
+```
+
+**Mutations (POST, PATCH, DELETE):**
+```typescript
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+const queryClient = useQueryClient();
+
+const createProject = useMutation({
+  mutationFn: async (data) => {
+    const res = await fetch('/api/projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create');
+    return res.json();
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['projects'] });
+  },
+});
+```
+
+**Only exceptions:**
+- Server Components (can fetch directly in async components)
+- Non-API side effects (DOM manipulation, event listeners, etc.)
 
 ## Content & Communication Guidelines
 

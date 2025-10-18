@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppAuth } from '@/store/auth-context'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { WelcomeHeader } from '@/components/jam-platform/dashboard/WelcomeHeader'
 import { QuestProgressCard } from '@/components/jam-platform/dashboard/QuestProgressCard'
@@ -14,24 +14,16 @@ import type { DashboardStats } from '@/types/jam'
 
 export default function DashboardPage() {
   const { user, isAppAuthenticated, isLoading } = useAppAuth()
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [loadingStats, setLoadingStats] = useState(true)
 
-  useEffect(() => {
-    if (isAppAuthenticated && user) {
-      // Fetch dashboard stats
-      fetch(`/api/jam/dashboard?userId=${user.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setStats(data)
-          setLoadingStats(false)
-        })
-        .catch((error) => {
-          console.error('Failed to load dashboard stats:', error)
-          setLoadingStats(false)
-        })
-    }
-  }, [isAppAuthenticated, user])
+  const { data: stats, isLoading: loadingStats } = useQuery({
+    queryKey: ['dashboard', user?.id],
+    queryFn: async () => {
+      const res = await fetch(`/api/jam/dashboard?userId=${user!.id}`)
+      if (!res.ok) throw new Error('Failed to load dashboard stats')
+      return res.json() as Promise<DashboardStats>
+    },
+    enabled: isAppAuthenticated && !!user,
+  })
 
   if (isLoading || loadingStats) {
     return (
