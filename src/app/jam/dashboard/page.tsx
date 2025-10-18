@@ -10,20 +10,16 @@ import { ProjectStageCard } from '@/components/jam-platform/dashboard/ProjectSta
 import { QuickActions } from '@/components/jam-platform/dashboard/QuickActions'
 import { UpcomingDeadlines } from '@/components/jam-platform/dashboard/UpcomingDeadlines'
 import { RecentActivity } from '@/components/jam-platform/dashboard/RecentActivity'
-import type { DashboardStats } from '@/types/jam'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
+import { getDashboardStats, type DashboardStats } from '@/services/jam/dashboard.service'
 
 export default function DashboardPage() {
   const { user, isAppAuthenticated, isLoading } = useAppAuth()
 
-  const { data: stats, isLoading: loadingStats } = useQuery({
+  const { data: stats, isLoading: loadingStats } = useQuery<DashboardStats>({
     queryKey: ['dashboard', user?.id],
-    queryFn: async () => {
-      const res = await fetch(`/api/jam/dashboard?userId=${user!.id}`)
-      if (!res.ok) throw new Error('Failed to load dashboard stats')
-      return res.json() as Promise<DashboardStats>
-    },
+    queryFn: () => getDashboardStats(user!.id),
     enabled: isAppAuthenticated && !!user,
   })
 

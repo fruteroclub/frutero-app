@@ -14,22 +14,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Calendar } from 'lucide-react'
-
-interface Program {
-  id: string
-  name: string
-  description: string
-  type: string
-  status: string
-  startDate: string
-  endDate?: string
-}
-
-interface ProjectProgram {
-  program: {
-    id: string
-  }
-}
+import {
+  getAllPrograms,
+  getProjectPrograms,
+  joinProgram,
+  type Program,
+} from '@/services/jam/programs.service'
 
 interface JoinProgramDialogProps {
   projectSlug: string
@@ -42,14 +32,8 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
   const { data: availablePrograms = [], isLoading } = useQuery<Program[]>({
     queryKey: ['available-programs', projectSlug],
     queryFn: async () => {
-      const res = await fetch('/api/jam/programs')
-      if (!res.ok) throw new Error('Failed to fetch programs')
-      const allPrograms: Program[] = await res.json()
-
-      // Get project's current programs
-      const projectRes = await fetch(`/api/jam/projects/${projectSlug}/programs`)
-      if (!projectRes.ok) throw new Error('Failed to fetch project programs')
-      const projectPrograms: ProjectProgram[] = await projectRes.json()
+      const allPrograms = await getAllPrograms()
+      const projectPrograms = await getProjectPrograms(projectSlug)
 
       // Filter out already joined programs
       const joinedProgramIds = projectPrograms.map((pp) => pp.program.id)
@@ -59,20 +43,7 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
   })
 
   const joinMutation = useMutation({
-    mutationFn: async (programId: string) => {
-      const res = await fetch(`/api/jam/projects/${projectSlug}/programs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ programId }),
-      })
-
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || 'Failed to join program')
-      }
-
-      return res.json()
-    },
+    mutationFn: (programId: string) => joinProgram(projectSlug, programId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
       queryClient.invalidateQueries({ queryKey: ['available-programs', projectSlug] })

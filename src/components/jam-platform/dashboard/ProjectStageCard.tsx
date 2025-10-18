@@ -22,7 +22,7 @@ const STAGE_LABELS: Record<string, string> = {
 export function ProjectStageCard({ project }: ProjectStageCardProps) {
   if (!project) {
     return (
-      <Card className="h-full flex flex-col">
+      <Card className="flex h-full flex-col">
         <CardHeader>
           <CardTitle>Tu Proyecto</CardTitle>
         </CardHeader>
@@ -37,7 +37,7 @@ export function ProjectStageCard({ project }: ProjectStageCardProps) {
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Tu Proyecto</CardTitle>
       </CardHeader>
@@ -83,7 +83,7 @@ export function ProjectStageCard({ project }: ProjectStageCardProps) {
         </div>
 
         <Button className="w-full" variant="outline" asChild>
-          <Link href={`/jam/projects/${project.id}`}>Ver Proyecto</Link>
+          <Link href={`/jam/projects/${project.slug}`}>Ver Proyecto</Link>
         </Button>
       </CardContent>
     </Card>
