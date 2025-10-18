@@ -11,6 +11,8 @@ import { QuickActions } from '@/components/jam-platform/dashboard/QuickActions'
 import { UpcomingDeadlines } from '@/components/jam-platform/dashboard/UpcomingDeadlines'
 import { RecentActivity } from '@/components/jam-platform/dashboard/RecentActivity'
 import type { DashboardStats } from '@/types/jam'
+import PageWrapper from '@/components/layout/page-wrapper'
+import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 
 export default function DashboardPage() {
   const { user, isAppAuthenticated, isLoading } = useAppAuth()
@@ -72,20 +74,26 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container space-y-8 py-6">
-      <WelcomeHeader user={user} />
+    <PageWrapper>
+      <div className="page py-6">
+        <div className="sticky top-0 z-10">
+          <JamNav />
+        </div>
+        <div className="container space-y-8 pb-2 pl-64">
+          <WelcomeHeader user={user} />
+          <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <QuestProgressCard stats={stats.quests} />
+            <MentorshipCard mentorship={stats.mentorship} />
+            <ProjectStageCard project={stats.project} />
+          </div>
 
-      <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <QuestProgressCard stats={stats.quests} />
-        <MentorshipCard mentorship={stats.mentorship} />
-        <ProjectStageCard project={stats.project} />
+          <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <UpcomingDeadlines deadlines={stats.deadlines} />
+            <QuickActions />
+            <RecentActivity activities={stats.recentActivities} />
+          </div>
+        </div>
       </div>
-
-      <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <UpcomingDeadlines deadlines={stats.deadlines} />
-        <QuickActions />
-        <RecentActivity activities={stats.recentActivities} />
-      </div>
-    </div>
+    </PageWrapper>
   )
 }
