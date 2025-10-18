@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { users, profiles, projects, projectMembers } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { generateUniqueSlug } from './projects';
 
 export interface ProfileData {
   firstName?: string;
@@ -71,11 +72,14 @@ export async function completeOnboarding(
     let projectId = data.projectId;
 
     if (data.projectChoice === 'create' && data.projectData?.name && data.projectData?.description) {
-      // Create new project
+      // Create new project with unique slug
+      const slug = await generateUniqueSlug(data.projectData.name);
+
       const [newProject] = await db
         .insert(projects)
         .values({
           name: data.projectData.name,
+          slug,
           description: data.projectData.description,
           adminId: userId,
           stage: 'IDEA',
@@ -126,11 +130,4 @@ export async function findProjectByCode(code: string) {
     .limit(1);
 
   return project || null;
-}
-
-export function generateProjectSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
