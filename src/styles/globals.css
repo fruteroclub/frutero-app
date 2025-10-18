@@ -199,6 +199,7 @@
   /* Backdrop styling for better visibility */
   div[style*="position: fixed"][style*="inset: 0"] {
     background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(4px) !important;
   }
 
   /* Fallback styling if theme doesn't work */
