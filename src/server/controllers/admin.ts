@@ -6,6 +6,7 @@
 import { db } from '@/db'
 import { users, projectQuests, quests, projects } from '@/db/schema'
 import { eq, and, sql, gte } from 'drizzle-orm'
+import { checkStageAdvancement } from './jam/stages.controller'
 
 /**
  * Check if user has admin permissions
@@ -154,6 +155,22 @@ export async function verifySubmission(
     .set(updateData)
     .where(eq(projectQuests.id, projectQuestId))
     .returning()
+
+  // Check if project can advance to next stage after quest verification
+  try {
+    const advancementCheck = await checkStageAdvancement(submission.projectId)
+
+    // Log advancement opportunity (could be used for notifications)
+    if (advancementCheck.canAdvance && advancementCheck.nextStage) {
+      console.log(
+        `[Stage Advancement] Project ${submission.projectId} can advance to ${advancementCheck.nextStage}`
+      )
+      // Note: Actual advancement is manual via UI to give teams control
+    }
+  } catch (error) {
+    // Don't fail verification if stage check fails
+    console.error('Stage advancement check failed:', error)
+  }
 
   return updated
 }
