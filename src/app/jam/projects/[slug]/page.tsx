@@ -18,6 +18,9 @@ import {
   type ProjectMember,
 } from '@/services/jam/projects.service'
 import { getProjectPrograms, type ProgramParticipation } from '@/services/jam/programs.service'
+import { StageIndicator } from '@/components/jam-platform/stages/StageIndicator'
+import { StageAdvancementCard } from '@/components/jam-platform/stages/StageAdvancementCard'
+import type { ProjectStage } from '@/lib/jam/stages'
 
 interface ProjectPageProps {
   params: Promise<{
@@ -123,6 +126,12 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 <p className="text-muted-foreground">{project.description}</p>
               </CardContent>
             </Card>
+
+            {/* Stage Indicator */}
+            <StageIndicator currentStage={project.stage as ProjectStage} variant="full" />
+
+            {/* Stage Advancement (Admin Only) */}
+            {isAdmin && <StageAdvancementCard projectSlug={project.slug} />}
 
             {project.website && (
               <Card>
