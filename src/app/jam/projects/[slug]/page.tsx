@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import { use } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -35,17 +35,12 @@ interface ProgramProject {
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const { user } = useAppAuth()
-  const [slug, setSlug] = React.useState<string | null>(null)
-
-  React.useEffect(() => {
-    params.then((p) => setSlug(p.slug))
-  }, [params])
+  const { slug } = use(params)
 
   // Fetch project data
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ['project', slug],
     queryFn: async () => {
-      if (!slug) return null
       const res = await fetch(`/api/jam/projects/${slug}`)
       if (!res.ok) {
         if (res.status === 404) return null
@@ -53,7 +48,6 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       }
       return res.json()
     },
-    enabled: !!slug,
   })
 
   // Fetch project members
