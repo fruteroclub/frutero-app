@@ -79,10 +79,11 @@ export default function Footer({
               >
                 <span className="sr-only">{item.name}</span>
                 <item.icon
-                  className={`${item.name === 'Telegram'
+                  className={`${
+                    item.name === 'Telegram'
                       ? '-mr-1 mb-0.5 h-7 w-7'
                       : 'h-6 w-6'
-                    } text-foreground hover:text-primary`}
+                  } text-foreground hover:text-primary`}
                   aria-hidden="true"
                 />
               </a>
@@ -90,7 +91,7 @@ export default function Footer({
           ))}
         </div>
         {!isHomePage && (
-          <div className="flex items-center justify-center gap-x-3 md:order-1 md:min-w-1/3">
+          <div className="flex items-center justify-center gap-x-3 md:order-1 md:min-w-1/3 md:justify-start">
             <div className="flex items-center gap-x-1">
               <Image
                 src="/images/logos/kukulcan-logo-color.png"
