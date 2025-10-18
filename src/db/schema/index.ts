@@ -114,6 +114,7 @@ export const programs = pgTable('programs', {
 export const projects = pgTable('projects', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull().unique(),
+  slug: text('slug').notNull().unique(),
   description: text('description').notNull(),
   repositoryUrl: text('repository_url'),
   videoUrl: text('video_url'),

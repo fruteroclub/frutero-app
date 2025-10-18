@@ -49,6 +49,7 @@ async function testSchema() {
     console.log('\n4️⃣ Creating project...');
     const [project] = await db.insert(schema.projects).values({
       name: 'Test DApp',
+      slug: 'test-dapp',
       description: 'Testing the new schema with a DApp project',
       stage: 'PROTOTYPE',
       adminId: user.id,
