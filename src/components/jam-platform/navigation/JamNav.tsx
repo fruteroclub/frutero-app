@@ -13,9 +13,12 @@ import {
   X,
   FolderPlus,
   Grid3x3,
+  Shield,
+  CheckSquare,
 } from 'lucide-react'
 import { NavLink } from './NavLink'
 import { Button } from '@/components/ui/button'
+import { useAppAuth } from '@/store/auth-context'
 
 const NAV_ITEMS = [
   { href: '/jam/dashboard', label: 'Dashboard', icon: Home },
@@ -28,8 +31,15 @@ const NAV_ITEMS = [
   { href: '/jam/profile', label: 'Profile', icon: User },
 ]
 
+const ADMIN_NAV_ITEMS = [
+  { href: '/jam/admin/quests', label: 'Gestionar Quests', icon: Target },
+  { href: '/jam/admin/verifications', label: 'Verificaciones', icon: CheckSquare },
+]
+
 export function JamNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user } = useAppAuth()
+  const isAdmin = user?.isAdmin === true
 
   return (
     <>
@@ -46,6 +56,20 @@ export function JamNav() {
             {NAV_ITEMS.map((item) => (
               <NavLink key={item.href} {...item} />
             ))}
+
+            {/* Admin Section */}
+            {isAdmin && (
+              <>
+                <div className="my-4 border-t" />
+                <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold uppercase text-muted-foreground">
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </div>
+                {ADMIN_NAV_ITEMS.map((item) => (
+                  <NavLink key={item.href} {...item} />
+                ))}
+              </>
+            )}
           </nav>
         </div>
       </aside>
@@ -105,6 +129,22 @@ export function JamNav() {
                     <NavLink {...item} />
                   </div>
                 ))}
+
+                {/* Admin Section */}
+                {isAdmin && (
+                  <>
+                    <div className="my-4 border-t" />
+                    <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold uppercase text-muted-foreground">
+                      <Shield className="h-4 w-4" />
+                      Admin
+                    </div>
+                    {ADMIN_NAV_ITEMS.map((item) => (
+                      <div key={item.href} onClick={() => setMobileMenuOpen(false)}>
+                        <NavLink {...item} />
+                      </div>
+                    ))}
+                  </>
+                )}
               </nav>
             </div>
           </div>

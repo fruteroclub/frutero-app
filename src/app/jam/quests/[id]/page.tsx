@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -19,9 +19,13 @@ import {
   CheckCircle2,
   Circle,
   Info,
+  Loader2,
 } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
-import { getQuest, type Quest } from '@/services/jam/quests.service'
+import { getQuest, getUserQuests, type Quest, type UserQuest } from '@/services/jam/quests.service'
+import { startQuest } from '@/services/jam/user-quests.service'
+import { IndividualQuestSubmissionForm } from '@/components/jam-platform/quests/IndividualQuestSubmissionForm'
+import { toast } from 'sonner'
 
 interface QuestDetailPageProps {
   params: Promise<{
@@ -31,13 +35,49 @@ interface QuestDetailPageProps {
 
 export default function QuestDetailPage({ params }: QuestDetailPageProps) {
   const { id } = use(params)
-  const { isAppAuthenticated } = useAppAuth()
+  const { user, isAppAuthenticated } = useAppAuth()
+  const [starting, setStarting] = useState(false)
 
-  const { data: quest, isLoading } = useQuery<Quest | null>({
+  const { data: quest, isLoading: questLoading } = useQuery<Quest | null>({
     queryKey: ['quest', id],
     queryFn: () => getQuest(id),
     enabled: isAppAuthenticated,
   })
+
+  // Fetch user's quest status
+  const {
+    data: userQuests = [],
+    isLoading: userQuestsLoading,
+    refetch: refetchUserQuests,
+  } = useQuery<UserQuest[]>({
+    queryKey: ['user-quests', user?.id],
+    queryFn: () => getUserQuests(user!.id),
+    enabled: isAppAuthenticated && !!user,
+  })
+
+  const userQuest = userQuests.find((uq) => uq.questId === id)
+  const isLoading = questLoading || userQuestsLoading
+
+  const handleStartQuest = async () => {
+    if (!user) {
+      toast.error('Debes iniciar sesión')
+      return
+    }
+
+    setStarting(true)
+    try {
+      await startQuest(id, user.id)
+      toast.success('¡Quest iniciado!')
+      refetchUserQuests()
+    } catch (error) {
+      console.error('Failed to start quest:', error)
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error al iniciar quest'
+      toast.error(errorMessage)
+    } finally {
+      setStarting(false)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -95,6 +135,12 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
     }
   }
 
+  // Check if this is a team-only quest
+  const isTeamOnlyQuest = quest.questType === 'TEAM'
+  const canStartIndividually = quest.questType === 'INDIVIDUAL' || quest.questType === 'BOTH'
+  const isStarted = !!userQuest
+  const questStatus = userQuest?.status || 'NOT_STARTED'
+
   return (
     <PageWrapper>
       <div className="page py-6">
@@ -137,12 +183,25 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
               </div>
             </div>
 
-            {/* Quest Type Info */}
+            {/* Quest Type Alerts */}
+            {isTeamOnlyQuest && (
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  Este es un quest de equipo. Debes aplicar desde tu proyecto.{' '}
+                  <Link href="/jam/projects" className="underline">
+                    Ver mis proyectos
+                  </Link>
+                </AlertDescription>
+              </Alert>
+            )}
+
             {quest.questType === 'BOTH' && (
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
                   Este quest se puede completar individualmente o en equipo.
+                  {!isStarted && ' Inicia aquí para hacerlo individualmente.'}
                 </AlertDescription>
               </Alert>
             )}
@@ -195,10 +254,32 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                 </CardContent>
               </Card>
 
-              {/* Action Button */}
-              <Button size="lg" className="w-full">
-                Iniciar Quest
-              </Button>
+              {/* Action Section */}
+              {canStartIndividually && !isStarted && (
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={handleStartQuest}
+                  disabled={starting}
+                >
+                  {starting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {starting ? 'Iniciando...' : 'Iniciar Quest'}
+                </Button>
+              )}
+
+              {/* Submission Form - Show if quest is started */}
+              {canStartIndividually && isStarted && (
+                <IndividualQuestSubmissionForm
+                  questId={id}
+                  currentProgress={userQuest?.progress || 0}
+                  currentStatus={questStatus}
+                  currentSubmission={{
+                    submissionText: userQuest?.submissionText,
+                    submissionUrls: userQuest?.submissionUrls,
+                  }}
+                  onSuccess={refetchUserQuests}
+                />
+              )}
             </div>
 
             {/* Sidebar */}
