@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDashboardStats } from '@/lib/jam/dashboard';
+import { getDashboardStats } from '@/server/controllers/dashboard';
 
 export async function GET(request: NextRequest) {
   try {

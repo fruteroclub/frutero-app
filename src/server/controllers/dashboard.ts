@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db } from '@/db'
 import {
   users,
   projects,
@@ -7,8 +7,8 @@ import {
   projectQuests,
   quests,
   mentorships,
-} from '@/db/schema';
-import { eq, and, gte, desc, or } from 'drizzle-orm';
+} from '@/db/schema'
+import { eq, and, gte, desc, or } from 'drizzle-orm'
 import type {
   DashboardStats,
   QuestStats,
@@ -16,7 +16,7 @@ import type {
   MentorshipInfo,
   Deadline,
   Activity,
-} from '@/types/jam';
+} from '@/types/jam'
 
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
   const [questStats, project, mentorship, deadlines, recentActivities] = await Promise.all([
@@ -25,7 +25,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     getUserMentorship(userId),
     getUpcomingDeadlines(userId),
     getRecentActivities(),
-  ]);
+  ])
 
   return {
     quests: questStats,
@@ -33,7 +33,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     mentorship,
     deadlines,
     recentActivities,
-  };
+  }
 }
 
 async function getQuestStats(userId: string): Promise<QuestStats> {
@@ -41,17 +41,17 @@ async function getQuestStats(userId: string): Promise<QuestStats> {
   const individualQuests = await db
     .select()
     .from(userQuests)
-    .where(eq(userQuests.userId, userId));
+    .where(eq(userQuests.userId, userId))
 
   // Get user's team quests (through project membership)
   const userProjects = await db
     .select({ projectId: projectMembers.projectId })
     .from(projectMembers)
-    .where(eq(projectMembers.userId, userId));
+    .where(eq(projectMembers.userId, userId))
 
-  const projectIds = userProjects.map((p) => p.projectId);
+  const projectIds = userProjects.map((p) => p.projectId)
 
-  let teamQuests: Array<{ status: string }> = [];
+  let teamQuests: Array<{ status: string }> = []
   if (projectIds.length > 0) {
     teamQuests = await db
       .select({ status: projectQuests.status })
@@ -60,20 +60,20 @@ async function getQuestStats(userId: string): Promise<QuestStats> {
         or(
           ...projectIds.map((id) => eq(projectQuests.projectId, id))
         )
-      );
+      )
   }
 
   const individualCompleted = individualQuests.filter(
     (q) => q.status === 'COMPLETED'
-  ).length;
+  ).length
 
   const teamCompleted = teamQuests.filter(
     (q) => q.status === 'VERIFIED'
-  ).length;
+  ).length
 
-  const completed = individualCompleted + teamCompleted;
-  const total = individualQuests.length + teamQuests.length;
-  const percentComplete = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const completed = individualCompleted + teamCompleted
+  const total = individualQuests.length + teamQuests.length
+  const percentComplete = total > 0 ? Math.round((completed / total) * 100) : 0
 
   return {
     completed,
@@ -81,7 +81,7 @@ async function getQuestStats(userId: string): Promise<QuestStats> {
     percentComplete,
     individualCompleted,
     teamCompleted,
-  };
+  }
 }
 
 async function getUserProject(userId: string): Promise<ProjectInfo | null> {
@@ -92,22 +92,22 @@ async function getUserProject(userId: string): Promise<ProjectInfo | null> {
     })
     .from(projectMembers)
     .where(eq(projectMembers.userId, userId))
-    .limit(1);
+    .limit(1)
 
   if (membership.length === 0) {
-    return null;
+    return null
   }
 
-  const projectId = membership[0].projectId;
+  const projectId = membership[0].projectId
 
   // Get project details
   const [projectData] = await db
     .select()
     .from(projects)
-    .where(eq(projects.id, projectId));
+    .where(eq(projects.id, projectId))
 
   if (!projectData) {
-    return null;
+    return null
   }
 
   // Get all project members
@@ -120,13 +120,13 @@ async function getUserProject(userId: string): Promise<ProjectInfo | null> {
     .from(projectMembers)
     .innerJoin(users, eq(projectMembers.userId, users.id))
     .where(eq(projectMembers.projectId, projectId))
-    .limit(5);
+    .limit(5)
 
   // Count total members
   const allMembers = await db
     .select({ userId: projectMembers.userId })
     .from(projectMembers)
-    .where(eq(projectMembers.projectId, projectId));
+    .where(eq(projectMembers.projectId, projectId))
 
   return {
     id: projectData.id,
@@ -138,7 +138,7 @@ async function getUserProject(userId: string): Promise<ProjectInfo | null> {
       displayName: m.displayName,
       avatarUrl: m.avatarUrl,
     })),
-  };
+  }
 }
 
 async function getUserMentorship(userId: string): Promise<MentorshipInfo | null> {
@@ -154,10 +154,10 @@ async function getUserMentorship(userId: string): Promise<MentorshipInfo | null>
     .from(mentorships)
     .where(eq(mentorships.participantId, userId))
     .orderBy(desc(mentorships.createdAt))
-    .limit(1);
+    .limit(1)
 
   if (!mentorshipData) {
-    return null;
+    return null
   }
 
   // Get mentor details
@@ -167,15 +167,15 @@ async function getUserMentorship(userId: string): Promise<MentorshipInfo | null>
       avatarUrl: users.avatarUrl,
     })
     .from(users)
-    .where(eq(users.id, mentorshipData.mentorId));
+    .where(eq(users.id, mentorshipData.mentorId))
 
   if (!mentor) {
-    return null;
+    return null
   }
 
   // Count completed sessions from session notes
-  const sessionNotes = (mentorshipData.sessionNotes as Array<{ completedAt?: string }>) || [];
-  const sessionsCompleted = sessionNotes.filter((note) => note.completedAt).length;
+  const sessionNotes = (mentorshipData.sessionNotes as Array<{ completedAt?: string }>) || []
+  const sessionsCompleted = sessionNotes.filter((note) => note.completedAt).length
 
   return {
     id: mentorshipData.id,
@@ -184,11 +184,11 @@ async function getUserMentorship(userId: string): Promise<MentorshipInfo | null>
     nextSession: null, // TODO: Implement session scheduling
     sessionsCompleted,
     status: mentorshipData.status as 'active' | 'paused' | 'completed',
-  };
+  }
 }
 
 async function getUpcomingDeadlines(userId: string): Promise<Deadline[]> {
-  const now = new Date();
+  const now = new Date()
 
   // Get individual quest deadlines
   const individualQuestDeadlines = await db
@@ -207,7 +207,7 @@ async function getUpcomingDeadlines(userId: string): Promise<Deadline[]> {
       )
     )
     .orderBy(quests.dueDate)
-    .limit(5);
+    .limit(5)
 
   return individualQuestDeadlines
     .filter((q) => q.dueDate !== null)
@@ -218,11 +218,11 @@ async function getUpcomingDeadlines(userId: string): Promise<Deadline[]> {
       type: 'quest' as const,
       questId: q.id,
       programId: q.programId || undefined,
-    }));
+    }))
 }
 
 async function getRecentActivities(): Promise<Activity[]> {
   // For now, return empty array since we don't have activity tracking yet
   // TODO: Implement activity tracking system (will use userId parameter)
-  return [];
+  return []
 }
