@@ -176,7 +176,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   </CardTitle>
                   {isAdmin && (
                     <Button size="sm" variant="outline" asChild>
-                      <Link href={`/jam/projects/${project.id}/team`}>
+                      <Link href={`/jam/projects/${project.slug}/team`}>
                         Gestionar
                       </Link>
                     </Button>
