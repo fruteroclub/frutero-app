@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
+import { AdminProtected } from '@/components/auth/AdminProtected'
 import { Shield, Search, UserCog, Users as UsersIcon, Mail } from 'lucide-react'
 import { getAllUsers, toggleAdminStatus } from '@/services/jam/user-management.service'
 import { toast } from 'sonner'
@@ -37,33 +37,15 @@ export default function AdminUsersPage() {
     },
   })
 
-  if (!user?.isAdmin) {
-    return (
-      <PageWrapper>
-        <div className="page py-6">
-          <div className="sticky top-0 z-10">
-            <JamNav />
-          </div>
-          <div className="container max-w-6xl pl-64">
-            <Alert variant="destructive">
-              <Shield className="h-4 w-4" />
-              <AlertDescription>
-                No tienes permisos de administrador para acceder a esta página.
-              </AlertDescription>
-            </Alert>
-          </div>
-        </div>
-      </PageWrapper>
-    )
-  }
-
   return (
     <PageWrapper>
       <div className="page py-6">
         <div className="sticky top-0 z-10">
           <JamNav />
         </div>
-        <div className="container space-y-6 pl-64">
+        <div className="container max-w-6xl pl-64">
+          <AdminProtected>
+            <div className="space-y-6">
           {/* Header */}
           <div>
             <h1 className="mb-2 text-3xl font-bold">User Management</h1>
@@ -191,6 +173,8 @@ export default function AdminUsersPage() {
               )}
             </CardContent>
           </Card>
+            </div>
+          </AdminProtected>
         </div>
       </div>
     </PageWrapper>
