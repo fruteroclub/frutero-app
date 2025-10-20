@@ -11,6 +11,19 @@ export interface Program {
   status: string
   startDate: string
   endDate?: string
+  cohort?: string
+  location?: string
+  capacity?: number
+  websiteUrl?: string
+  applicationUrl?: string
+  avatarUrl?: string
+  bannerUrl?: string
+  participantCount?: number
+  tags?: string[]
+  // JAM Platform enhancements
+  organizer?: string
+  tracks?: string[]
+  submissionDeadline?: string
 }
 
 export interface ProgramParticipation {
@@ -139,6 +152,44 @@ export async function leaveProgram(
     return res.json()
   } catch (error) {
     console.error('Leave program error:', error)
+    throw error
+  }
+}
+
+/**
+ * Get program by ID
+ */
+export async function getProgramById(programId: string): Promise<Program> {
+  try {
+    const res = await fetch(`/api/jam/programs/${programId}`)
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: 'Failed to fetch program' }))
+      throw new Error(error.error || 'Failed to fetch program')
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error('Program fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Get program participants
+ */
+export async function getProgramParticipants(programId: string): Promise<unknown[]> {
+  try {
+    const res = await fetch(`/api/jam/programs/${programId}/participants`)
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: 'Failed to fetch participants' }))
+      throw new Error(error.error || 'Failed to fetch participants')
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error('Participants fetch error:', error)
     throw error
   }
 }
