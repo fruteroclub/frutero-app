@@ -161,3 +161,66 @@ export function getStageBgColorClass(stage: ProjectStage): string {
   const config = STAGES[stage]
   return `bg-${config.color}-100`
 }
+
+/**
+ * Check if project can advance to next stage based on quest completion
+ */
+export function canAdvanceStage(
+  currentStage: ProjectStage,
+  questsCompleted: number,
+  teamMemberCount?: number
+): { canAdvance: boolean; reason?: string } {
+  const nextStage = getNextStage(currentStage)
+
+  if (!nextStage) {
+    return { canAdvance: false, reason: 'Ya estás en la última etapa' }
+  }
+
+  const nextStageConfig = STAGES[nextStage]
+
+  // Check quest requirements
+  if (nextStageConfig.minQuestsCompleted && questsCompleted < nextStageConfig.minQuestsCompleted) {
+    const remaining = nextStageConfig.minQuestsCompleted - questsCompleted
+    return {
+      canAdvance: false,
+      reason: `Necesitas completar ${remaining} quest${remaining > 1 ? 's' : ''} más`,
+    }
+  }
+
+  // Check team member requirements
+  if (nextStageConfig.minTeamMembers && teamMemberCount && teamMemberCount < nextStageConfig.minTeamMembers) {
+    const needed = nextStageConfig.minTeamMembers - teamMemberCount
+    return {
+      canAdvance: false,
+      reason: `Necesitas ${needed} miembro${needed > 1 ? 's' : ''} más en tu equipo`,
+    }
+  }
+
+  return { canAdvance: true }
+}
+
+/**
+ * Get progress toward next stage
+ */
+export function getProgressToNextStage(
+  currentStage: ProjectStage,
+  questsCompleted: number
+): { progress: number; questsNeeded: number; questsRemaining: number } | null {
+  const nextStage = getNextStage(currentStage)
+
+  if (!nextStage) {
+    return null
+  }
+
+  const nextStageConfig = STAGES[nextStage]
+  const questsNeeded = nextStageConfig.minQuestsCompleted || 0
+
+  if (questsNeeded === 0) {
+    return { progress: 100, questsNeeded: 0, questsRemaining: 0 }
+  }
+
+  const progress = Math.min(100, Math.round((questsCompleted / questsNeeded) * 100))
+  const questsRemaining = Math.max(0, questsNeeded - questsCompleted)
+
+  return { progress, questsNeeded, questsRemaining }
+}
