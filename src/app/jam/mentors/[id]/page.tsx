@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MentorHeader } from '@/components/jam-platform/mentors/MentorHeader'
 import { MentorStats } from '@/components/jam-platform/mentors/MentorStats'
 import { MentorConnection } from '@/components/jam-platform/mentors/MentorConnection'
+import { SessionHistory } from '@/components/jam-platform/mentors/SessionHistory'
+import { SessionLogger } from '@/components/jam-platform/mentors/SessionLogger'
 import { getMentorById, getMentorshipStatus, type Mentor } from '@/services/jam/mentors.service'
 
 export default function MentorDetailPage({
@@ -113,11 +115,19 @@ export default function MentorDetailPage({
 
             <div className="lg:col-span-1">
               {isAppAuthenticated && user ? (
-                <MentorConnection
-                  mentor={mentor}
-                  userId={user.id}
-                  hasExistingConnection={connectionStatus?.exists || false}
-                />
+                <div className="space-y-4">
+                  <MentorConnection
+                    mentor={mentor}
+                    userId={user.id}
+                    hasExistingConnection={connectionStatus?.exists || false}
+                  />
+                  {connectionStatus?.exists && connectionStatus.mentorship && (
+                    <SessionLogger
+                      mentorshipId={connectionStatus.mentorship.id}
+                      userRole="participant"
+                    />
+                  )}
+                </div>
               ) : (
                 <Card>
                   <CardHeader>
@@ -132,6 +142,20 @@ export default function MentorDetailPage({
               )}
             </div>
           </div>
+
+          {/* Session History for connected users */}
+          {isAppAuthenticated &&
+            user &&
+            connectionStatus?.exists &&
+            connectionStatus.mentorship && (
+              <div>
+                <h2 className="mb-4 text-2xl font-bold">Historial de Sesiones</h2>
+                <SessionHistory
+                  mentorshipId={connectionStatus.mentorship.id}
+                  mentorName={mentor.displayName || mentor.username || 'Mentor'}
+                />
+              </div>
+            )}
         </div>
       </div>
     </PageWrapper>
