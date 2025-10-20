@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getMentorshipStatus } from '@/server/controllers/mentors'
 
 /**
- * GET /api/jam/mentorships/[mentorId]/[participantId]
+ * GET /api/jam/mentorships/status?mentorId=X&participantId=Y
  * Get mentorship connection status between mentor and participant
  */
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ mentorId: string; participantId: string }> }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { mentorId, participantId } = await context.params
+    const { searchParams } = new URL(request.url)
+    const mentorId = searchParams.get('mentorId')
+    const participantId = searchParams.get('participantId')
+
+    if (!mentorId || !participantId) {
+      return NextResponse.json(
+        { error: 'Missing required parameters: mentorId and participantId' },
+        { status: 400 }
+      )
+    }
+
     const mentorship = await getMentorshipStatus(mentorId, participantId)
 
     if (!mentorship) {

@@ -250,3 +250,168 @@ export async function getMentorshipStatus(mentorId: string, participantId: strin
 
   return mentorship || null
 }
+
+/**
+ * Session interface for JSONB storage
+ */
+export interface MentorshipSession {
+  id: string
+  date: string
+  duration: number
+  objectives: string
+  outcomes: string
+  nextSteps: string
+  rating: number
+  loggedBy: 'mentor' | 'participant'
+  createdAt: string
+}
+
+/**
+ * Log a new mentorship session
+ */
+export async function logMentorshipSession(
+  mentorshipId: string,
+  sessionData: Omit<MentorshipSession, 'id' | 'createdAt'>
+) {
+  // Get current mentorship
+  const [mentorship] = await db
+    .select()
+    .from(mentorships)
+    .where(eq(mentorships.id, mentorshipId))
+    .limit(1)
+
+  if (!mentorship) {
+    throw new Error('Mentorship not found')
+  }
+
+  // Extract existing sessions from sessionNotes
+  const currentNotes = (mentorship.sessionNotes as Record<string, unknown>) || {}
+  const existingSessions = (currentNotes.sessions as MentorshipSession[]) || []
+
+  // Create new session
+  const newSession: MentorshipSession = {
+    ...sessionData,
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  }
+
+  // Update sessionNotes with new session
+  const updatedNotes = {
+    ...currentNotes,
+    sessions: [...existingSessions, newSession],
+  }
+
+  // Update mentorship
+  const [updated] = await db
+    .update(mentorships)
+    .set({
+      sessionNotes: updatedNotes,
+      updatedAt: new Date(),
+    })
+    .where(eq(mentorships.id, mentorshipId))
+    .returning()
+
+  return { mentorship: updated, session: newSession }
+}
+
+/**
+ * Get all sessions for a mentorship
+ */
+export async function getMentorshipSessions(mentorshipId: string) {
+  const [mentorship] = await db
+    .select()
+    .from(mentorships)
+    .where(eq(mentorships.id, mentorshipId))
+    .limit(1)
+
+  if (!mentorship) {
+    throw new Error('Mentorship not found')
+  }
+
+  const sessionNotes = (mentorship.sessionNotes as Record<string, unknown>) || {}
+  const sessions = (sessionNotes.sessions as MentorshipSession[]) || []
+
+  // Sort by date descending (most recent first)
+  return sessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+/**
+ * Get all mentorships for a user (as mentor or participant)
+ */
+export async function getUserMentorships(userId: string) {
+  const mentorshipsData = await db
+    .select({
+      mentorship: mentorships,
+      mentor: users,
+      participant: users,
+      mentorProfile: profiles,
+      participantProfile: profiles,
+    })
+    .from(mentorships)
+    .leftJoin(users, eq(mentorships.mentorId, users.id))
+    .leftJoin(profiles, eq(users.id, profiles.userId))
+    .where(
+      sql`${mentorships.mentorId} = ${userId} OR ${mentorships.participantId} = ${userId}`
+    )
+
+  return mentorshipsData.map((m) => {
+    const sessionNotes = (m.mentorship.sessionNotes as Record<string, unknown>) || {}
+    const sessions = (sessionNotes.sessions as MentorshipSession[]) || []
+
+    return {
+      ...m.mentorship,
+      mentor: m.mentor,
+      participant: m.participant,
+      mentorProfile: m.mentorProfile,
+      participantProfile: m.participantProfile,
+      sessionCount: sessions.length,
+      lastSessionDate: sessions.length > 0 ? sessions[0].date : null,
+    }
+  })
+}
+
+/**
+ * Update session rating
+ */
+export async function updateSessionRating(
+  mentorshipId: string,
+  sessionId: string,
+  rating: number
+) {
+  if (rating < 1 || rating > 5) {
+    throw new Error('Rating must be between 1 and 5')
+  }
+
+  const [mentorship] = await db
+    .select()
+    .from(mentorships)
+    .where(eq(mentorships.id, mentorshipId))
+    .limit(1)
+
+  if (!mentorship) {
+    throw new Error('Mentorship not found')
+  }
+
+  const sessionNotes = (mentorship.sessionNotes as Record<string, unknown>) || {}
+  const sessions = (sessionNotes.sessions as MentorshipSession[]) || []
+
+  // Find and update the session
+  const updatedSessions = sessions.map((session) =>
+    session.id === sessionId ? { ...session, rating } : session
+  )
+
+  const updatedNotes = {
+    ...sessionNotes,
+    sessions: updatedSessions,
+  }
+
+  await db
+    .update(mentorships)
+    .set({
+      sessionNotes: updatedNotes,
+      updatedAt: new Date(),
+    })
+    .where(eq(mentorships.id, mentorshipId))
+
+  return updatedSessions.find((s) => s.id === sessionId)
+}
