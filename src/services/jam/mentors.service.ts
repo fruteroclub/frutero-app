@@ -41,6 +41,21 @@ export interface Mentor {
 }
 
 /**
+ * Mentorship session stored in sessionNotes JSONB
+ */
+export interface MentorshipSession {
+  id: string
+  date: string
+  duration: number
+  objectives: string
+  outcomes: string
+  nextSteps: string
+  rating: number
+  loggedBy: 'mentor' | 'participant'
+  createdAt: string
+}
+
+/**
  * Mentorship connection between mentor and participant
  */
 export interface Mentorship {
@@ -52,6 +67,36 @@ export interface Mentorship {
   participantRating: number | null
   createdAt: Date
   updatedAt: Date
+}
+
+/**
+ * User mentorship with mentor/participant details
+ */
+export interface UserMentorship extends Mentorship {
+  mentor: {
+    id: string
+    username: string
+    displayName: string
+    avatarUrl: string | null
+  } | null
+  participant: {
+    id: string
+    username: string
+    displayName: string
+    avatarUrl: string | null
+  } | null
+  mentorProfile: {
+    id: string
+    country: string | null
+    cityRegion: string | null
+  } | null
+  participantProfile: {
+    id: string
+    country: string | null
+    cityRegion: string | null
+  } | null
+  sessionCount: number
+  lastSessionDate: string | null
 }
 
 /**
@@ -149,12 +194,108 @@ export async function getMentorshipStatus(
   participantId: string
 ): Promise<ServiceResponse<{ exists: boolean; mentorship: Mentorship | null }>> {
   try {
-    const response = await fetch(`/api/jam/mentorships/${mentorId}/${participantId}`)
+    const response = await fetch(
+      `/api/jam/mentorships/status?mentorId=${mentorId}&participantId=${participantId}`
+    )
     return handleResponse<{ exists: boolean; mentorship: Mentorship | null }>(response)
   } catch (error) {
     const message = error instanceof Error
       ? error.message
       : 'Network error fetching mentorship status'
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    }
+  }
+}
+
+/**
+ * Log a new mentorship session
+ */
+export async function logMentorshipSession(
+  mentorshipId: string,
+  sessionData: Omit<MentorshipSession, 'id' | 'createdAt'>
+): Promise<ServiceResponse<{ mentorship: Mentorship; session: MentorshipSession }>> {
+  try {
+    const response = await fetch(`/api/jam/mentorships/${mentorshipId}/sessions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sessionData),
+    })
+    return handleResponse<{ mentorship: Mentorship; session: MentorshipSession }>(response)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error logging session'
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    }
+  }
+}
+
+/**
+ * Get all sessions for a mentorship
+ */
+export async function getMentorshipSessions(
+  mentorshipId: string
+): Promise<ServiceResponse<MentorshipSession[]>> {
+  try {
+    const response = await fetch(`/api/jam/mentorships/${mentorshipId}/sessions`)
+    return handleResponse<MentorshipSession[]>(response)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error fetching sessions'
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    }
+  }
+}
+
+/**
+ * Update session rating
+ */
+export async function updateSessionRating(
+  mentorshipId: string,
+  sessionId: string,
+  rating: number
+): Promise<ServiceResponse<MentorshipSession>> {
+  try {
+    const response = await fetch(
+      `/api/jam/mentorships/${mentorshipId}/sessions/${sessionId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating }),
+      }
+    )
+    return handleResponse<MentorshipSession>(response)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error updating session'
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    }
+  }
+}
+
+/**
+ * Get all mentorships for a user (as mentor or participant)
+ */
+export async function getUserMentorships(
+  userId: string
+): Promise<ServiceResponse<UserMentorship[]>> {
+  try {
+    const response = await fetch(`/api/jam/mentorships/user/${userId}`)
+    return handleResponse<UserMentorship[]>(response)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error fetching mentorships'
     return {
       success: false,
       error: new Error(message),
