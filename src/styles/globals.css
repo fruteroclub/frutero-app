@@ -133,7 +133,7 @@
   }
 
   .page {
-    @apply flex h-full w-full flex-col items-center pt-2 pb-8 md:py-12;
+    @apply flex h-full w-full flex-col items-center pt-2 pb-8 md:py-12 lg:pb-16;
   }
 
   .container {

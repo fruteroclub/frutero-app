@@ -13,7 +13,8 @@
     "db:migrate": "bun run src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "db:reset": "bun run scripts/reset-db.ts"
+    "db:reset": "bun run scripts/reset-db.ts",
+    "seed:programs": "bash scripts/seed-programs.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.873.0",

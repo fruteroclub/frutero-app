@@ -1,6 +1,6 @@
 import { db } from '@/db'
-import { programs, programProjects } from '@/db/schema'
-import { eq, and, notInArray } from 'drizzle-orm'
+import { programs, programProjects, projects, users } from '@/db/schema'
+import { eq, and, notInArray, sql } from 'drizzle-orm'
 
 /**
  * Get all programs
@@ -11,16 +11,26 @@ export async function getAllPrograms() {
 }
 
 /**
- * Get program by ID
+ * Get program by ID with participant count
  */
 export async function getProgramById(programId: string) {
   const [program] = await db
-    .select()
+    .select({
+      program: programs,
+      participantCount: sql<number>`CAST(COUNT(DISTINCT ${programProjects.projectId}) AS INTEGER)`,
+    })
     .from(programs)
+    .leftJoin(programProjects, eq(programs.id, programProjects.programId))
     .where(eq(programs.id, programId))
+    .groupBy(programs.id)
     .limit(1)
 
-  return program || null
+  if (!program) return null
+
+  return {
+    ...program.program,
+    participantCount: program.participantCount || 0,
+  }
 }
 
 /**
@@ -148,4 +158,36 @@ export async function leaveProgram(projectId: string, programId: string) {
         eq(programProjects.programId, programId)
       )
     )
+}
+
+/**
+ * Get participants (projects) in a program
+ */
+export async function getProgramParticipants(programId: string) {
+  const participants = await db
+    .select({
+      programProject: programProjects,
+      project: projects,
+      admin: {
+        id: users.id,
+        username: users.username,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+      },
+    })
+    .from(programProjects)
+    .innerJoin(projects, eq(programProjects.projectId, projects.id))
+    .innerJoin(users, eq(projects.adminId, users.id))
+    .where(eq(programProjects.programId, programId))
+    .orderBy(programProjects.joinedAt)
+
+  return participants.map((p) => ({
+    id: p.programProject.id,
+    status: p.programProject.status,
+    joinedAt: p.programProject.joinedAt,
+    project: {
+      ...p.project,
+      admin: p.admin,
+    },
+  }))
 }
