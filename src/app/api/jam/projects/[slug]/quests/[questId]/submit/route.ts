@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getProjectBySlug } from '@/server/controllers/projects'
+import { getProjectBySlug, checkStageAdvancement } from '@/server/controllers/projects'
 import { submitProjectQuest } from '@/server/controllers/project-quests'
 
 /**
@@ -40,7 +40,18 @@ export async function POST(
       userId
     )
 
-    return NextResponse.json(submitted)
+    // Check if project can advance to next stage after quest submission
+    try {
+      const advancement = await checkStageAdvancement(slug)
+      return NextResponse.json({
+        ...submitted,
+        stageCheck: advancement,
+      })
+    } catch (error) {
+      // Don't fail the submission if stage check fails
+      console.error('Stage check error:', error)
+      return NextResponse.json(submitted)
+    }
   } catch (error) {
     console.error('Project quest submission error:', error)
 
