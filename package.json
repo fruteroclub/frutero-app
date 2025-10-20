@@ -14,7 +14,8 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:reset": "bun run scripts/reset-db.ts",
-    "seed:programs": "bash scripts/seed-programs.sh"
+    "seed:programs": "bash scripts/seed-programs.sh",
+    "seed:mentors": "bash scripts/seed-mentors.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.873.0",
