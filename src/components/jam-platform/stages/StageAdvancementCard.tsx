@@ -114,7 +114,7 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
           </div>
           <div className="rounded-lg border p-3">
             <p className="text-sm text-muted-foreground">Miembros del Equipo</p>
-            <p className="text-2xl font-bold">{teamMembersCount}</p>
+            <p className="text-2xl font-bold">{teamMembersCount || 1}</p>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
             </Alert>
           ) : (
             <div className="space-y-2">
-              {missingRequirements.map((requirement, index) => (
+              {missingRequirements?.map((requirement, index) => (
                 <div key={index} className="flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3">
                   <X className="mt-0.5 h-4 w-4 flex-shrink-0 text-destructive" />
                   <span className="text-sm text-destructive">{requirement}</span>

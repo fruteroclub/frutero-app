@@ -9,9 +9,11 @@ export interface StageAdvancementCheck {
   canAdvance: boolean
   currentStage: ProjectStage
   nextStage: ProjectStage | null
-  missingRequirements: string[]
   questsCompleted: number
-  teamMembersCount: number
+  reason?: string
+  // Legacy fields for compatibility with existing components
+  missingRequirements?: string[]
+  teamMembersCount?: number
 }
 
 /**

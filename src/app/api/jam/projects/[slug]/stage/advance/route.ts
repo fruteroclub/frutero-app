@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { advanceProjectStage } from '@/server/controllers/jam/stages.controller'
-import { getProjectBySlug } from '@/server/controllers/projects'
+import { advanceProjectStage } from '@/server/controllers/projects'
+import { AppError } from '@/server/utils'
 
 /**
  * POST /api/jam/projects/[slug]/stage/advance
@@ -8,27 +8,24 @@ import { getProjectBySlug } from '@/server/controllers/projects'
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await params
+    const { slug } = await context.params
+    const body = await request.json()
+    const { manualOverride = false } = body
 
-    if (!slug) {
-      return NextResponse.json({ error: 'Project slug is required' }, { status: 400 })
-    }
+    const result = await advanceProjectStage(slug, manualOverride)
 
-    // Get project ID from slug
-    const project = await getProjectBySlug(slug)
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
-    }
-
-    const newStage = await advanceProjectStage(project.id)
-    return NextResponse.json({ stage: newStage })
+    return NextResponse.json(result)
   } catch (error) {
-    console.error('Advance project stage error:', error)
+    if (error instanceof AppError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode })
+    }
+
+    console.error('Error advancing project stage:', error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to advance project stage' },
+      { error: 'Failed to advance project stage' },
       { status: 500 }
     )
   }
