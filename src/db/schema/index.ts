@@ -181,6 +181,8 @@ export const quests = pgTable('quests', {
   questType: text('quest_type').notNull().default('INDIVIDUAL'), // 'INDIVIDUAL', 'TEAM', 'BOTH'
   bountyUsd: integer('bounty_usd'), // USD bounty amount for team quests
   maxSubmissions: integer('max_submissions'), // Max times quest can be claimed (null = unlimited)
+  requirements: jsonb('requirements').$type<string[]>(), // Quest requirements list
+  deliverables: jsonb('deliverables').$type<string[]>(), // Expected deliverables list
   badgeId: uuid('badge_id').references(() => badges.id, { onDelete: 'set null' }),
   projectId: uuid('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),

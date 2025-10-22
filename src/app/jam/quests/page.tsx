@@ -11,6 +11,7 @@ import { ArrowLeft, Info } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { QuestTypeToggle } from '@/components/jam-platform/quests/QuestTypeToggle'
 import { QuestCard } from '@/components/jam-platform/quests/QuestCard'
+import { QuestFilters } from '@/components/jam-platform/quests/QuestFilters'
 import {
   getAllQuests,
   getUserQuests,
@@ -22,16 +23,19 @@ import {
 interface QuestsPageProps {
   searchParams: Promise<{
     type?: QuestType
+    category?: string
+    difficulty?: string
   }>
 }
 
 export default function QuestsPage({ searchParams }: QuestsPageProps) {
   const { user, isAppAuthenticated } = useAppAuth()
-  const { type = 'ALL' } = use(searchParams)
+  const params = use(searchParams)
+  const { type = 'ALL', category, difficulty } = params
 
   // Fetch all available quests
   const { data: availableQuests = [], isLoading: loadingAvailable } = useQuery<Quest[]>({
-    queryKey: ['quests', type],
+    queryKey: ['quests', type, category, difficulty],
     queryFn: () => getAllQuests(type),
     enabled: isAppAuthenticated,
   })
@@ -45,8 +49,19 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
 
   const isLoading = loadingAvailable || loadingUser
 
-  // Merge available quests with user progress
-  const questsWithProgress = availableQuests.map((quest) => {
+  // Apply client-side filtering for category and difficulty
+  const filteredQuests = availableQuests.filter((quest) => {
+    if (category && category !== 'all' && quest.category !== category) {
+      return false
+    }
+    if (difficulty && difficulty !== 'all' && quest.difficulty !== difficulty) {
+      return false
+    }
+    return true
+  })
+
+  // Merge filtered quests with user progress
+  const questsWithProgress = filteredQuests.map((quest) => {
     const userQuest = userQuestData.find((uq) => uq.questId === quest.id)
     return {
       quest,
@@ -101,6 +116,9 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
               proyecto complete el trabajo colaborativamente.
             </AlertDescription>
           </Alert>
+
+          {/* Filters */}
+          <QuestFilters />
 
           {/* Loading State */}
           {isLoading && (
