@@ -75,13 +75,13 @@ export async function getAllQuests(filters?: GetQuestsFilters) {
       return {
         ...quest,
         currentSubmissions,
-        // Add mock requirements and deliverables (temporary until schema update)
-        requirements: [
+        // Use database requirements/deliverables or provide defaults
+        requirements: quest.requirements || [
           'Completa todos los pasos descritos',
           'Documenta tu proceso',
           'Comparte tu trabajo',
         ],
-        deliverables: [
+        deliverables: quest.deliverables || [
           'Link al código/demo',
           'Screenshots o evidencia',
           'Resumen de aprendizajes',
@@ -120,13 +120,13 @@ export async function getQuestById(questId: string) {
   return {
     ...quest,
     currentSubmissions,
-    // Add mock requirements and deliverables (temporary until schema update)
-    requirements: [
+    // Use database requirements/deliverables or provide defaults
+    requirements: quest.requirements || [
       'Completa todos los pasos descritos',
       'Documenta tu proceso',
       'Comparte tu trabajo',
     ],
-    deliverables: [
+    deliverables: quest.deliverables || [
       'Link al código/demo',
       'Screenshots o evidencia',
       'Resumen de aprendizajes',
