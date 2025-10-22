@@ -1,3 +1,7 @@
+import type { InferSelectModel } from 'drizzle-orm'
+import type { userSettings, mentorProfiles } from '@/db/schema'
+
+// Project Stage Type
 export type ProjectStage =
   | 'IDEA'
   | 'PROTOTYPE'
@@ -6,6 +10,15 @@ export type ProjectStage =
   | 'INCUBATE'
   | 'ACCELERATE'
   | 'SCALE'
+
+// Track Types (JAM-013)
+export type Track = 'LEARNING' | 'FOUNDER' | 'PROFESSIONAL' | 'FREELANCER'
+
+export type MentorAvailability = 'AVAILABLE' | 'LIMITED' | 'UNAVAILABLE'
+
+// Inferred Types from Database Schema
+export type UserSettings = InferSelectModel<typeof userSettings>
+export type MentorProfile = InferSelectModel<typeof mentorProfiles>
 
 export interface QuestStats {
   completed: number
@@ -64,4 +77,5 @@ export interface DashboardStats {
   mentorship: MentorshipInfo | null
   deadlines: Deadline[]
   recentActivities: Activity[]
+  userSettings: UserSettings | null
 }

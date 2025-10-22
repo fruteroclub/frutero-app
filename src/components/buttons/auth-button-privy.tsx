@@ -98,8 +98,14 @@ export default function AuthButton({
 
         // Only redirect if this is a fresh login (not already authenticated)
         if (!wasAlreadyAuthenticated) {
-          // Redirect to profile page for new logins
-          router.push('/profile')
+          // Smart redirect based on onboarding completion status
+          if (fruteroUser.onboardingCompletedAt) {
+            // Returning user with completed onboarding → Dashboard
+            router.push('/jam/dashboard')
+          } else {
+            // New user without completed onboarding → Onboarding wizard
+            router.push('/jam/onboarding')
+          }
         }
 
         if (!isNewUser) {

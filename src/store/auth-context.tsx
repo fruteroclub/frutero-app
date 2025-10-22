@@ -7,6 +7,7 @@ type AuthContextType = {
   isAppAuthenticated: boolean
   user: UserWithProfile | null
   isLoading: boolean
+  isOnboardingComplete: boolean
   login: (user: UserWithProfile) => void
   logout: () => void
 }
@@ -57,12 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setIsAppAuthenticated(false)
     setUser(null)
+    // Clear all app-related localStorage keys
     localStorage.removeItem('frutero-app-auth')
     localStorage.removeItem('frutero-user')
+    localStorage.removeItem('jam-onboarding-draft')
   }
 
+  const isOnboardingComplete = !!(user?.onboardingCompletedAt)
+
   return (
-    <AuthContext.Provider value={{ isAppAuthenticated, user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ isAppAuthenticated, user, isLoading, isOnboardingComplete, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

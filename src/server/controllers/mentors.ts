@@ -1,27 +1,16 @@
 import { db } from '@/db'
-import { users, profiles, mentorships } from '@/db/schema'
+import { users, profiles, mentorships, mentorProfiles, userSettings } from '@/db/schema'
 import { eq, and, sql } from 'drizzle-orm'
 
 /**
- * Mentor metadata structure stored in users.metadata JSONB:
- * {
- *   isMentor: boolean
- *   mentorAvailability: 'available' | 'limited' | 'unavailable'
- *   expertiseAreas: string[]
- *   mentoringApproach: string
- *   maxParticipants: number
- *   experience: string
- * }
+ * JAM-013: Migrated from users.metadata to mentor_profiles table
+ * mentor_profiles table structure:
+ * - availability: 'AVAILABLE' | 'LIMITED' | 'UNAVAILABLE'
+ * - maxParticipants: number (default: 5)
+ * - expertiseAreas: string[]
+ * - mentoringApproach: text
+ * - experience: text
  */
-
-interface MentorMetadata {
-  isMentor?: boolean
-  mentorAvailability?: 'available' | 'limited' | 'unavailable'
-  expertiseAreas?: string[]
-  mentoringApproach?: string
-  maxParticipants?: number
-  experience?: string
-}
 
 /**
  * Get all available mentors
@@ -31,9 +20,11 @@ export async function getAvailableMentors() {
     .select({
       user: users,
       profile: profiles,
+      mentorProfile: mentorProfiles,
       menteeCount: sql<number>`CAST(COUNT(DISTINCT ${mentorships.participantId}) AS INTEGER)`,
     })
-    .from(users)
+    .from(mentorProfiles)
+    .innerJoin(users, eq(mentorProfiles.userId, users.id))
     .leftJoin(profiles, eq(users.id, profiles.userId))
     .leftJoin(
       mentorships,
@@ -42,21 +33,21 @@ export async function getAvailableMentors() {
         eq(mentorships.status, 'active')
       )
     )
-    .where(sql`${users.metadata}->>'isMentor' = 'true'`)
-    .groupBy(users.id, profiles.id)
+    .groupBy(users.id, profiles.id, mentorProfiles.id)
 
   return mentorsData.map((m) => {
-    const metadata = (m.user.metadata as MentorMetadata) || {}
     const menteeCount = m.menteeCount || 0
-    const maxParticipants = metadata.maxParticipants || 5
+    const maxParticipants = m.mentorProfile.maxParticipants || 5
 
     return {
       ...m.user,
       profile: m.profile,
-      metadata,
+      mentorProfile: m.mentorProfile,
       menteeCount,
-      availability: metadata.mentorAvailability || 'unavailable',
-      expertiseAreas: metadata.expertiseAreas || [],
+      availability: m.mentorProfile.availability || 'UNAVAILABLE',
+      expertiseAreas: m.mentorProfile.expertiseAreas || [],
+      mentoringApproach: m.mentorProfile.mentoringApproach || '',
+      experience: m.mentorProfile.experience || '',
       isAtCapacity: menteeCount >= maxParticipants,
     }
   })
@@ -70,11 +61,13 @@ export async function getMentorById(mentorId: string) {
     .select({
       user: users,
       profile: profiles,
+      mentorProfile: mentorProfiles,
       menteeCount: sql<number>`CAST(COUNT(DISTINCT ${mentorships.participantId}) AS INTEGER)`,
       avgRating: sql<number>`CAST(AVG(${mentorships.participantRating}) AS REAL)`,
     })
     .from(users)
     .leftJoin(profiles, eq(users.id, profiles.userId))
+    .leftJoin(mentorProfiles, eq(users.id, mentorProfiles.userId))
     .leftJoin(
       mentorships,
       and(
@@ -83,25 +76,24 @@ export async function getMentorById(mentorId: string) {
       )
     )
     .where(eq(users.id, mentorId))
-    .groupBy(users.id, profiles.id)
+    .groupBy(users.id, profiles.id, mentorProfiles.id)
     .limit(1)
 
-  if (!mentorData) return null
+  if (!mentorData || !mentorData.mentorProfile) return null
 
-  const metadata = (mentorData.user.metadata as MentorMetadata) || {}
   const menteeCount = mentorData.menteeCount || 0
-  const maxParticipants = metadata.maxParticipants || 5
+  const maxParticipants = mentorData.mentorProfile.maxParticipants || 5
 
   return {
     ...mentorData.user,
     profile: mentorData.profile,
-    metadata,
+    mentorProfile: mentorData.mentorProfile,
     menteeCount,
     rating: mentorData.avgRating || 0,
-    availability: metadata.mentorAvailability || 'unavailable',
-    expertiseAreas: metadata.expertiseAreas || [],
-    mentoringApproach: metadata.mentoringApproach || '',
-    experience: metadata.experience || '',
+    availability: mentorData.mentorProfile.availability || 'UNAVAILABLE',
+    expertiseAreas: mentorData.mentorProfile.expertiseAreas || [],
+    mentoringApproach: mentorData.mentorProfile.mentoringApproach || '',
+    experience: mentorData.mentorProfile.experience || '',
     isAtCapacity: menteeCount >= maxParticipants,
   }
 }
@@ -110,11 +102,12 @@ export async function getMentorById(mentorId: string) {
  * Get mentor recommendations for a participant
  */
 export async function getMentorRecommendations(participantId: string) {
-  // Get participant info
+  // Get participant info with settings
   const [participantData] = await db
     .select()
     .from(users)
     .leftJoin(profiles, eq(users.id, profiles.userId))
+    .leftJoin(userSettings, eq(users.id, userSettings.userId))
     .where(eq(users.id, participantId))
     .limit(1)
 
@@ -124,6 +117,7 @@ export async function getMentorRecommendations(participantId: string) {
   const participant = {
     user: participantData.users,
     profile: participantData.profiles,
+    settings: participantData.user_settings,
   }
 
   // Get all available mentors
@@ -148,7 +142,11 @@ export async function getMentorRecommendations(participantId: string) {
  * Calculate match score between participant and mentor
  */
 function calculateMatchScore(
-  participant: { user: typeof users.$inferSelect; profile: typeof profiles.$inferSelect | null },
+  participant: {
+    user: typeof users.$inferSelect;
+    profile: typeof profiles.$inferSelect | null;
+    settings: typeof userSettings.$inferSelect | null;
+  },
   mentor: ReturnType<typeof getAvailableMentors> extends Promise<infer T>
     ? T extends Array<infer U>
       ? U
@@ -157,9 +155,8 @@ function calculateMatchScore(
 ): number {
   let score = 0
 
-  const participantMetadata = (participant.user.metadata as Record<string, unknown>) || {}
-  const participantInterests = (participantMetadata.interests as string[]) || []
-  const participantTrack = (participantMetadata.track as string) || ''
+  const participantInterests = participant.settings?.interests || []
+  const participantTrack = participant.settings?.track || ''
 
   // Expertise match (40%)
   const expertiseMatch = mentor.expertiseAreas.filter((area) =>
@@ -173,9 +170,9 @@ function calculateMatchScore(
   }
 
   // Availability (20%)
-  if (mentor.availability === 'available') {
+  if (mentor.availability === 'AVAILABLE') {
     score += 20
-  } else if (mentor.availability === 'limited') {
+  } else if (mentor.availability === 'LIMITED') {
     score += 10
   }
 

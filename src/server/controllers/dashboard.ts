@@ -7,6 +7,7 @@ import {
   projectQuests,
   quests,
   mentorships,
+  userSettings,
 } from '@/db/schema'
 import { eq, and, gte, desc, or } from 'drizzle-orm'
 import type {
@@ -16,16 +17,19 @@ import type {
   MentorshipInfo,
   Deadline,
   Activity,
+  UserSettings,
 } from '@/types/jam'
 
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
-  const [questStats, project, mentorship, deadlines, recentActivities] = await Promise.all([
-    getQuestStats(userId),
-    getUserProject(userId),
-    getUserMentorship(userId),
-    getUpcomingDeadlines(userId),
-    getRecentActivities(),
-  ])
+  const [questStats, project, mentorship, deadlines, recentActivities, settings] =
+    await Promise.all([
+      getQuestStats(userId),
+      getUserProject(userId),
+      getUserMentorship(userId),
+      getUpcomingDeadlines(userId),
+      getRecentActivities(),
+      getUserSettings(userId),
+    ])
 
   return {
     quests: questStats,
@@ -33,7 +37,18 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     mentorship,
     deadlines,
     recentActivities,
+    userSettings: settings,
   }
+}
+
+async function getUserSettings(userId: string): Promise<UserSettings | null> {
+  const [settings] = await db
+    .select()
+    .from(userSettings)
+    .where(eq(userSettings.userId, userId))
+    .limit(1)
+
+  return settings || null
 }
 
 async function getQuestStats(userId: string): Promise<QuestStats> {

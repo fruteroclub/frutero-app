@@ -39,23 +39,30 @@ export function OnboardingWizard({ userId }: { userId: string }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setFormData(parsed.formData || {});
-        setCurrentStep(parsed.currentStep || 0);
+        // Only load draft if it belongs to the current user (or no userId stored)
+        if (!parsed.userId || parsed.userId === userId) {
+          setFormData(parsed.formData || {});
+          setCurrentStep(parsed.currentStep || 0);
+        } else {
+          // Clear draft from different user
+          localStorage.removeItem(STORAGE_KEY);
+        }
       } catch (error) {
         console.error('Failed to load draft:', error);
+        localStorage.removeItem(STORAGE_KEY);
       }
     }
-  }, []);
+  }, [userId]);
 
   // Save draft to localStorage whenever formData or currentStep changes
   useEffect(() => {
     if (currentStep > 0) {
       localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ formData, currentStep })
+        JSON.stringify({ userId, formData, currentStep })
       );
     }
-  }, [formData, currentStep]);
+  }, [userId, formData, currentStep]);
 
   const updateFormData = (data: Partial<OnboardingData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
