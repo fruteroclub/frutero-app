@@ -139,7 +139,6 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
   const isTeamOnlyQuest = quest.questType === 'TEAM'
   const canStartIndividually = quest.questType === 'INDIVIDUAL' || quest.questType === 'BOTH'
   const isStarted = !!userQuest
-  const questStatus = userQuest?.status || 'NOT_STARTED'
 
   return (
     <PageWrapper>
@@ -268,16 +267,17 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
               )}
 
               {/* Submission Form - Show if quest is started */}
-              {canStartIndividually && isStarted && (
+              {canStartIndividually && isStarted && user && (
                 <IndividualQuestSubmissionForm
                   questId={id}
+                  userId={user.id}
                   currentProgress={userQuest?.progress || 0}
-                  currentStatus={questStatus}
                   currentSubmission={{
                     submissionText: userQuest?.submissionText,
                     submissionUrls: userQuest?.submissionUrls,
+                    status: userQuest?.status,
                   }}
-                  onSuccess={refetchUserQuests}
+                  onUpdate={refetchUserQuests}
                 />
               )}
             </div>
