@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Rocket, Briefcase, Zap } from 'lucide-react';
-
-type Track = 'founder' | 'professional' | 'freelancer';
+import { Sprout, Rocket, Briefcase, Target } from 'lucide-react';
+import { TRACKS, type Track } from '@/lib/jam/tracks';
 
 interface TrackSelectionStepProps {
   selected?: Track;
@@ -14,44 +13,50 @@ interface TrackSelectionStepProps {
   onBack: () => void;
 }
 
-const TRACKS = [
-  {
-    id: 'founder' as Track,
-    title: 'Founder Track',
-    icon: Rocket,
-    description: 'Build and launch your startup',
+const TRACK_ICONS = {
+  LEARNING: Sprout,
+  FOUNDER: Rocket,
+  PROFESSIONAL: Briefcase,
+  FREELANCER: Target,
+};
+
+const TRACK_UI_CONFIG: Record<
+  Track,
+  { details: string[] }
+> = {
+  LEARNING: {
     details: [
-      'Product-market fit validation',
-      'User acquisition strategies',
-      'Fundraising preparation',
-      'Team building and scaling',
+      'Fundamentos de programación',
+      'Tu primer proyecto con IA',
+      'Desarrollo web básico',
+      'Unirse a la comunidad tech',
     ],
   },
-  {
-    id: 'professional' as Track,
-    title: 'Professional Track',
-    icon: Briefcase,
-    description: 'Level up your tech career',
+  FOUNDER: {
     details: [
-      'Portfolio project development',
-      'Interview preparation',
-      'Networking opportunities',
-      'Career advancement strategies',
+      'Validación producto-mercado',
+      'Estrategias de adquisición de usuarios',
+      'Preparación para fundraising',
+      'Construir y escalar equipo',
     ],
   },
-  {
-    id: 'freelancer' as Track,
-    title: 'Freelancer Track',
-    icon: Zap,
-    description: 'Build your independent practice',
+  PROFESSIONAL: {
     details: [
-      'Client acquisition methods',
-      'Rate optimization',
-      'Personal branding',
-      'Service productization',
+      'Desarrollo de portafolio',
+      'Preparación para entrevistas',
+      'Oportunidades de networking',
+      'Estrategias de avance profesional',
     ],
   },
-];
+  FREELANCER: {
+    details: [
+      'Métodos de adquisición de clientes',
+      'Optimización de tarifas',
+      'Marca personal',
+      'Productización de servicios',
+    ],
+  },
+};
 
 export function TrackSelectionStep({
   selected,
@@ -70,38 +75,42 @@ export function TrackSelectionStep({
 
   const handleSubmit = () => {
     if (!selectedTrack) {
-      alert('Please select a track');
+      alert('Por favor selecciona una ruta');
       return;
     }
     onNext();
   };
 
+  const allTracks = Object.keys(TRACKS) as Track[];
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Choose Your Track</h2>
+        <h2 className="text-2xl font-bold mb-2">Elige Tu Ruta</h2>
         <p className="text-muted-foreground">
-          Select the path that aligns with your goals
+          Selecciona el camino que se alinea con tus objetivos
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {TRACKS.map((track) => {
-          const Icon = track.icon;
-          const isSelected = selectedTrack === track.id;
+      <div className="grid md:grid-cols-2 gap-4">
+        {allTracks.map((trackKey) => {
+          const track = TRACKS[trackKey];
+          const Icon = TRACK_ICONS[trackKey];
+          const uiConfig = TRACK_UI_CONFIG[trackKey];
+          const isSelected = selectedTrack === trackKey;
 
           return (
             <Card
-              key={track.id}
+              key={trackKey}
               className={`cursor-pointer transition-all hover:shadow-lg ${
                 isSelected
                   ? 'border-primary ring-2 ring-primary'
                   : 'hover:border-primary/50'
               }`}
-              onClick={() => handleSelect(track.id)}
+              onClick={() => handleSelect(trackKey)}
             >
               <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-3 mb-2">
                   <div
                     className={`p-2 rounded-lg ${
                       isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
@@ -109,13 +118,14 @@ export function TrackSelectionStep({
                   >
                     <Icon className="h-5 w-5" />
                   </div>
+                  <div className="text-2xl">{track.icon}</div>
                 </div>
-                <CardTitle className="text-lg">{track.title}</CardTitle>
+                <CardTitle className="text-lg">{track.titleEs}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm font-medium">{track.description}</p>
+                <p className="text-sm font-medium">{track.descriptionEs}</p>
                 <ul className="space-y-1.5">
-                  {track.details.map((detail, idx) => (
+                  {uiConfig.details.map((detail, idx) => (
                     <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
                       <span className="text-primary mt-0.5">✓</span>
                       <span>{detail}</span>
@@ -130,18 +140,17 @@ export function TrackSelectionStep({
 
       <div className="bg-muted/50 p-4 rounded-lg">
         <p className="text-sm text-muted-foreground">
-          <strong>Note:</strong> Your track determines which quests and
-          mentors you&apos;ll be matched with. You can switch tracks later if your
-          goals change.
+          <strong>Nota:</strong> Tu ruta determina las misiones y mentores con los que
+          serás emparejado. Puedes cambiar de ruta más adelante si tus objetivos cambian.
         </p>
       </div>
 
       <div className="flex gap-3">
         <Button type="button" variant="outline" onClick={onBack}>
-          Back
+          Atrás
         </Button>
         <Button onClick={handleSubmit} className="flex-1" disabled={!selectedTrack}>
-          Continue
+          Continuar
         </Button>
       </div>
     </div>

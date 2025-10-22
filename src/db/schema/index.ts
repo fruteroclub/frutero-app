@@ -39,6 +39,17 @@ export const projectQuestStatusEnum = pgEnum('project_quest_status', [
   'NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'VERIFIED', 'REJECTED'
 ]);
 
+export const trackEnum = pgEnum('track', [
+  'LEARNING',      // People getting started
+  'FOUNDER',       // Build and launch startup
+  'PROFESSIONAL',  // Level up tech career
+  'FREELANCER'     // Build independent practice
+]);
+
+export const mentorAvailabilityEnum = pgEnum('mentor_availability', [
+  'AVAILABLE', 'LIMITED', 'UNAVAILABLE'
+]);
+
 // ============================================
 // CORE TABLES (12 tables)
 // ============================================
@@ -113,7 +124,7 @@ export const programs = pgTable('programs', {
 // 4. Projects - User projects (supports solo or team)
 export const projects = pgTable('projects', {
   id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description').notNull(),
   repositoryUrl: text('repository_url'),
@@ -281,6 +292,44 @@ export const mentorships = pgTable('mentorships', {
   uniqueMentorship: unique('unique_mentorship').on(table.mentorId, table.participantId),
 }));
 
+// 14. User Settings - JAM participant preferences and settings
+export const userSettings = pgTable('user_settings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Track Selection (JAM-013)
+  track: trackEnum('track'),
+  trackChangedAt: timestamp('track_changed_at'),
+  trackChangeCount: integer('track_change_count').notNull().default(0),
+
+  // User Preferences
+  interests: text('interests').array().notNull().default([]),
+
+  // Onboarding
+  onboardingCompletedAt: timestamp('onboarding_completed_at'),
+
+  // Timestamps
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+// 15. Mentor Profiles - Mentor capabilities (entity existence = is mentor)
+export const mentorProfiles = pgTable('mentor_profiles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+
+  // Mentor Settings
+  availability: mentorAvailabilityEnum('availability').notNull().default('UNAVAILABLE'),
+  maxParticipants: integer('max_participants').notNull().default(5),
+  expertiseAreas: text('expertise_areas').array().notNull().default([]),
+  mentoringApproach: text('mentoring_approach'),
+  experience: text('experience'),
+
+  // Timestamps
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
 // ============================================
 // JUNCTION TABLES (for many-to-many relations)
 // ============================================
@@ -381,6 +430,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   proofOfCommunity: one(proofOfCommunities, {
     fields: [users.id],
     references: [proofOfCommunities.userId]
+  }),
+  settings: one(userSettings, {
+    fields: [users.id],
+    references: [userSettings.userId]
+  }),
+  mentorProfile: one(mentorProfiles, {
+    fields: [users.id],
+    references: [mentorProfiles.userId]
   }),
   projects: many(projects),
   projectMemberships: many(projectMembers),
@@ -565,6 +622,20 @@ export const mentorshipsRelations = relations(mentorships, ({ one }) => ({
     fields: [mentorships.participantId],
     references: [users.id],
     relationName: 'userMentorships'
+  }),
+}));
+
+export const userSettingsRelations = relations(userSettings, ({ one }) => ({
+  user: one(users, {
+    fields: [userSettings.userId],
+    references: [users.id]
+  }),
+}));
+
+export const mentorProfilesRelations = relations(mentorProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [mentorProfiles.userId],
+    references: [users.id]
   }),
 }));
 
