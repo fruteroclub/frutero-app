@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 interface IndividualQuestSubmissionFormProps {
   questId: string
   userId: string
+  rewardPoints?: number
   currentProgress?: number
   currentSubmission?: {
     submissionText?: string | null
@@ -26,6 +27,7 @@ interface IndividualQuestSubmissionFormProps {
 export function IndividualQuestSubmissionForm({
   questId,
   userId,
+  rewardPoints = 0,
   currentProgress = 0,
   currentSubmission,
   onUpdate,
@@ -33,6 +35,7 @@ export function IndividualQuestSubmissionForm({
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [progress, setProgress] = useState(currentProgress)
+  const [previousProgress, setPreviousProgress] = useState(currentProgress)
   const [submissionText, setSubmissionText] = useState(
     currentSubmission?.submissionText || ''
   )
@@ -90,14 +93,39 @@ export function IndividualQuestSubmissionForm({
       const data = await response.json()
 
       if (data.status === 'COMPLETED') {
-        toast.success('🎉 Quest completado! Puntos otorgados!', {
-          description: 'Excelente trabajo completando este quest!',
-        })
+        toast.success(
+          rewardPoints > 0
+            ? `🎉 Quest completado! +${rewardPoints} puntos ganados!`
+            : '🎉 Quest completado!',
+          {
+            description: 'Excelente trabajo completando este quest!',
+          }
+        )
       } else {
-        toast.success('Progreso actualizado exitosamente!', {
-          description: `El quest está ahora ${progress}% completo`,
-        })
+        // Check for milestone achievements
+        const milestones = [25, 50, 75]
+        const achievedMilestone = milestones.find(
+          (milestone) => previousProgress < milestone && progress >= milestone
+        )
+
+        if (achievedMilestone) {
+          const milestoneMessages = {
+            25: '¡Buen comienzo! Continúa así',
+            50: '¡Vas a la mitad! Sigue adelante',
+            75: '¡Casi terminado! Un último empujón',
+          }
+          toast.success('Progreso actualizado!', {
+            description: milestoneMessages[achievedMilestone as keyof typeof milestoneMessages],
+          })
+        } else {
+          toast.success('Progreso actualizado exitosamente!', {
+            description: `El quest está ahora ${progress}% completo`,
+          })
+        }
       }
+
+      // Update previous progress for milestone tracking
+      setPreviousProgress(progress)
 
       // Refresh page data
       router.refresh()

@@ -280,6 +280,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                 <IndividualQuestSubmissionForm
                   questId={id}
                   userId={user.id}
+                  rewardPoints={quest.rewardPoints}
                   currentProgress={userQuest?.progress || 0}
                   currentSubmission={{
                     submissionText: userQuest?.submissionText,
@@ -354,14 +355,22 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                 <CardHeader>
                   <CardTitle className="text-base">Recompensas</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Puntos</span>
-                    <span className="font-semibold">{quest.rewardPoints}</span>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Trophy className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-medium">Puntos</span>
+                    </div>
+                    <span className="text-lg font-bold text-primary">
+                      +{quest.rewardPoints}
+                    </span>
                   </div>
                   {quest.bountyUsd && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Bounty</span>
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Bounty</span>
+                      </div>
                       <span className="font-semibold text-green-600">
                         ${quest.bountyUsd} USD
                       </span>
