@@ -119,7 +119,7 @@ export function OnboardingWizard({ userId }: { userId: string }) {
   };
 
   const handleComplete = () => {
-    router.push('/jam/dashboard');
+    router.push('/jam/mentors');
   };
 
   const renderStep = () => {
