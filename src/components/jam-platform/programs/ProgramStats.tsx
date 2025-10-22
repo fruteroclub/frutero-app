@@ -17,7 +17,7 @@ export function ProgramStats({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground">
+          <div className="flex items-center gap-2 text-foreground">
             <Users className="h-4 w-4" />
             <span className="text-sm">Participantes</span>
           </div>
@@ -26,7 +26,7 @@ export function ProgramStats({
 
         {totalPrizes && (
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-foreground">
               <Trophy className="h-4 w-4" />
               <span className="text-sm">Premio Total</span>
             </div>

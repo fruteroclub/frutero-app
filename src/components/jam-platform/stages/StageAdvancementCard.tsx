@@ -2,19 +2,30 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowRight, Check, X, Loader2, Trophy } from 'lucide-react'
 import { STAGES } from '@/lib/jam/stages'
-import { checkStageAdvancement, advanceProjectStage } from '@/services/jam/stages.service'
+import {
+  checkStageAdvancement,
+  advanceProjectStage,
+} from '@/services/jam/stages.service'
 import { toast } from 'sonner'
 
 interface StageAdvancementCardProps {
   projectSlug: string
 }
 
-export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps) {
+export function StageAdvancementCard({
+  projectSlug,
+}: StageAdvancementCardProps) {
   const queryClient = useQueryClient()
   const [advancing, setAdvancing] = useState(false)
 
@@ -27,7 +38,9 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
     mutationFn: () => advanceProjectStage(projectSlug),
     onSuccess: () => {
       toast.success('¡Stage avanzado exitosamente!')
-      queryClient.invalidateQueries({ queryKey: ['stage-advancement', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['stage-advancement', projectSlug],
+      })
       queryClient.invalidateQueries({ queryKey: ['project', projectSlug] })
     },
     onError: (error: Error) => {
@@ -48,7 +61,7 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
     return (
       <Card>
         <CardContent className="flex h-48 items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground" />
         </CardContent>
       </Card>
     )
@@ -58,7 +71,14 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
     return null
   }
 
-  const { canAdvance, currentStage, nextStage, missingRequirements, questsCompleted, teamMembersCount } = advancementCheck
+  const {
+    canAdvance,
+    currentStage,
+    nextStage,
+    missingRequirements,
+    questsCompleted,
+    teamMembersCount,
+  } = advancementCheck
 
   if (!nextStage) {
     return (
@@ -75,7 +95,8 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
         <CardContent>
           <Alert>
             <AlertDescription>
-              Tu proyecto está en el stage {STAGES[currentStage].title}. Continúa desarrollando y mejorando tu proyecto.
+              Tu proyecto está en el stage {STAGES[currentStage].title}.
+              Continúa desarrollando y mejorando tu proyecto.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -92,7 +113,7 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
         <CardTitle className="flex items-center gap-2">
           <span className="text-2xl">{currentStageConfig.icon}</span>
           Avance de Stage
-          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+          <ArrowRight className="h-4 w-4 text-foreground" />
           <span className="text-2xl">{nextStageConfig.icon}</span>
         </CardTitle>
         <CardDescription>
@@ -103,17 +124,19 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
         {/* Next Stage Info */}
         <div className="rounded-lg bg-muted p-4">
           <h4 className="mb-2 font-semibold">{nextStageConfig.title}</h4>
-          <p className="text-sm text-muted-foreground">{nextStageConfig.description}</p>
+          <p className="text-sm text-foreground">
+            {nextStageConfig.description}
+          </p>
         </div>
 
         {/* Current Stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-lg border p-3">
-            <p className="text-sm text-muted-foreground">Quests Completados</p>
+            <p className="text-sm text-foreground">Quests Completados</p>
             <p className="text-2xl font-bold">{questsCompleted}</p>
           </div>
           <div className="rounded-lg border p-3">
-            <p className="text-sm text-muted-foreground">Miembros del Equipo</p>
+            <p className="text-sm text-foreground">Miembros del Equipo</p>
             <p className="text-2xl font-bold">{teamMembersCount || 1}</p>
           </div>
         </div>
@@ -126,15 +149,21 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
             <Alert>
               <Check className="h-4 w-4 text-green-600" />
               <AlertDescription className="text-green-600">
-                ¡Todos los requisitos cumplidos! Puedes avanzar al siguiente stage.
+                ¡Todos los requisitos cumplidos! Puedes avanzar al siguiente
+                stage.
               </AlertDescription>
             </Alert>
           ) : (
             <div className="space-y-2">
               {missingRequirements?.map((requirement, index) => (
-                <div key={index} className="flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3">
+                <div
+                  key={index}
+                  className="flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3"
+                >
                   <X className="mt-0.5 h-4 w-4 flex-shrink-0 text-destructive" />
-                  <span className="text-sm text-destructive">{requirement}</span>
+                  <span className="text-sm text-destructive">
+                    {requirement}
+                  </span>
                 </div>
               ))}
             </div>
@@ -143,11 +172,16 @@ export function StageAdvancementCard({ projectSlug }: StageAdvancementCardProps)
 
         {/* Next Stage Requirements Preview */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Requisitos del {nextStageConfig.title}</p>
+          <p className="text-sm font-medium">
+            Requisitos del {nextStageConfig.title}
+          </p>
           <ul className="space-y-1">
             {nextStageConfig.requirements.map((req, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+              <li
+                key={index}
+                className="flex items-start gap-2 text-sm text-foreground"
+              >
+                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-foreground" />
                 <span>{req}</span>
               </li>
             ))}

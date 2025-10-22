@@ -6,7 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { DollarSign, Users } from 'lucide-react'
-import { applyToQuest, type TeamQuest } from '@/services/jam/project-quests.service'
+import {
+  applyToQuest,
+  type TeamQuest,
+} from '@/services/jam/project-quests.service'
 import { useAppAuth } from '@/store/auth-context'
 import { toast } from 'sonner'
 
@@ -16,7 +19,11 @@ interface TeamQuestCardProps {
   onApplied?: () => void
 }
 
-export function TeamQuestCard({ quest, projectSlug, onApplied }: TeamQuestCardProps) {
+export function TeamQuestCard({
+  quest,
+  projectSlug,
+  onApplied,
+}: TeamQuestCardProps) {
   const { user } = useAppAuth()
   const [applying, setApplying] = useState(false)
 
@@ -39,7 +46,8 @@ export function TeamQuestCard({ quest, projectSlug, onApplied }: TeamQuestCardPr
       onApplied?.()
     } catch (error) {
       console.error('Failed to apply:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Error al aplicar al quest'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error al aplicar al quest'
       toast.error(errorMessage)
     } finally {
       setApplying(false)
@@ -49,17 +57,16 @@ export function TeamQuestCard({ quest, projectSlug, onApplied }: TeamQuestCardPr
   return (
     <Card className={isFull ? 'opacity-60' : ''}>
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <CardTitle className="text-lg">{quest.title}</CardTitle>
           <div className="flex gap-2">
             {quest.bountyUsd && (
               <Badge variant="default" className="flex items-center gap-1">
-                <DollarSign className="h-3 w-3" />
-                ${quest.bountyUsd}
+                <DollarSign className="h-3 w-3" />${quest.bountyUsd}
               </Badge>
             )}
             <Badge variant="outline">
-              <Users className="h-3 w-3 mr-1" />
+              <Users className="mr-1 h-3 w-3" />
               {quest.questType}
             </Badge>
           </div>
@@ -67,13 +74,11 @@ export function TeamQuestCard({ quest, projectSlug, onApplied }: TeamQuestCardPr
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="line-clamp-2 text-sm text-foreground">
           {quest.description}
         </p>
 
-        {quest.category && (
-          <Badge variant="secondary">{quest.category}</Badge>
-        )}
+        {quest.category && <Badge variant="secondary">{quest.category}</Badge>}
 
         {slotsRemaining !== null && (
           <div className="space-y-1">

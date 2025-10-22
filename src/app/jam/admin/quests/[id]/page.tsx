@@ -24,7 +24,10 @@ import {
 } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { getQuest, type Quest } from '@/services/jam/quests.service'
-import { getQuestSubmissions, type QuestSubmission } from '@/services/jam/admin.service'
+import {
+  getQuestSubmissions,
+  type QuestSubmission,
+} from '@/services/jam/admin.service'
 
 interface AdminQuestDetailPageProps {
   params: Promise<{
@@ -32,7 +35,9 @@ interface AdminQuestDetailPageProps {
   }>
 }
 
-export default function AdminQuestDetailPage({ params }: AdminQuestDetailPageProps) {
+export default function AdminQuestDetailPage({
+  params,
+}: AdminQuestDetailPageProps) {
   const { id } = use(params)
   const { user, isAppAuthenticated } = useAppAuth()
   const [statusFilter, setStatusFilter] = useState<string>('ALL')
@@ -44,10 +49,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
     enabled: isAppAuthenticated && !!user?.isAdmin,
   })
 
-  const {
-    data: submissions = [],
-    isLoading: submissionsLoading,
-  } = useQuery<QuestSubmission[]>({
+  const { data: submissions = [], isLoading: submissionsLoading } = useQuery<
+    QuestSubmission[]
+  >({
     queryKey: ['quest-submissions', id],
     queryFn: () => getQuestSubmissions(id),
     enabled: isAppAuthenticated && !!user?.isAdmin,
@@ -87,7 +91,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando quest y submissions...</p>
+                <p className="text-foreground">
+                  Cargando quest y submissions...
+                </p>
               </div>
             </div>
           </div>
@@ -144,7 +150,7 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
       case 'SUBMITTED':
         return <Clock className="h-5 w-5 text-yellow-600" />
       default:
-        return <Clock className="h-5 w-5 text-muted-foreground" />
+        return <Clock className="h-5 w-5 text-foreground" />
     }
   }
 
@@ -158,7 +164,7 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
           {/* Back Link */}
           <Link
             href="/jam/admin/quests"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+            className="inline-flex items-center gap-2 text-sm text-foreground hover:text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a Gestión de Quests
@@ -170,8 +176,14 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
               <div className="flex-1">
                 <h1 className="mb-3 text-3xl font-bold">{quest.title}</h1>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant={quest.questType === 'TEAM' ? 'default' : 'secondary'}>
-                    {quest.questType === 'TEAM' && <Users className="mr-1 h-3 w-3" />}
+                  <Badge
+                    variant={
+                      quest.questType === 'TEAM' ? 'default' : 'secondary'
+                    }
+                  >
+                    {quest.questType === 'TEAM' && (
+                      <Users className="mr-1 h-3 w-3" />
+                    )}
                     {quest.questType}
                   </Badge>
                   <Badge variant="outline">{quest.category}</Badge>
@@ -181,8 +193,8 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                   </Badge>
                   {quest.bountyUsd && (
                     <Badge variant="default" className="bg-green-600">
-                      <DollarSign className="mr-1 h-3 w-3" />
-                      ${quest.bountyUsd} USD
+                      <DollarSign className="mr-1 h-3 w-3" />${quest.bountyUsd}{' '}
+                      USD
                     </Badge>
                   )}
                 </div>
@@ -192,7 +204,7 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
               </Button>
             </div>
 
-            <p className="text-muted-foreground">{quest.description}</p>
+            <p className="text-foreground">{quest.description}</p>
           </div>
 
           {/* Stats Cards */}
@@ -207,7 +219,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">En Progreso</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  En Progreso
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.inProgress}</div>
@@ -215,7 +229,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Completados</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Completados
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.completed}</div>
@@ -231,18 +247,26 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Verificados</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Verificados
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{stats.verified}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {stats.verified}
+                </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Rechazados</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Rechazados
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {stats.rejected}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -262,28 +286,36 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                   </Button>
                   <Button
                     size="sm"
-                    variant={statusFilter === 'IN_PROGRESS' ? 'default' : 'outline'}
+                    variant={
+                      statusFilter === 'IN_PROGRESS' ? 'default' : 'outline'
+                    }
                     onClick={() => setStatusFilter('IN_PROGRESS')}
                   >
                     En Progreso
                   </Button>
                   <Button
                     size="sm"
-                    variant={statusFilter === 'COMPLETED' ? 'default' : 'outline'}
+                    variant={
+                      statusFilter === 'COMPLETED' ? 'default' : 'outline'
+                    }
                     onClick={() => setStatusFilter('COMPLETED')}
                   >
                     Completados
                   </Button>
                   <Button
                     size="sm"
-                    variant={statusFilter === 'SUBMITTED' ? 'default' : 'outline'}
+                    variant={
+                      statusFilter === 'SUBMITTED' ? 'default' : 'outline'
+                    }
                     onClick={() => setStatusFilter('SUBMITTED')}
                   >
                     Enviados
                   </Button>
                   <Button
                     size="sm"
-                    variant={statusFilter === 'VERIFIED' ? 'default' : 'outline'}
+                    variant={
+                      statusFilter === 'VERIFIED' ? 'default' : 'outline'
+                    }
                     onClick={() => setStatusFilter('VERIFIED')}
                   >
                     Verificados
@@ -293,8 +325,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
             </CardHeader>
             <CardContent>
               {filteredSubmissions.length === 0 ? (
-                <div className="py-8 text-center text-muted-foreground">
-                  No hay submissions {statusFilter !== 'ALL' && `con estado: ${statusFilter}`}
+                <div className="py-8 text-center text-foreground">
+                  No hay submissions{' '}
+                  {statusFilter !== 'ALL' && `con estado: ${statusFilter}`}
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -309,23 +342,29 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                           <div>
                             <div className="flex items-center gap-2">
                               <span className="font-semibold">
-                                {submission.userName || submission.projectName || 'Usuario'}
+                                {submission.userName ||
+                                  submission.projectName ||
+                                  'Usuario'}
                               </span>
                               {getStatusBadge(submission.status)}
                             </div>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-foreground">
                               {submission.userEmail || submission.projectId}
                             </p>
                           </div>
-                          <div className="text-right text-sm text-muted-foreground">
+                          <div className="text-right text-sm text-foreground">
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {new Date(submission.startedAt || submission.createdAt).toLocaleDateString()}
+                              {new Date(
+                                submission.startedAt || submission.createdAt,
+                              ).toLocaleDateString()}
                             </div>
                             {submission.completedAt && (
                               <div className="text-xs">
                                 Completado:{' '}
-                                {new Date(submission.completedAt).toLocaleDateString()}
+                                {new Date(
+                                  submission.completedAt,
+                                ).toLocaleDateString()}
                               </div>
                             )}
                           </div>
@@ -334,8 +373,10 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                         {/* Progress Bar */}
                         <div className="space-y-1">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Progreso</span>
-                            <span className="font-medium">{submission.progress}%</span>
+                            <span className="text-foreground">Progreso</span>
+                            <span className="font-medium">
+                              {submission.progress}%
+                            </span>
                           </div>
                           <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                             <div
@@ -348,23 +389,35 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                         {/* Submission Text */}
                         {submission.submissionText && (
                           <div className="rounded bg-muted p-3">
-                            <p className="text-sm">{submission.submissionText}</p>
+                            <p className="text-sm">
+                              {submission.submissionText}
+                            </p>
                           </div>
                         )}
 
                         {/* Submission URLs */}
-                        {submission.submissionUrls && submission.submissionUrls.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {submission.submissionUrls.map((url, index) => (
-                              <Button key={index} variant="outline" size="sm" asChild>
-                                <a href={url} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink className="mr-1 h-3 w-3" />
-                                  Link {index + 1}
-                                </a>
-                              </Button>
-                            ))}
-                          </div>
-                        )}
+                        {submission.submissionUrls &&
+                          submission.submissionUrls.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {submission.submissionUrls.map((url, index) => (
+                                <Button
+                                  key={index}
+                                  variant="outline"
+                                  size="sm"
+                                  asChild
+                                >
+                                  <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <ExternalLink className="mr-1 h-3 w-3" />
+                                    Link {index + 1}
+                                  </a>
+                                </Button>
+                              ))}
+                            </div>
+                          )}
 
                         {submission.submissionLink && (
                           <Button variant="outline" size="sm" asChild>
@@ -389,7 +442,9 @@ export default function AdminQuestDetailPage({ params }: AdminQuestDetailPagePro
                             className="bg-green-600 hover:bg-green-700"
                             asChild
                           >
-                            <Link href={`/jam/admin/verifications?submissionId=${submission.id}`}>
+                            <Link
+                              href={`/jam/admin/verifications?submissionId=${submission.id}`}
+                            >
                               Verificar
                             </Link>
                           </Button>

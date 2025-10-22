@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Code, Users, FileText } from 'lucide-react';
-import type { Activity } from '@/types/jam';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CheckCircle, Code, Users, FileText } from 'lucide-react'
+import type { Activity } from '@/types/jam'
 
 interface RecentActivityProps {
-  activities: Activity[];
+  activities: Activity[]
 }
 
 const ACTIVITY_CONFIG = {
@@ -27,41 +27,45 @@ const ACTIVITY_CONFIG = {
     color: 'text-orange-500',
     label: 'Post creado',
   },
-};
+}
 
 export function RecentActivity({ activities }: RecentActivityProps) {
   if (activities.length === 0) {
     return (
-      <Card className="h-full flex flex-col">
+      <Card className="flex h-full flex-col">
         <CardHeader>
           <CardTitle>Actividad Reciente</CardTitle>
         </CardHeader>
-        <CardContent className="text-center py-6 space-y-2">
-          <p className="text-muted-foreground">No hay actividad reciente</p>
-          <p className="text-sm text-muted-foreground">
-            Completa quests, actualiza tu proyecto o crea posts para ver actividad aquí
+        <CardContent className="space-y-2 py-6 text-center">
+          <p className="text-foreground">No hay actividad reciente</p>
+          <p className="text-sm text-foreground">
+            Completa quests, actualiza tu proyecto o crea posts para ver
+            actividad aquí
           </p>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Actividad Reciente</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {activities.map((activity) => {
-          const config = ACTIVITY_CONFIG[activity.type];
-          const Icon = config.icon;
+          const config = ACTIVITY_CONFIG[activity.type]
+          const Icon = config.icon
 
           return (
-            <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg border">
-              <Icon className={`h-5 w-5 mt-0.5 ${config.color}`} />
-              <div className="flex-1 min-w-0">
+            <div
+              key={activity.id}
+              className="flex items-start gap-3 rounded-lg border p-3"
+            >
+              <Icon className={`mt-0.5 h-5 w-5 ${config.color}`} />
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{activity.description}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   {new Date(activity.timestamp).toLocaleDateString('es-ES', {
                     day: 'numeric',
                     month: 'short',
@@ -71,9 +75,9 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                 </p>
               </div>
             </div>
-          );
+          )
         })}
       </CardContent>
     </Card>
-  );
+  )
 }

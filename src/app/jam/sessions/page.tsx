@@ -18,7 +18,9 @@ import {
 export default function SessionsPage() {
   const { user, isAppAuthenticated } = useAppAuth()
 
-  const { data: mentorships = [], isLoading: mentorshipsLoading } = useQuery<UserMentorship[]>({
+  const { data: mentorships = [], isLoading: mentorshipsLoading } = useQuery<
+    UserMentorship[]
+  >({
     queryKey: ['user-mentorships', user?.id],
     queryFn: async () => {
       if (!user?.id) return []
@@ -30,7 +32,11 @@ export default function SessionsPage() {
 
   // Fetch all sessions for all mentorships
   const { data: allSessions = [], isLoading: sessionsLoading } = useQuery<
-    Array<{ mentorshipId: string; sessions: MentorshipSession[]; mentorship: UserMentorship }>
+    Array<{
+      mentorshipId: string
+      sessions: MentorshipSession[]
+      mentorship: UserMentorship
+    }>
   >({
     queryKey: ['all-sessions', user?.id],
     queryFn: async () => {
@@ -53,9 +59,12 @@ export default function SessionsPage() {
       item.sessions.map((session) => ({
         session,
         mentorship: item.mentorship,
-      }))
+      })),
     )
-    .sort((a, b) => new Date(b.session.date).getTime() - new Date(a.session.date).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.session.date).getTime() - new Date(a.session.date).getTime(),
+    )
 
   return (
     <PageWrapper>
@@ -65,8 +74,10 @@ export default function SessionsPage() {
         </div>
         <div className="container max-w-6xl space-y-6 pl-64">
           <div>
-            <h1 className="text-3xl font-bold md:text-4xl">Historial de Sesiones</h1>
-            <p className="mt-2 text-muted-foreground">
+            <h1 className="text-3xl font-bold md:text-4xl">
+              Historial de Sesiones
+            </h1>
+            <p className="mt-2 text-foreground">
               Todas tus sesiones de mentoría registradas
             </p>
           </div>
@@ -74,14 +85,15 @@ export default function SessionsPage() {
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
-              Las sesiones son registradas por mentores o participantes después de cada reunión.
-              Mantén un registro consistente para un mejor seguimiento.
+              Las sesiones son registradas por mentores o participantes después
+              de cada reunión. Mantén un registro consistente para un mejor
+              seguimiento.
             </AlertDescription>
           </Alert>
 
           {mentorshipsLoading || sessionsLoading ? (
             <div className="py-12 text-center">
-              <p className="text-muted-foreground">Cargando sesiones...</p>
+              <p className="text-foreground">Cargando sesiones...</p>
             </div>
           ) : flattenedSessions.length === 0 ? (
             <Card>
@@ -89,9 +101,9 @@ export default function SessionsPage() {
                 <CardTitle>No hay sesiones registradas</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  Aún no tienes sesiones de mentoría registradas. Las sesiones aparecerán aquí
-                  cuando tú o tu mentor registren una sesión.
+                <p className="text-foreground">
+                  Aún no tienes sesiones de mentoría registradas. Las sesiones
+                  aparecerán aquí cuando tú o tu mentor registren una sesión.
                 </p>
               </CardContent>
             </Card>
@@ -99,8 +111,11 @@ export default function SessionsPage() {
             <div className="space-y-4">
               {flattenedSessions.map(({ session, mentorship }) => {
                 const isMentor = mentorship.mentorId === user?.id
-                const otherPerson = isMentor ? mentorship.participant : mentorship.mentor
-                const otherPersonName = otherPerson?.displayName || otherPerson?.username || 'Usuario'
+                const otherPerson = isMentor
+                  ? mentorship.participant
+                  : mentorship.mentor
+                const otherPersonName =
+                  otherPerson?.displayName || otherPerson?.username || 'Usuario'
 
                 return (
                   <SessionCard

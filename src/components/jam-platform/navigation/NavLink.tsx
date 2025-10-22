@@ -1,37 +1,40 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { type LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { type LucideIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface NavLinkProps {
-  href: string;
-  label: string;
-  icon: LucideIcon;
+  href: string
+  label: string
+  icon: LucideIcon
 }
 
 export function NavLink({ href, label, icon: Icon }: NavLinkProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   // Check if this link should be active
   // Handle special case: /jam/projects/create should NOT activate /jam/projects
-  const isActive = pathname === href ||
+  const isActive =
+    pathname === href ||
     (pathname.startsWith(href + '/') &&
-     !(href === '/jam/projects' && pathname.startsWith('/jam/projects/create')));
+      !(
+        href === '/jam/projects' && pathname.startsWith('/jam/projects/create')
+      ))
 
   return (
     <Link
       href={href}
       className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+        'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
         isActive
           ? 'bg-primary text-primary-foreground'
-          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+          : 'text-foreground hover:bg-accent hover:text-foreground',
       )}
     >
       <Icon className="h-4 w-4" />
       <span>{label}</span>
     </Link>
-  );
+  )
 }

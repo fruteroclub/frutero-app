@@ -29,14 +29,18 @@ const NAV_ITEMS = [
   { href: '/jam/programs', label: 'Programs', icon: Calendar },
   { href: '/jam/mentors', label: 'Mentors', icon: Users },
   { href: '/jam/community', label: 'Community', icon: MessageSquare },
-  { href: '/jam/profile', label: 'Profile', icon: User },
+  { href: '/profile', label: 'Profile', icon: User },
 ]
 
 const ADMIN_NAV_ITEMS = [
   { href: '/jam/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/jam/admin/users', label: 'Usuarios', icon: Users },
   { href: '/jam/admin/quests', label: 'Gestionar Quests', icon: Target },
-  { href: '/jam/admin/verifications', label: 'Verificaciones', icon: CheckSquare },
+  {
+    href: '/jam/admin/verifications',
+    label: 'Verificaciones',
+    icon: CheckSquare,
+  },
 ]
 
 export function JamNav() {
@@ -64,7 +68,7 @@ export function JamNav() {
             {isAdmin && (
               <>
                 <div className="my-4 border-t" />
-                <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold uppercase text-muted-foreground">
+                <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold text-foreground uppercase">
                   <Shield className="h-4 w-4" />
                   Admin
                 </div>
@@ -137,12 +141,15 @@ export function JamNav() {
                 {isAdmin && (
                   <>
                     <div className="my-4 border-t" />
-                    <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold uppercase text-muted-foreground">
+                    <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold text-foreground uppercase">
                       <Shield className="h-4 w-4" />
                       Admin
                     </div>
                     {ADMIN_NAV_ITEMS.map((item) => (
-                      <div key={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <div
+                        key={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
                         <NavLink {...item} />
                       </div>
                     ))}

@@ -160,7 +160,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   maxLength={500}
                   rows={4}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   {formData.description.length}/500 caracteres
                 </p>
               </div>
@@ -221,7 +221,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold">Demo & Recursos</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground">
                 Links para que los jueces puedan evaluar tu proyecto
               </p>
             </div>
@@ -242,7 +242,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   placeholder="https://loom.com/share/..."
                   required
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Link a Loom, YouTube, o video de demostración
                 </p>
               </div>
@@ -285,7 +285,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   placeholder="https://tuproyecto.vercel.app"
                   required
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Deployment en Vercel, Netlify, o similar
                 </p>
               </div>
@@ -307,7 +307,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   }
                   placeholder="https://drive.google.com/..."
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Link público a Google Drive, Dropbox, etc.
                 </p>
               </div>
@@ -318,7 +318,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold">Identidad Visual</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground">
                 Logo y presencia web de tu proyecto
               </p>
             </div>
@@ -338,7 +338,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   }
                   placeholder="https://tu-logo.png"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   URL de imagen cuadrada (recomendado 400x400px)
                 </p>
               </div>
@@ -365,7 +365,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold">Redes & Contacto</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground">
                 Información de contacto y redes sociales
               </p>
             </div>
@@ -384,7 +384,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   }
                   placeholder="@tuproyecto"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Cuenta de Twitter/X del proyecto
                 </p>
               </div>
@@ -405,7 +405,7 @@ export function ProjectForm({ userId, initialData }: ProjectFormProps) {
                   }
                   placeholder="0x..."
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground">
                   Dirección para recibir premios y bounties
                 </p>
               </div>

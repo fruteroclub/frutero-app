@@ -32,8 +32,7 @@ export default function ProjectsPage() {
     const matchesCategory =
       categoryFilter === 'ALL' || project.category === categoryFilter
 
-    const matchesStage =
-      stageFilter === 'ALL' || project.stage === stageFilter
+    const matchesStage = stageFilter === 'ALL' || project.stage === stageFilter
 
     return matchesSearch && matchesCategory && matchesStage
   })
@@ -47,7 +46,7 @@ export default function ProjectsPage() {
           </div>
           <div className="container max-w-6xl pl-64">
             <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-8 w-8 animate-spin text-foreground" />
             </div>
           </div>
         </div>
@@ -65,20 +64,20 @@ export default function ProjectsPage() {
           {/* Hero Section */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
                 Explorar Proyectos
               </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Descubre proyectos increíbles de la comunidad, ofrece tu apoyo como mentor,
-                y colabora en el siguiente gran hackathon
+              <p className="max-w-2xl text-lg text-foreground">
+                Descubre proyectos increíbles de la comunidad, ofrece tu apoyo
+                como mentor, y colabora en el siguiente gran hackathon
               </p>
             </div>
 
             {/* Stats bar */}
             <div className="flex items-center gap-6 pt-2">
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-sm text-muted-foreground">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+                <span className="text-sm text-foreground">
                   {projects.length} proyectos activos
                 </span>
               </div>
@@ -98,10 +97,15 @@ export default function ProjectsPage() {
           {/* Results Section */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-muted-foreground">
-                {filteredProjects.length === 0 ? 'No hay proyectos' : (
+              <p className="text-sm font-medium text-foreground">
+                {filteredProjects.length === 0 ? (
+                  'No hay proyectos'
+                ) : (
                   <>
-                    Mostrando <span className="text-foreground font-bold">{filteredProjects.length}</span>{' '}
+                    Mostrando{' '}
+                    <span className="font-bold text-foreground">
+                      {filteredProjects.length}
+                    </span>{' '}
                     {filteredProjects.length === 1 ? 'proyecto' : 'proyectos'}
                   </>
                 )}
@@ -109,10 +113,10 @@ export default function ProjectsPage() {
             </div>
 
             {filteredProjects.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                <div className="rounded-full bg-muted p-6 mb-4">
+              <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
+                <div className="mb-4 rounded-full bg-muted p-6">
                   <svg
-                    className="h-12 w-12 text-muted-foreground"
+                    className="h-12 w-12 text-foreground"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -125,16 +129,16 @@ export default function ProjectsPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="mb-2 text-lg font-semibold">
                   No se encontraron proyectos
                 </h3>
-                <p className="text-muted-foreground max-w-md">
-                  Intenta ajustar los filtros o realiza una búsqueda diferente para encontrar
-                  proyectos que coincidan con tus criterios
+                <p className="max-w-md text-foreground">
+                  Intenta ajustar los filtros o realiza una búsqueda diferente
+                  para encontrar proyectos que coincidan con tus criterios
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filteredProjects.map((project) => (
                   <ProjectCard key={project.id} project={project} />
                 ))}

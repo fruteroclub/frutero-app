@@ -34,10 +34,10 @@ export function QuestSubmissionHistory({
           {history.map((item) => (
             <div
               key={item.id}
-              className="relative pl-6 pb-6 border-l-2 border-muted last:pb-0"
+              className="relative border-l-2 border-muted pb-6 pl-6 last:pb-0"
             >
               {/* Timeline dot */}
-              <div className="absolute left-0 top-0 -translate-x-[9px] w-4 h-4 rounded-full bg-primary border-2 border-background" />
+              <div className="absolute top-0 left-0 h-4 w-4 -translate-x-[9px] rounded-full border-2 border-background bg-primary" />
 
               {/* Submission content */}
               <div className="space-y-3">
@@ -49,7 +49,7 @@ export function QuestSubmissionHistory({
                       className="font-semibold"
                     >
                       {item.progress === 100 ? (
-                        <CheckCircle2 className="w-3 h-3 mr-1" />
+                        <CheckCircle2 className="mr-1 h-3 w-3" />
                       ) : null}
                       {item.progress}% Completo
                     </Badge>
@@ -60,8 +60,8 @@ export function QuestSubmissionHistory({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-sm text-foreground">
+                    <Calendar className="h-3 w-3" />
                     <span>
                       {new Date(item.submittedAt).toLocaleDateString('es-ES', {
                         day: 'numeric',
@@ -77,7 +77,7 @@ export function QuestSubmissionHistory({
                 {/* Description */}
                 {item.description && (
                   <div className="text-sm">
-                    <p className="text-foreground whitespace-pre-wrap">
+                    <p className="whitespace-pre-wrap text-foreground">
                       {item.description}
                     </p>
                   </div>
@@ -86,7 +86,7 @@ export function QuestSubmissionHistory({
                 {/* Links */}
                 {item.links && item.links.length > 0 && (
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground">
+                    <p className="text-xs font-medium text-foreground">
                       Enlaces:
                     </p>
                     <ul className="space-y-1">
@@ -96,10 +96,10 @@ export function QuestSubmissionHistory({
                             href={link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                           >
-                            <ExternalLink className="w-3 h-3" />
-                            <span className="truncate max-w-md">{link}</span>
+                            <ExternalLink className="h-3 w-3" />
+                            <span className="max-w-md truncate">{link}</span>
                           </a>
                         </li>
                       ))}
@@ -113,7 +113,7 @@ export function QuestSubmissionHistory({
 
         {/* Empty state */}
         {history.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-foreground">
             <p>No hay envíos todavía</p>
           </div>
         )}

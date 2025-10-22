@@ -31,12 +31,12 @@ export function ProjectQuestCard({
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <CardTitle className="text-lg">
             {projectQuest.quest?.title || 'Quest'}
           </CardTitle>
           <Badge variant={config.color}>
-            <Icon className="h-3 w-3 mr-1" />
+            <Icon className="mr-1 h-3 w-3" />
             {config.label}
           </Badge>
         </div>
@@ -53,10 +53,10 @@ export function ProjectQuestCard({
 
         {projectQuest.quest?.bountyUsd && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Bounty</span>
+            <span className="text-foreground">Bounty</span>
             <Badge variant="default" className="flex items-center gap-1">
-              <DollarSign className="h-3 w-3" />
-              ${projectQuest.quest.bountyUsd} USD
+              <DollarSign className="h-3 w-3" />${projectQuest.quest.bountyUsd}{' '}
+              USD
             </Badge>
           </div>
         )}
@@ -67,16 +67,17 @@ export function ProjectQuestCard({
           </Badge>
         )}
 
-        {projectQuest.status === 'REJECTED' && projectQuest.verificationNotes && (
-          <div className="bg-destructive/10 p-3 rounded-md">
-            <p className="text-xs font-medium text-destructive mb-1">
-              Razón del rechazo:
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {projectQuest.verificationNotes}
-            </p>
-          </div>
-        )}
+        {projectQuest.status === 'REJECTED' &&
+          projectQuest.verificationNotes && (
+            <div className="rounded-md bg-destructive/10 p-3">
+              <p className="mb-1 text-xs font-medium text-destructive">
+                Razón del rechazo:
+              </p>
+              <p className="text-xs text-foreground">
+                {projectQuest.verificationNotes}
+              </p>
+            </div>
+          )}
 
         <Button asChild className="w-full">
           <Link

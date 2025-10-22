@@ -28,10 +28,12 @@ export default function QuestsPage({ params }: QuestsPageProps) {
   const { slug } = use(params)
 
   // Fetch project
-  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
-    queryKey: ['project', slug],
-    queryFn: () => getProject(slug),
-  })
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>(
+    {
+      queryKey: ['project', slug],
+      queryFn: () => getProject(slug),
+    },
+  )
 
   // Fetch available team quests
   const {
@@ -69,7 +71,7 @@ export default function QuestsPage({ params }: QuestsPageProps) {
           </div>
           <div className="container max-w-4xl pl-64">
             <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-8 w-8 animate-spin text-foreground" />
             </div>
           </div>
         </div>
@@ -91,7 +93,7 @@ export default function QuestsPage({ params }: QuestsPageProps) {
           {/* Back Link */}
           <Link
             href={`/jam/projects/${slug}`}
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center text-sm text-foreground hover:text-foreground"
           >
             ← Volver al Proyecto
           </Link>
@@ -99,16 +101,16 @@ export default function QuestsPage({ params }: QuestsPageProps) {
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold">{project.name} - Team Quests</h1>
-            <p className="text-muted-foreground">
+            <p className="text-foreground">
               Completa quests para ganar bounties para tu equipo
             </p>
           </div>
 
           {/* Active Quests */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Quests Activos</h2>
+            <h2 className="mb-4 text-2xl font-semibold">Quests Activos</h2>
             {activeQuests.length === 0 ? (
-              <Card className="p-6 text-center text-muted-foreground">
+              <Card className="p-6 text-center text-foreground">
                 No hay quests activos. Explora los quests disponibles abajo para
                 comenzar.
               </Card>
@@ -127,9 +129,9 @@ export default function QuestsPage({ params }: QuestsPageProps) {
 
           {/* Available Quests */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4">Quests Disponibles</h2>
+            <h2 className="mb-4 text-2xl font-semibold">Quests Disponibles</h2>
             {availableQuests.length === 0 ? (
-              <Card className="p-6 text-center text-muted-foreground">
+              <Card className="p-6 text-center text-foreground">
                 No hay quests disponibles en este momento.
               </Card>
             ) : (

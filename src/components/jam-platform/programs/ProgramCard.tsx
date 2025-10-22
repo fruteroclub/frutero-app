@@ -22,15 +22,19 @@ function getDaysUntil(dateString?: string): number {
   return diffDays
 }
 
-export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramCardProps) {
+export function ProgramCard({
+  program,
+  showJoinButton = true,
+  onJoin,
+}: ProgramCardProps) {
   const daysUntilDeadline = getDaysUntil(program.submissionDeadline)
   const isUrgent = daysUntilDeadline <= 3 && daysUntilDeadline > 0
   const isPast = daysUntilDeadline < 0
 
   return (
-    <Card className="hover:shadow-lg transition-shadow h-full flex flex-col">
+    <Card className="flex h-full flex-col transition-shadow hover:shadow-lg">
       <CardHeader>
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <CardTitle className="text-xl">
               <Link
@@ -41,7 +45,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
               </Link>
             </CardTitle>
             {program.organizer && (
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-foreground">
                 por {program.organizer}
               </p>
             )}
@@ -50,12 +54,12 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
             <img
               src={program.avatarUrl}
               alt={program.name}
-              className="w-16 h-16 rounded object-cover"
+              className="h-16 w-16 rounded object-cover"
             />
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="mt-3 flex flex-wrap gap-2">
           <Badge variant="secondary">{program.type}</Badge>
           {program.tracks?.slice(0, 3).map((track) => (
             <Badge key={track} variant="outline">
@@ -68,14 +72,14 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col">
-        <p className="text-muted-foreground mb-4 line-clamp-3">
+      <CardContent className="flex flex-1 flex-col">
+        <p className="mb-4 line-clamp-3 text-foreground">
           {program.description}
         </p>
 
-        <div className="space-y-2 text-sm mb-4">
+        <div className="mb-4 space-y-2 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Inicio:</span>
+            <span className="text-foreground">Inicio:</span>
             <span className="font-medium">
               {new Date(program.startDate).toLocaleDateString('es-ES', {
                 year: 'numeric',
@@ -87,7 +91,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
 
           {program.endDate && (
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Fin:</span>
+              <span className="text-foreground">Fin:</span>
               <span className="font-medium">
                 {new Date(program.endDate).toLocaleDateString('es-ES', {
                   year: 'numeric',
@@ -101,7 +105,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
           {program.submissionDeadline && !isPast && (
             <div
               className={`flex items-center justify-between ${
-                isUrgent ? 'text-red-500 font-semibold' : ''
+                isUrgent ? 'font-semibold text-red-500' : ''
               }`}
             >
               <span className="flex items-center gap-1">
@@ -114,7 +118,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
 
           {program.participantCount !== undefined && (
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground flex items-center gap-1">
+              <span className="flex items-center gap-1 text-foreground">
                 <Users className="h-4 w-4" />
                 Participantes:
               </span>
@@ -123,7 +127,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
           )}
         </div>
 
-        <div className="flex gap-2 mt-auto pt-4">
+        <div className="mt-auto flex gap-2 pt-4">
           {showJoinButton && onJoin && (
             <Button
               variant="outline"
@@ -131,7 +135,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
               className="flex-1"
               onClick={() => onJoin(program.id)}
             >
-              <Calendar className="h-4 w-4 mr-2" />
+              <Calendar className="mr-2 h-4 w-4" />
               Seguir
             </Button>
           )}
@@ -142,7 +146,7 @@ export function ProgramCard({ program, showJoinButton = true, onJoin }: ProgramC
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <ExternalLink className="h-4 w-4 mr-2" />
+                <ExternalLink className="mr-2 h-4 w-4" />
                 Aplicar
               </a>
             </Button>

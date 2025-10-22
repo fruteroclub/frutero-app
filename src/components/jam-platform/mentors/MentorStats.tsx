@@ -49,7 +49,7 @@ export function MentorStats({ mentor }: MentorStatsProps) {
             </div>
             <div>
               <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-sm text-foreground">{stat.label}</p>
             </div>
           </CardContent>
         </Card>

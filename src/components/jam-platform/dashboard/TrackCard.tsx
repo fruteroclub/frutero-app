@@ -22,7 +22,7 @@ export function TrackCard({ track }: TrackCardProps) {
           <CardTitle className="text-lg">Tu Ruta</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-foreground">
             Completa el onboarding para seleccionar tu ruta de desarrollo.
           </p>
           <Link
@@ -53,7 +53,7 @@ export function TrackCard({ track }: TrackCardProps) {
             <span className="text-2xl">{trackConfig.icon}</span>
             <div>
               <div className="font-semibold">{trackConfig.titleEs}</div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-foreground">
                 {trackConfig.descriptionEs}
               </div>
             </div>
@@ -61,14 +61,14 @@ export function TrackCard({ track }: TrackCardProps) {
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <p className="text-xs font-medium text-muted-foreground">
+          <p className="text-xs font-medium text-foreground">
             Objetivos de tu ruta:
           </p>
           <ul className="space-y-1">
             {trackConfig.goalsEs.slice(0, 2).map((goal, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-1.5 text-xs text-muted-foreground"
+                className="flex items-start gap-1.5 text-xs text-foreground"
               >
                 <span className="text-primary">✓</span>
                 <span>{goal}</span>
@@ -86,7 +86,7 @@ export function TrackCard({ track }: TrackCardProps) {
           </Link>
           <Link
             href="/jam/settings"
-            className="text-xs text-muted-foreground hover:text-primary hover:underline"
+            className="text-xs text-foreground hover:text-primary hover:underline"
           >
             Cambiar ruta
           </Link>

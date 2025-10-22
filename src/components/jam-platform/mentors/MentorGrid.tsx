@@ -6,11 +6,14 @@ interface MentorGridProps {
   emptyMessage?: string
 }
 
-export function MentorGrid({ mentors, emptyMessage = 'No se encontraron mentores' }: MentorGridProps) {
+export function MentorGrid({
+  mentors,
+  emptyMessage = 'No se encontraron mentores',
+}: MentorGridProps) {
   if (mentors.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-muted-foreground">{emptyMessage}</p>
+        <p className="text-foreground">{emptyMessage}</p>
       </div>
     )
   }

@@ -30,7 +30,9 @@ export function MentorHeader({ mentor }: MentorHeaderProps) {
       .slice(0, 2)
   }
 
-  const location = [mentor.profile?.cityRegion, mentor.profile?.country].filter(Boolean).join(', ')
+  const location = [mentor.profile?.cityRegion, mentor.profile?.country]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <div className="space-y-6">
@@ -52,7 +54,7 @@ export function MentorHeader({ mentor }: MentorHeaderProps) {
             </Badge>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-foreground">
             {location && (
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
@@ -74,7 +76,9 @@ export function MentorHeader({ mentor }: MentorHeaderProps) {
           </div>
 
           {mentor.profile?.professionalProfile && (
-            <p className="text-muted-foreground">{mentor.profile.professionalProfile}</p>
+            <p className="text-foreground">
+              {mentor.profile.professionalProfile}
+            </p>
           )}
         </div>
       </div>

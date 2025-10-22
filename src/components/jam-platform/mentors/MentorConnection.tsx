@@ -26,14 +26,17 @@ export function MentorConnection({
   const queryClient = useQueryClient()
 
   const createConnection = useMutation({
-    mutationFn: () => createMentorshipRequest(mentor.id, userId, message, goals),
+    mutationFn: () =>
+      createMentorshipRequest(mentor.id, userId, message, goals),
     onSuccess: () => {
       toast.success('¡Solicitud enviada!', {
         description: 'El mentor recibirá tu solicitud de mentoría.',
       })
       setMessage('')
       setGoals('')
-      queryClient.invalidateQueries({ queryKey: ['mentorship-status', mentor.id, userId] })
+      queryClient.invalidateQueries({
+        queryKey: ['mentorship-status', mentor.id, userId],
+      })
     },
     onError: (error: Error) => {
       toast.error('Error al enviar solicitud', {
@@ -49,8 +52,9 @@ export function MentorConnection({
           <CardTitle>Conexión Existente</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
-            Ya tienes una conexión de mentoría con {mentor.displayName || 'este mentor'}.
+          <p className="text-foreground">
+            Ya tienes una conexión de mentoría con{' '}
+            {mentor.displayName || 'este mentor'}.
           </p>
         </CardContent>
       </Card>
@@ -64,8 +68,9 @@ export function MentorConnection({
           <CardTitle>Capacidad Máxima</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
-            Este mentor actualmente está en capacidad máxima y no puede aceptar nuevos mentees.
+          <p className="text-foreground">
+            Este mentor actualmente está en capacidad máxima y no puede aceptar
+            nuevos mentees.
           </p>
         </CardContent>
       </Card>

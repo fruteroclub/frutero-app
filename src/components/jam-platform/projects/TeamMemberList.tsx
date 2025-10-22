@@ -36,15 +36,24 @@ export function TeamMemberList({
   const removeMutation = useMutation({
     mutationFn: (userId: string) => removeMember(projectSlug, userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-members', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-members', projectSlug],
+      })
     },
   })
 
   const roleMutation = useMutation({
-    mutationFn: ({ userId, role }: { userId: string; role: 'ADMIN' | 'MEMBER' }) =>
-      updateMemberRole(projectSlug, userId, role),
+    mutationFn: ({
+      userId,
+      role,
+    }: {
+      userId: string
+      role: 'ADMIN' | 'MEMBER'
+    }) => updateMemberRole(projectSlug, userId, role),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-members', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-members', projectSlug],
+      })
     },
   })
 
@@ -86,8 +95,9 @@ export function TeamMemberList({
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Se unió el {new Date(member.joinedAt).toLocaleDateString('es-ES')}
+                    <p className="text-xs text-foreground">
+                      Se unió el{' '}
+                      {new Date(member.joinedAt).toLocaleDateString('es-ES')}
                     </p>
                   </div>
                 </div>
@@ -98,11 +108,11 @@ export function TeamMemberList({
                   >
                     {member.role === 'ADMIN' ? (
                       <>
-                        <Crown className="h-3 w-3 mr-1" /> Admin
+                        <Crown className="mr-1 h-3 w-3" /> Admin
                       </>
                     ) : (
                       <>
-                        <User className="h-3 w-3 mr-1" /> Miembro
+                        <User className="mr-1 h-3 w-3" /> Miembro
                       </>
                     )}
                   </Badge>
@@ -110,27 +120,27 @@ export function TeamMemberList({
                   {canModify && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled={isLoading}
-                        >
+                        <Button variant="ghost" size="sm" disabled={isLoading}>
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         {member.role === 'MEMBER' ? (
                           <DropdownMenuItem
-                            onClick={() => handleChangeRole(member.userId, 'ADMIN')}
+                            onClick={() =>
+                              handleChangeRole(member.userId, 'ADMIN')
+                            }
                           >
-                            <Crown className="h-4 w-4 mr-2" />
+                            <Crown className="mr-2 h-4 w-4" />
                             Promover a Admin
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
-                            onClick={() => handleChangeRole(member.userId, 'MEMBER')}
+                            onClick={() =>
+                              handleChangeRole(member.userId, 'MEMBER')
+                            }
                           >
-                            <User className="h-4 w-4 mr-2" />
+                            <User className="mr-2 h-4 w-4" />
                             Degradar a Miembro
                           </DropdownMenuItem>
                         )}
@@ -138,7 +148,7 @@ export function TeamMemberList({
                           onClick={() => handleRemoveMember(member.userId)}
                           className="text-destructive"
                         >
-                          <UserMinus className="h-4 w-4 mr-2" />
+                          <UserMinus className="mr-2 h-4 w-4" />
                           Remover del Equipo
                         </DropdownMenuItem>
                       </DropdownMenuContent>

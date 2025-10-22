@@ -4,7 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Calendar, Users, DollarSign } from 'lucide-react'
-import type { Quest, UserQuest, ProjectQuest } from '@/services/jam/quests.service'
+import type {
+  Quest,
+  UserQuest,
+  ProjectQuest,
+} from '@/services/jam/quests.service'
 
 interface QuestCardProps {
   quest: Quest
@@ -21,13 +25,16 @@ export function QuestCard({
   projectName,
   highlight = false,
 }: QuestCardProps) {
-  const isTeamQuest = quest.questType === 'TEAM' || (quest.questType === 'BOTH' && projectQuest)
+  const isTeamQuest =
+    quest.questType === 'TEAM' || (quest.questType === 'BOTH' && projectQuest)
   const submission = isTeamQuest ? projectQuest : userQuest
   const status = submission?.status || 'NOT_STARTED'
 
   // Format due date
   const dueDate = new Date(quest.dueDate || quest.end)
-  const daysUntilDue = Math.ceil((dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  const daysUntilDue = Math.ceil(
+    (dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  )
 
   // Quest type badge color
   const getQuestTypeBadgeVariant = (type: string) => {
@@ -62,7 +69,11 @@ export function QuestCard({
     switch (status) {
       case 'COMPLETED':
       case 'VERIFIED':
-        return <Badge variant="default" className="bg-green-600">Completado</Badge>
+        return (
+          <Badge variant="default" className="bg-green-600">
+            Completado
+          </Badge>
+        )
       case 'IN_PROGRESS':
         return <Badge variant="default">En Progreso</Badge>
       case 'SUBMITTED':
@@ -87,7 +98,9 @@ export function QuestCard({
             <div className="mt-2 flex flex-wrap gap-2">
               {/* Quest Type Badge */}
               <Badge variant={getQuestTypeBadgeVariant(quest.questType)}>
-                {quest.questType === 'TEAM' && <Users className="mr-1 h-3 w-3" />}
+                {quest.questType === 'TEAM' && (
+                  <Users className="mr-1 h-3 w-3" />
+                )}
                 {quest.questType}
               </Badge>
 
@@ -103,15 +116,14 @@ export function QuestCard({
               {/* Bounty Badge */}
               {quest.bountyUsd && (
                 <Badge variant="default" className="bg-green-600">
-                  <DollarSign className="mr-1 h-3 w-3" />
-                  ${quest.bountyUsd} USD
+                  <DollarSign className="mr-1 h-3 w-3" />${quest.bountyUsd} USD
                 </Badge>
               )}
             </div>
 
             {/* Team Quest Project Name */}
             {isTeamQuest && projectName && (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-foreground">
                 Equipo: {projectName}
               </p>
             )}
@@ -122,15 +134,15 @@ export function QuestCard({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="line-clamp-2 text-muted-foreground">{quest.description}</p>
+        <p className="line-clamp-2 text-foreground">{quest.description}</p>
 
         {/* Max Submissions Tracking */}
         {quest.maxSubmissions && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-foreground">
             <Users className="h-4 w-4" />
             <span>
-              {quest.maxSubmissions - quest.currentSubmissions} / {quest.maxSubmissions} espacios
-              disponibles
+              {quest.maxSubmissions - quest.currentSubmissions} /{' '}
+              {quest.maxSubmissions} espacios disponibles
             </span>
           </div>
         )}
@@ -148,12 +160,10 @@ export function QuestCard({
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-foreground">
             <Calendar className="h-4 w-4" />
             <span>
-              {daysUntilDue > 0
-                ? `${daysUntilDue} días restantes`
-                : 'Vencido'}
+              {daysUntilDue > 0 ? `${daysUntilDue} días restantes` : 'Vencido'}
             </span>
           </div>
           <Button asChild size="sm">

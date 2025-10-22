@@ -11,7 +11,11 @@ import { MentorStats } from '@/components/jam-platform/mentors/MentorStats'
 import { MentorConnection } from '@/components/jam-platform/mentors/MentorConnection'
 import { SessionHistory } from '@/components/jam-platform/mentors/SessionHistory'
 import { SessionLogger } from '@/components/jam-platform/mentors/SessionLogger'
-import { getMentorById, getMentorshipStatus, type Mentor } from '@/services/jam/mentors.service'
+import {
+  getMentorById,
+  getMentorshipStatus,
+  type Mentor,
+} from '@/services/jam/mentors.service'
 
 export default function MentorDetailPage({
   params,
@@ -49,7 +53,7 @@ export default function MentorDetailPage({
           </div>
           <div className="container max-w-6xl space-y-6 pl-64">
             <div className="py-12 text-center">
-              <p className="text-muted-foreground">Cargando mentor...</p>
+              <p className="text-foreground">Cargando mentor...</p>
             </div>
           </div>
         </div>
@@ -67,7 +71,7 @@ export default function MentorDetailPage({
           <div className="container max-w-6xl space-y-6 pl-64">
             <div className="py-12 text-center">
               <h2 className="text-2xl font-bold">Mentor no encontrado</h2>
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 text-foreground">
                 El mentor que buscas no existe o no está disponible.
               </p>
             </div>
@@ -96,9 +100,11 @@ export default function MentorDetailPage({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {mentor.mentoringApproach ? (
-                    <p className="text-muted-foreground">{mentor.mentoringApproach}</p>
+                    <p className="text-foreground">
+                      {mentor.mentoringApproach}
+                    </p>
                   ) : (
-                    <p className="text-muted-foreground">
+                    <p className="text-foreground">
                       No hay información sobre el enfoque de mentoría.
                     </p>
                   )}
@@ -106,7 +112,7 @@ export default function MentorDetailPage({
                   {mentor.experience && (
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold">Experiencia</h3>
-                      <p className="text-muted-foreground">{mentor.experience}</p>
+                      <p className="text-foreground">{mentor.experience}</p>
                     </div>
                   )}
                 </CardContent>
@@ -134,7 +140,7 @@ export default function MentorDetailPage({
                     <CardTitle>Conecta con este Mentor</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">
+                    <p className="text-foreground">
                       Inicia sesión para solicitar mentoría.
                     </p>
                   </CardContent>
@@ -149,7 +155,9 @@ export default function MentorDetailPage({
             connectionStatus?.exists &&
             connectionStatus.mentorship && (
               <div>
-                <h2 className="mb-4 text-2xl font-bold">Historial de Sesiones</h2>
+                <h2 className="mb-4 text-2xl font-bold">
+                  Historial de Sesiones
+                </h2>
                 <SessionHistory
                   mentorshipId={connectionStatus.mentorship.id}
                   mentorName={mentor.displayName || mentor.username || 'Mentor'}
