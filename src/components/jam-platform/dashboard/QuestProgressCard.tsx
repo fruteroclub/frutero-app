@@ -10,7 +10,7 @@ interface QuestProgressCardProps {
 
 export function QuestProgressCard({ stats }: QuestProgressCardProps) {
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Progreso de Quests</CardTitle>
       </CardHeader>
@@ -19,7 +19,7 @@ export function QuestProgressCard({ stats }: QuestProgressCardProps) {
           <>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Progreso total</span>
+                <span className="text-foreground">Progreso total</span>
                 <span className="font-medium">{stats.percentComplete}%</span>
               </div>
               <Progress value={stats.percentComplete} className="h-2" />
@@ -28,21 +28,21 @@ export function QuestProgressCard({ stats }: QuestProgressCardProps) {
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="space-y-1">
                 <p className="text-2xl font-bold">{stats.completed}</p>
-                <p className="text-xs text-muted-foreground">Completados</p>
+                <p className="text-xs text-foreground">Completados</p>
               </div>
               <div className="space-y-1">
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-xs text-foreground">Total</p>
               </div>
             </div>
 
             <div className="border-t pt-2">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Individuales:</span>
+                <span className="text-foreground">Individuales:</span>
                 <span className="font-medium">{stats.individualCompleted}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">En equipo:</span>
+                <span className="text-foreground">En equipo:</span>
                 <span className="font-medium">{stats.teamCompleted}</span>
               </div>
             </div>
@@ -53,9 +53,7 @@ export function QuestProgressCard({ stats }: QuestProgressCardProps) {
           </>
         ) : (
           <div className="space-y-3 py-6 text-center">
-            <p className="text-muted-foreground">
-              No hay quests disponibles aún
-            </p>
+            <p className="text-foreground">No hay quests disponibles aún</p>
             <Button variant="outline" className="w-full" disabled>
               Próximamente
             </Button>

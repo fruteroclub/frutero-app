@@ -37,12 +37,13 @@ export function IndividualQuestSubmissionForm({
   const [progress, setProgress] = useState(currentProgress)
   const [previousProgress, setPreviousProgress] = useState(currentProgress)
   const [submissionText, setSubmissionText] = useState(
-    currentSubmission?.submissionText || ''
+    currentSubmission?.submissionText || '',
   )
   const [links, setLinks] = useState<string[]>(
-    currentSubmission?.submissionUrls && currentSubmission.submissionUrls.length > 0
+    currentSubmission?.submissionUrls &&
+      currentSubmission.submissionUrls.length > 0
       ? currentSubmission.submissionUrls
-      : ['']
+      : [''],
   )
 
   const addLink = () => {
@@ -99,13 +100,13 @@ export function IndividualQuestSubmissionForm({
             : '🎉 Quest completado!',
           {
             description: 'Excelente trabajo completando este quest!',
-          }
+          },
         )
       } else {
         // Check for milestone achievements
         const milestones = [25, 50, 75]
         const achievedMilestone = milestones.find(
-          (milestone) => previousProgress < milestone && progress >= milestone
+          (milestone) => previousProgress < milestone && progress >= milestone,
         )
 
         if (achievedMilestone) {
@@ -115,7 +116,10 @@ export function IndividualQuestSubmissionForm({
             75: '¡Casi terminado! Un último empujón',
           }
           toast.success('Progreso actualizado!', {
-            description: milestoneMessages[achievedMilestone as keyof typeof milestoneMessages],
+            description:
+              milestoneMessages[
+                achievedMilestone as keyof typeof milestoneMessages
+              ],
           })
         } else {
           toast.success('Progreso actualizado exitosamente!', {
@@ -133,7 +137,7 @@ export function IndividualQuestSubmissionForm({
     } catch (error) {
       console.error('Error submitting progress:', error)
       toast.error(
-        error instanceof Error ? error.message : 'Error al enviar progreso'
+        error instanceof Error ? error.message : 'Error al enviar progreso',
       )
     } finally {
       setIsSubmitting(false)
@@ -152,12 +156,12 @@ export function IndividualQuestSubmissionForm({
       </CardHeader>
       <CardContent>
         {isComplete && status === 'COMPLETED' ? (
-          <div className="text-center py-8">
+          <div className="py-8 text-center">
             <div className="mb-4 text-4xl">🎉</div>
-            <p className="text-lg font-medium mb-2">
+            <p className="mb-2 text-lg font-medium">
               ¡Felicitaciones! Completaste este quest!
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               Tu envío ha sido registrado y los puntos han sido otorgados.
             </p>
           </div>
@@ -180,7 +184,7 @@ export function IndividualQuestSubmissionForm({
                   {progress}%
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground">
                 Desliza para indicar cuánto del quest has completado
               </p>
             </div>
@@ -188,8 +192,7 @@ export function IndividualQuestSubmissionForm({
             {/* Submission Text */}
             <div className="space-y-2">
               <Label htmlFor="submission-text">
-                Descripción del Trabajo{' '}
-                <span className="text-red-500">*</span>
+                Descripción del Trabajo <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="submission-text"
@@ -201,7 +204,7 @@ export function IndividualQuestSubmissionForm({
                 disabled={isSubmitting}
                 className="resize-none"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground">
                 Comparte tu progreso, aprendizajes y obstáculos que encontraste
               </p>
             </div>
@@ -240,11 +243,11 @@ export function IndividualQuestSubmissionForm({
                   disabled={isSubmitting || links.length >= 5}
                   className="w-full"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Agregar Otro Link {links.length >= 5 && '(Máx 5)'}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground">
                 Agrega links a tu trabajo (GitHub, demo, screenshots, etc.)
               </p>
             </div>

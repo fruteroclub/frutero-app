@@ -5,7 +5,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { getProgressToNextStage, getNextStage, STAGES, type ProjectStage } from '@/lib/jam/stages'
+import {
+  getProgressToNextStage,
+  getNextStage,
+  STAGES,
+  type ProjectStage,
+} from '@/lib/jam/stages'
 import { toast } from 'sonner'
 import { Rocket, CheckCircle2 } from 'lucide-react'
 
@@ -30,11 +35,14 @@ export function StageProgress({
 
   const advanceStage = useMutation({
     mutationFn: async () => {
-      const response = await fetch(`/api/jam/projects/${projectSlug}/stage/advance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ manualOverride: false }),
-      })
+      const response = await fetch(
+        `/api/jam/projects/${projectSlug}/stage/advance`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ manualOverride: false }),
+        },
+      )
 
       if (!response.ok) {
         const error = await response.json()
@@ -44,7 +52,9 @@ export function StageProgress({
       return response.json()
     },
     onSuccess: (data: { project: { stage: ProjectStage } }) => {
-      toast.success(`<� �Proyecto avanzado a ${STAGES[data.project.stage].title}!`)
+      toast.success(
+        `<� �Proyecto avanzado a ${STAGES[data.project.stage].title}!`,
+      )
       queryClient.invalidateQueries({ queryKey: ['project', projectSlug] })
       queryClient.invalidateQueries({ queryKey: ['stage-check', projectSlug] })
     },
@@ -66,8 +76,9 @@ export function StageProgress({
         <CardContent>
           <div className="text-center">
             <div className="mb-4 text-6xl">{STAGES[currentStage].icon}</div>
-            <p className="text-muted-foreground">
-              Has alcanzado la etapa final. �Sigue construyendo y escalando tu proyecto!
+            <p className="text-foreground">
+              Has alcanzado la etapa final. �Sigue construyendo y escalando tu
+              proyecto!
             </p>
             <Badge className="mt-4" variant="default">
               {questsCompleted} quests completados
@@ -98,9 +109,11 @@ export function StageProgress({
         {/* Progress Bar */}
         <div className="space-y-2">
           <Progress value={progress} className="h-3" />
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <div className="flex justify-between text-sm text-foreground">
             <span>{progress}% completado</span>
-            {questsRemaining > 0 && <span>{questsRemaining} quests restantes</span>}
+            {questsRemaining > 0 && (
+              <span>{questsRemaining} quests restantes</span>
+            )}
           </div>
         </div>
 
@@ -110,7 +123,9 @@ export function StageProgress({
             <span className="text-3xl">{STAGES[nextStage].icon}</span>
             <div className="flex-1">
               <h4 className="font-medium">{STAGES[nextStage].title}</h4>
-              <p className="text-sm text-muted-foreground">{STAGES[nextStage].description}</p>
+              <p className="text-sm text-foreground">
+                {STAGES[nextStage].description}
+              </p>
             </div>
           </div>
         </div>
@@ -124,7 +139,9 @@ export function StageProgress({
             size="lg"
           >
             <Rocket className="mr-2 h-4 w-4" />
-            {advanceStage.isPending ? 'Avanzando...' : `Avanzar a ${STAGES[nextStage].title}`}
+            {advanceStage.isPending
+              ? 'Avanzando...'
+              : `Avanzar a ${STAGES[nextStage].title}`}
           </Button>
         ) : (
           <div className="rounded-lg bg-yellow-50 p-3 text-sm text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200">

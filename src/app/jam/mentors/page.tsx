@@ -10,7 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Info } from 'lucide-react'
 import { MentorFilters } from '@/components/jam-platform/mentors/MentorFilters'
 import { MentorGrid } from '@/components/jam-platform/mentors/MentorGrid'
-import { getAllMentors, getMentorRecommendations, type Mentor } from '@/services/jam/mentors.service'
+import {
+  getAllMentors,
+  getMentorRecommendations,
+  type Mentor,
+} from '@/services/jam/mentors.service'
 
 export default function MentorsPage() {
   const { user, isAppAuthenticated } = useAppAuth()
@@ -64,7 +68,7 @@ export default function MentorsPage() {
           <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h1 className="text-3xl font-bold md:text-4xl">Mentores</h1>
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 text-foreground">
                 Conecta con mentores expertos que te guiarán en tu camino
               </p>
             </div>
@@ -79,14 +83,14 @@ export default function MentorsPage() {
           <Alert className="mb-6">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              Los mentores están disponibles para guiarte durante tu programa. Revisa las
-              recomendaciones personalizadas basadas en tu perfil.
+              Los mentores están disponibles para guiarte durante tu programa.
+              Revisa las recomendaciones personalizadas basadas en tu perfil.
             </AlertDescription>
           </Alert>
 
           {isLoading ? (
             <div className="py-12 text-center">
-              <p className="text-muted-foreground">Cargando mentores...</p>
+              <p className="text-foreground">Cargando mentores...</p>
             </div>
           ) : (
             <Tabs defaultValue="recommended" className="w-full">
@@ -94,7 +98,9 @@ export default function MentorsPage() {
                 <TabsTrigger value="recommended">
                   Recomendados ({recommendations.length})
                 </TabsTrigger>
-                <TabsTrigger value="all">Todos ({filteredMentors.length})</TabsTrigger>
+                <TabsTrigger value="all">
+                  Todos ({filteredMentors.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="recommended" className="mt-6">

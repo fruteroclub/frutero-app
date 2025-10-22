@@ -32,7 +32,9 @@ export function MentorCard({ mentor }: MentorCardProps) {
       .slice(0, 2)
   }
 
-  const location = [mentor.profile?.cityRegion, mentor.profile?.country].filter(Boolean).join(', ')
+  const location = [mentor.profile?.cityRegion, mentor.profile?.country]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <Link href={`/jam/mentors/${mentor.id}`}>
@@ -42,14 +44,16 @@ export function MentorCard({ mentor }: MentorCardProps) {
             <div className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={mentor.avatarUrl || undefined} />
-                <AvatarFallback>{getInitials(mentor.displayName)}</AvatarFallback>
+                <AvatarFallback>
+                  {getInitials(mentor.displayName)}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <h3 className="font-semibold group-hover:text-primary">
                   {mentor.displayName || mentor.username || 'Sin nombre'}
                 </h3>
                 {location && (
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1 text-sm text-foreground">
                     <MapPin className="h-3 w-3" />
                     <span>{location}</span>
                   </div>
@@ -64,7 +68,9 @@ export function MentorCard({ mentor }: MentorCardProps) {
 
         <CardContent className="space-y-4">
           {mentor.profile?.professionalProfile && (
-            <p className="line-clamp-2 text-sm text-muted-foreground">{mentor.profile.professionalProfile}</p>
+            <p className="line-clamp-2 text-sm text-foreground">
+              {mentor.profile.professionalProfile}
+            </p>
           )}
 
           {mentor.expertiseAreas.length > 0 && (
@@ -82,7 +88,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
             </div>
           )}
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-foreground">
             <div className="flex items-center gap-1">
               <Users className="h-4 w-4" />
               <span>

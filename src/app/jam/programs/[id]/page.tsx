@@ -43,7 +43,7 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
             <JamNav />
           </div>
           <div className="container max-w-6xl space-y-6 pl-64">
-            <p className="text-center text-muted-foreground">Cargando programa...</p>
+            <p className="text-center text-foreground">Cargando programa...</p>
           </div>
         </div>
       </PageWrapper>
@@ -60,10 +60,10 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
           <div className="container max-w-6xl space-y-6 pl-64">
             <Card>
               <CardContent className="pt-6 text-center">
-                <p className="text-muted-foreground mb-4">Programa no encontrado</p>
+                <p className="mb-4 text-foreground">Programa no encontrado</p>
                 <Button asChild>
                   <Link href="/jam/programs">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <ArrowLeft className="mr-2 h-4 w-4" />
                     Volver a Programas
                   </Link>
                 </Button>
@@ -82,151 +82,162 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
           <JamNav />
         </div>
         <div className="container max-w-6xl space-y-6 pl-64">
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/jam/programs">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver a Programas
-          </Link>
-        </Button>
-      </div>
+          <div className="mb-6">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/jam/programs">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Volver a Programas
+              </Link>
+            </Button>
+          </div>
 
-      <ProgramHeader program={program} />
+          <ProgramHeader program={program} />
 
-      <div className="grid md:grid-cols-3 gap-6 mt-8">
-        <div className="md:col-span-2 space-y-6">
-          {/* Description */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Descripción</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground whitespace-pre-wrap">
-                {program.description}
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Timeline */}
-          <ProgramTimeline program={program} />
-
-          {/* Participants */}
-          {participants.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Proyectos Participantes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loadingParticipants ? (
-                  <p className="text-sm text-muted-foreground">
-                    Cargando participantes...
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <div className="space-y-6 md:col-span-2">
+              {/* Description */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Descripción</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="whitespace-pre-wrap text-foreground">
+                    {program.description}
                   </p>
-                ) : (
-                  <div className="space-y-3">
-                    {participants.slice(0, 10).map((participant) => {
-                      const typedParticipant = participant as Record<string, unknown>
-                      const project = typedParticipant.project as Record<string, unknown>
-                      const admin = project.admin as Record<string, string>
-                      const participantStatus = typedParticipant.status as string
-                      const participantId = typedParticipant.id as string
-                      const projectSlug = project.slug as string
-                      const projectName = project.name as string
+                </CardContent>
+              </Card>
 
-                      return (
-                        <div
-                          key={participantId}
-                          className="flex items-center justify-between py-2 border-b last:border-0"
-                        >
-                          <div>
-                            <Link
-                              href={`/jam/projects/${projectSlug}`}
-                              className="font-medium hover:underline"
-                            >
-                              {projectName}
-                            </Link>
-                            <p className="text-sm text-muted-foreground">
-                              por {admin.displayName}
-                            </p>
-                          </div>
-                          <Badge variant="outline">{participantStatus}</Badge>
-                        </div>
-                      )
-                    })}
-                    {participants.length > 10 && (
-                      <p className="text-sm text-muted-foreground text-center pt-2">
-                        +{participants.length - 10} proyectos más
+              {/* Timeline */}
+              <ProgramTimeline program={program} />
+
+              {/* Participants */}
+              {participants.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Proyectos Participantes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingParticipants ? (
+                      <p className="text-sm text-foreground">
+                        Cargando participantes...
                       </p>
+                    ) : (
+                      <div className="space-y-3">
+                        {participants.slice(0, 10).map((participant) => {
+                          const typedParticipant = participant as Record<
+                            string,
+                            unknown
+                          >
+                          const project = typedParticipant.project as Record<
+                            string,
+                            unknown
+                          >
+                          const admin = project.admin as Record<string, string>
+                          const participantStatus =
+                            typedParticipant.status as string
+                          const participantId = typedParticipant.id as string
+                          const projectSlug = project.slug as string
+                          const projectName = project.name as string
+
+                          return (
+                            <div
+                              key={participantId}
+                              className="flex items-center justify-between border-b py-2 last:border-0"
+                            >
+                              <div>
+                                <Link
+                                  href={`/jam/projects/${projectSlug}`}
+                                  className="font-medium hover:underline"
+                                >
+                                  {projectName}
+                                </Link>
+                                <p className="text-sm text-foreground">
+                                  por {admin.displayName}
+                                </p>
+                              </div>
+                              <Badge variant="outline">
+                                {participantStatus}
+                              </Badge>
+                            </div>
+                          )
+                        })}
+                        {participants.length > 10 && (
+                          <p className="pt-2 text-center text-sm text-foreground">
+                            +{participants.length - 10} proyectos más
+                          </p>
+                        )}
+                      </div>
                     )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          {/* Stats */}
-          <ProgramStats
-            participantCount={program.participantCount || 0}
-            totalPrizes={null}
-          />
-
-          {/* Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Acciones</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {program.applicationUrl && (
-                <Button className="w-full" asChild>
-                  <a
-                    href={program.applicationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Aplicar al Programa
-                  </a>
-                </Button>
+                  </CardContent>
+                </Card>
               )}
+            </div>
 
-              {program.websiteUrl && (
-                <Button variant="outline" className="w-full" asChild>
-                  <a
-                    href={program.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Visitar Sitio Web
-                  </a>
-                </Button>
+            <div className="space-y-4">
+              {/* Stats */}
+              <ProgramStats
+                participantCount={program.participantCount || 0}
+                totalPrizes={null}
+              />
+
+              {/* Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Acciones</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {program.applicationUrl && (
+                    <Button className="w-full" asChild>
+                      <a
+                        href={program.applicationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Aplicar al Programa
+                      </a>
+                    </Button>
+                  )}
+
+                  {program.websiteUrl && (
+                    <Button variant="outline" className="w-full" asChild>
+                      <a
+                        href={program.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Visitar Sitio Web
+                      </a>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Info */}
+              {program.capacity && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Información</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-foreground">Capacidad:</span>
+                      <span className="font-medium">
+                        {program.capacity} personas
+                      </span>
+                    </div>
+                    {program.cohort && (
+                      <div className="flex justify-between">
+                        <span className="text-foreground">Cohorte:</span>
+                        <span className="font-medium">{program.cohort}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Info */}
-          {program.capacity && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Información</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Capacidad:</span>
-                  <span className="font-medium">{program.capacity} personas</span>
-                </div>
-                {program.cohort && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Cohorte:</span>
-                    <span className="font-medium">{program.cohort}</span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
+            </div>
+          </div>
         </div>
       </div>
     </PageWrapper>

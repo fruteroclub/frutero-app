@@ -27,7 +27,7 @@ export function ProjectStageCard({ project }: ProjectStageCardProps) {
           <CardTitle>Tu Proyecto</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 py-6 text-center">
-          <p className="text-muted-foreground">No tienes un proyecto activo</p>
+          <p className="text-foreground">No tienes un proyecto activo</p>
           <Button variant="outline" className="w-full" asChild>
             <Link href="/jam/onboarding">Crear Proyecto</Link>
           </Button>
@@ -44,15 +44,15 @@ export function ProjectStageCard({ project }: ProjectStageCardProps) {
       <CardContent className="space-y-4">
         <div>
           <h3 className="text-lg font-semibold">{project.name}</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-foreground">
             Etapa: {STAGE_LABELS[project.stage] || project.stage}
           </p>
         </div>
 
         <div className="border-t pt-2">
           <div className="mb-3 flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
+            <Users className="h-4 w-4 text-foreground" />
+            <span className="text-sm text-foreground">
               {project.memberCount}{' '}
               {project.memberCount === 1 ? 'miembro' : 'miembros'}
             </span>

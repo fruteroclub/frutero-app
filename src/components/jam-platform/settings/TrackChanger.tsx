@@ -1,7 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { TRACKS } from '@/lib/jam/tracks'
 import { Sprout, Rocket, Briefcase, Target, AlertCircle } from 'lucide-react'
@@ -70,7 +76,7 @@ export function TrackChanger({
     } catch (error) {
       console.error('Error updating track:', error)
       toast.error(
-        error instanceof Error ? error.message : 'Error al cambiar de ruta'
+        error instanceof Error ? error.message : 'Error al cambiar de ruta',
       )
       setSelectedTrack(currentTrack) // Reset to current track on error
     } finally {
@@ -94,14 +100,15 @@ export function TrackChanger({
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Puedes cambiar de ruta hasta {remainingChanges} {remainingChanges === 1 ? 'vez' : 'veces'} más.
-            Elige cuidadosamente ya que esto afectará tus quests y mentores recomendados.
+            Puedes cambiar de ruta hasta {remainingChanges}{' '}
+            {remainingChanges === 1 ? 'vez' : 'veces'} más. Elige cuidadosamente
+            ya que esto afectará tus quests y mentores recomendados.
           </AlertDescription>
         </Alert>
       )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {(Object.entries(TRACKS) as [Track, typeof TRACKS[Track]][]).map(
+        {(Object.entries(TRACKS) as [Track, (typeof TRACKS)[Track]][]).map(
           ([key, track]) => {
             const Icon = TRACK_ICONS[key]
             const isSelected = selectedTrack === key
@@ -113,7 +120,9 @@ export function TrackChanger({
                 className={cn(
                   'cursor-pointer transition-all hover:shadow-lg',
                   isSelected && 'ring-2 ring-primary',
-                  !canChangeTrack && !isCurrent && 'cursor-not-allowed opacity-50'
+                  !canChangeTrack &&
+                    !isCurrent &&
+                    'cursor-not-allowed opacity-50',
                 )}
                 onClick={() => {
                   if (canChangeTrack || isCurrent) {
@@ -133,7 +142,7 @@ export function TrackChanger({
                 </CardHeader>
 
                 <CardContent>
-                  <ul className="space-y-1 text-xs text-muted-foreground">
+                  <ul className="space-y-1 text-xs text-foreground">
                     {track.goalsEs.slice(0, 2).map((goal, i) => (
                       <li key={i} className="flex items-start gap-1">
                         <span className="text-primary">✓</span>
@@ -151,7 +160,7 @@ export function TrackChanger({
                 </CardContent>
               </Card>
             )
-          }
+          },
         )}
       </div>
 

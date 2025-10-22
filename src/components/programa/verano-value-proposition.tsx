@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Award,
   Target,
-  Zap
+  Zap,
 } from 'lucide-react'
 
 interface BenefitItem {
@@ -35,7 +35,13 @@ interface VeranoValuePropositionProps {
   className?: string
 }
 
-function AnimatedCounter({ item, delay = 0 }: { item: MetricItem; delay?: number }) {
+function AnimatedCounter({
+  item,
+  delay = 0,
+}: {
+  item: MetricItem
+  delay?: number
+}) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -67,27 +73,36 @@ function AnimatedCounter({ item, delay = 0 }: { item: MetricItem; delay?: number
       transition={{ duration: 0.5, delay }}
       className="text-center"
     >
-      <div className="text-4xl font-bold text-primary mb-2">
+      <div className="mb-2 text-4xl font-bold text-primary">
         {item.prefix}
         {count}
         {item.suffix}
       </div>
-      <div className="text-sm text-muted-foreground">{item.label}</div>
+      <div className="text-sm text-foreground">{item.label}</div>
     </motion.div>
   )
 }
 
-function BenefitCard({ benefit, index }: { benefit: BenefitItem; index: number }) {
+function BenefitCard({
+  benefit,
+  index,
+}: {
+  benefit: BenefitItem
+  index: number
+}) {
   const colorClasses = {
-    primary: 'border-[2.5px] border-primary hover:border-primary/40 hover:bg-primary/5',
-    secondary: 'border-[2.5px] border-secondary hover:border-secondary/40 hover:bg-secondary/5',
-    accent: 'border-[2.5px] border-accent hover:border-accent/40 hover:bg-accent/5'
+    primary:
+      'border-[2.5px] border-primary hover:border-primary/40 hover:bg-primary/5',
+    secondary:
+      'border-[2.5px] border-secondary hover:border-secondary/40 hover:bg-secondary/5',
+    accent:
+      'border-[2.5px] border-accent hover:border-accent/40 hover:bg-accent/5',
   }
 
   const iconColorClasses = {
     primary: 'text-primary',
     secondary: 'text-secondary',
-    accent: 'text-accent'
+    accent: 'text-accent',
   }
 
   return (
@@ -96,18 +111,25 @@ function BenefitCard({ benefit, index }: { benefit: BenefitItem; index: number }
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Card className={cn(
-        'h-full transition-all duration-300 hover:shadow-lg hover:scale-105',
-        colorClasses[benefit.color]
-      )}>
+      <Card
+        className={cn(
+          'h-full transition-all duration-300 hover:scale-105 hover:shadow-lg',
+          colorClasses[benefit.color],
+        )}
+      >
         <CardHeader className="text-center">
-          <div className={cn('mx-auto mb-4 h-12 w-12', iconColorClasses[benefit.color])}>
+          <div
+            className={cn(
+              'mx-auto mb-4 h-12 w-12',
+              iconColorClasses[benefit.color],
+            )}
+          >
             {benefit.icon}
           </div>
           <CardTitle className="text-lg">{benefit.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center">{benefit.description}</p>
+          <p className="text-center text-foreground">{benefit.description}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -118,39 +140,40 @@ const benefits: BenefitItem[] = [
   {
     icon: <Code className="h-full w-full" />,
     title: 'Desarrollo AI-Enhanced',
-    description: 'Aprende a programar 5-10x más rápido con AI y herramientas modernas',
-    color: 'primary'
+    description:
+      'Aprende a programar 5-10x más rápido con AI y herramientas modernas',
+    color: 'primary',
   },
   {
     icon: <User className="h-full w-full" />,
     title: 'Construye Tu Marca Personal',
     description: 'De coder anónimo a builder reconocido públicamente en Web3',
-    color: 'secondary'
+    color: 'secondary',
   },
   {
     icon: <Users className="h-full w-full" />,
     title: 'Red Elite de Builders',
     description: 'Conecta con 200+ developers exitosos en 15+ países',
-    color: 'accent'
+    color: 'accent',
   },
   {
     icon: <Brain className="h-full w-full" />,
     title: 'Mentalidad de Founder',
     description: 'Cambia de empleado a emprendedor en 21 días intensivos',
-    color: 'primary'
+    color: 'primary',
   },
   {
     icon: <DollarSign className="h-full w-full" />,
     title: 'Potencial de Ingresos Real',
     description: 'Casos reales de $2M+ levantados por alumni del programa',
-    color: 'secondary'
+    color: 'secondary',
   },
   {
     icon: <Globe className="h-full w-full" />,
     title: 'Liderazgo Centroamericano',
     description: 'Representa tu país en la escena tech global como founder',
-    color: 'accent'
-  }
+    color: 'accent',
+  },
 ]
 
 const metrics: MetricItem[] = [
@@ -159,25 +182,29 @@ const metrics: MetricItem[] = [
   { value: 25, label: 'Hackathons Ganados', prefix: '+' },
   { value: 15, label: 'Países Representados', prefix: '+' },
   { value: 40, label: 'Startups Fundadas', prefix: '+' },
-  { value: 95, label: 'Tasa de Éxito', suffix: '%' }
+  { value: 95, label: 'Tasa de Éxito', suffix: '%' },
 ]
 
-export function VeranoValueProposition({ className }: VeranoValuePropositionProps) {
+export function VeranoValueProposition({
+  className,
+}: VeranoValuePropositionProps) {
   return (
-    <section className={cn('pt-16 md:pt-8 space-y-12', className)}>
+    <section className={cn('space-y-12 pt-16 md:pt-8', className)}>
       <div className="text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="mb-4 text-4xl font-bold">
             Acelera Tu Carrera 10x en
-            <span className="ml-2 inline-block -rotate-5 transform rounded-lg bg-secondary px-4 py-2 text-secondary-foreground">21 Días</span>
+            <span className="ml-2 inline-block -rotate-5 transform rounded-lg bg-secondary px-4 py-2 text-secondary-foreground">
+              21 Días
+            </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Programa intensivo que convierte hackers en founders exitosos.
-            La metodología probada que acelera tu crecimiento profesional.
+          <p className="mx-auto max-w-3xl text-xl text-foreground">
+            Programa intensivo que convierte hackers en founders exitosos. La
+            metodología probada que acelera tu crecimiento profesional.
           </p>
         </motion.div>
       </div>
@@ -188,15 +215,15 @@ export function VeranoValueProposition({ className }: VeranoValuePropositionProp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-4"
+          className="mb-4 text-center"
         >
-          <h3 className="text-2xl font-bold mb-2">Resultados Comprobados</h3>
-          <p className="text-muted-foreground">
+          <h3 className="mb-2 text-2xl font-bold">Resultados Comprobados</h3>
+          <p className="text-foreground">
             Más de 200 developers han transformado sus carreras
           </p>
         </motion.div>
 
-        <div className="lg:mx-auto grid grid-cols-2 md:grid-cols-3 gap-x-4 lg:gap-x-0 gap-y-2 lg:px-16">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-3 lg:mx-auto lg:gap-x-0 lg:px-16">
           {metrics.map((metric, i) => (
             <AnimatedCounter key={metric.label} item={metric} delay={i * 0.1} />
           ))}
@@ -209,15 +236,15 @@ export function VeranoValueProposition({ className }: VeranoValuePropositionProp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mb-4"
+          className="mb-4 text-center"
         >
-          <h3 className="text-2xl font-bold mb-2">6 Transformaciones Clave</h3>
-          <p className="text-muted-foreground">
+          <h3 className="mb-2 text-2xl font-bold">6 Transformaciones Clave</h3>
+          <p className="text-foreground">
             Cada área de tu vida profesional será transformada
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {benefits.map((benefit, i) => (
             <BenefitCard key={benefit.title} benefit={benefit} index={i} />
           ))}
@@ -230,38 +257,41 @@ export function VeranoValueProposition({ className }: VeranoValuePropositionProp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center mb-8"
+          className="mb-8 text-center"
         >
-          <h2 className="font-bold mb-2">Tu
+          <h2 className="mb-2 font-bold">
+            Tu
             <span className="ml-2 inline-block rotate-2 transform rounded-lg bg-accent px-4 py-2 text-foreground">
               Transformación
             </span>
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-foreground">
             De donde estás ahora a donde quieres llegar
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4">
+        <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2">
           {/* Before */}
-          <Card className="border-muted/50 border-[2.5px]">
+          <Card className="border-[2.5px] border-muted/50">
             <CardHeader className="text-center">
-              <CardTitle className="text-muted-foreground">Antes del Programa</CardTitle>
+              <CardTitle className="text-foreground">
+                Antes del Programa
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-foreground">
                 <Target className="h-5 w-5" />
                 <span>Developer anónimo sin reconocimiento</span>
               </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-foreground">
                 <TrendingUp className="h-5 w-5" />
                 <span>Ingresos limitados por salario</span>
               </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-foreground">
                 <Users className="h-5 w-5" />
                 <span>Red profesional local limitada</span>
               </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-3 text-foreground">
                 <Brain className="h-5 w-5" />
                 <span>Mentalidad de empleado</span>
               </div>
@@ -269,9 +299,11 @@ export function VeranoValueProposition({ className }: VeranoValuePropositionProp
           </Card>
 
           {/* After */}
-          <Card className="border-primary/50 bg-primary/5 border-[2.5px]">
+          <Card className="border-[2.5px] border-primary/50 bg-primary/5">
             <CardHeader className="text-center">
-              <CardTitle className="text-primary">Después del Programa</CardTitle>
+              <CardTitle className="text-primary">
+                Después del Programa
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3 text-foreground">
@@ -300,20 +332,22 @@ export function VeranoValueProposition({ className }: VeranoValuePropositionProp
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.8 }}
-        className="text-center px-4"
+        className="px-4 text-center"
       >
-        <Card className="max-w-4xl mx-auto border-accent/20 bg-accent/5">
+        <Card className="mx-auto max-w-4xl border-accent/20 bg-accent/5">
           <CardContent className="pt-8">
-            <blockquote className="text-xl italic text-foreground mb-4">
-              &ldquo;En 21 días pasé de ser un developer más a fundar mi startup y levantar $500K.
-              La comunidad y metodología de Frutero Club cambiaron mi vida completamente.&rdquo;
+            <blockquote className="mb-4 text-xl text-foreground italic">
+              &ldquo;En 21 días pasé de ser un developer más a fundar mi startup
+              y levantar $500K. La comunidad y metodología de Frutero Club
+              cambiaron mi vida completamente.&rdquo;
             </blockquote>
-            <div className="text-muted-foreground">
-              <strong>María González</strong> • Founder de TechVenture • Costa Rica
+            <div className="text-foreground">
+              <strong>María González</strong> • Founder de TechVenture • Costa
+              Rica
             </div>
           </CardContent>
         </Card>
       </motion.div>
     </section>
   )
-} 
+}

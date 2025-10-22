@@ -28,13 +28,17 @@ export default function TeamPage({ params }: TeamPageProps) {
   const { slug } = use(params)
 
   // Fetch project
-  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
-    queryKey: ['project', slug],
-    queryFn: () => getProject(slug),
-  })
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>(
+    {
+      queryKey: ['project', slug],
+      queryFn: () => getProject(slug),
+    },
+  )
 
   // Fetch team members
-  const { data: members = [], isLoading: membersLoading } = useQuery<ProjectMember[]>({
+  const { data: members = [], isLoading: membersLoading } = useQuery<
+    ProjectMember[]
+  >({
     queryKey: ['project-members', slug],
     queryFn: () => getProjectMembers(slug),
     enabled: !!project,
@@ -49,7 +53,7 @@ export default function TeamPage({ params }: TeamPageProps) {
           </div>
           <div className="container max-w-4xl pl-64">
             <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-8 w-8 animate-spin text-foreground" />
             </div>
           </div>
         </div>
@@ -62,7 +66,7 @@ export default function TeamPage({ params }: TeamPageProps) {
   }
 
   const isAdmin = members.find(
-    (m) => m.userId === user?.id && m.role === 'ADMIN'
+    (m) => m.userId === user?.id && m.role === 'ADMIN',
   )
 
   return (
@@ -75,7 +79,7 @@ export default function TeamPage({ params }: TeamPageProps) {
           {/* Back Link */}
           <Link
             href={`/jam/projects/${slug}`}
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center text-sm text-foreground hover:text-foreground"
           >
             ← Volver al Proyecto
           </Link>
@@ -84,8 +88,9 @@ export default function TeamPage({ params }: TeamPageProps) {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">{project.name} - Equipo</h1>
-              <p className="text-muted-foreground mt-2">
-                {members.length} miembro{members.length !== 1 ? 's' : ''} del equipo
+              <p className="mt-2 text-foreground">
+                {members.length} miembro{members.length !== 1 ? 's' : ''} del
+                equipo
               </p>
             </div>
 

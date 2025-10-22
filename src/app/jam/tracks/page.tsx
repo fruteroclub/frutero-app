@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { TRACKS } from '@/lib/jam/tracks'
 import { Sprout, Rocket, Briefcase, Target } from 'lucide-react'
@@ -11,7 +17,13 @@ const TRACK_ICONS = {
   FREELANCER: Target,
 }
 
-function TrackDetailSection({ trackKey, track }: { trackKey: Track; track: typeof TRACKS[Track] }) {
+function TrackDetailSection({
+  trackKey,
+  track,
+}: {
+  trackKey: Track
+  track: (typeof TRACKS)[Track]
+}) {
   const Icon = TRACK_ICONS[trackKey]
 
   return (
@@ -39,7 +51,7 @@ function TrackDetailSection({ trackKey, track }: { trackKey: Track; track: typeo
               {track.goalsEs.map((goal, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <Target className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-sm text-muted-foreground">{goal}</span>
+                  <span className="text-sm text-foreground">{goal}</span>
                 </li>
               ))}
             </ul>
@@ -75,15 +87,17 @@ export default function TracksInfoPage() {
     <div className="container py-6">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold">Rutas de Desarrollo</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-foreground">
           Cuatro caminos hacia el éxito como Hacker de Alto Impacto
         </p>
       </div>
 
       <div className="space-y-8">
-        {(Object.entries(TRACKS) as [Track, typeof TRACKS[Track]][]).map(([key, track]) => (
-          <TrackDetailSection key={key} trackKey={key} track={track} />
-        ))}
+        {(Object.entries(TRACKS) as [Track, (typeof TRACKS)[Track]][]).map(
+          ([key, track]) => (
+            <TrackDetailSection key={key} trackKey={key} track={track} />
+          ),
+        )}
       </div>
     </div>
   )

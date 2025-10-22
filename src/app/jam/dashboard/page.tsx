@@ -13,7 +13,10 @@ import { RecentActivity } from '@/components/jam-platform/dashboard/RecentActivi
 import { TrackCard } from '@/components/jam-platform/dashboard/TrackCard'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
-import { getDashboardStats, type DashboardStats } from '@/services/jam/dashboard.service'
+import {
+  getDashboardStats,
+  type DashboardStats,
+} from '@/services/jam/dashboard.service'
 
 export default function DashboardPage() {
   const { user, isAppAuthenticated, isLoading } = useAppAuth()
@@ -32,7 +35,7 @@ export default function DashboardPage() {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando...</p>
+                <p className="text-foreground">Cargando...</p>
               </div>
             </div>
           </div>
@@ -49,7 +52,7 @@ export default function DashboardPage() {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <h2 className="text-2xl font-bold">Autenticación Requerida</h2>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   Por favor inicia sesión para acceder al dashboard.
                 </p>
                 <Link
@@ -72,7 +75,7 @@ export default function DashboardPage() {
         <div className="page py-6">
           <div className="container py-8">
             <div className="space-y-4 text-center">
-              <p className="text-muted-foreground">
+              <p className="text-foreground">
                 Error al cargar datos del dashboard
               </p>
             </div>

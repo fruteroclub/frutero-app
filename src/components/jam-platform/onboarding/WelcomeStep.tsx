@@ -1,25 +1,25 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 export function WelcomeStep({ onNext }: { onNext: () => void }) {
   return (
     <div className="space-y-8 text-center">
       <div>
-        <h1 className="text-4xl font-bold mb-4">
+        <h1 className="mb-4 text-4xl font-bold">
           Welcome to Frutero JAM Platform 🎯
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="mx-auto max-w-2xl text-xl text-foreground">
           Connect with mentors, track your progress, and ship your project in 6
           weeks
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+      <div className="mx-auto grid max-w-3xl gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-4xl mb-3">🧑‍🏫</div>
-            <h3 className="font-semibold mb-2">Expert Mentorship</h3>
-            <p className="text-sm text-muted-foreground">
+            <div className="mb-3 text-4xl">🧑‍🏫</div>
+            <h3 className="mb-2 font-semibold">Expert Mentorship</h3>
+            <p className="text-sm text-foreground">
               Get paired with experienced mentors in your track
             </p>
           </CardContent>
@@ -27,9 +27,9 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
 
         <Card>
           <CardContent className="pt-6">
-            <div className="text-4xl mb-3">🎯</div>
-            <h3 className="font-semibold mb-2">Quest System</h3>
-            <p className="text-sm text-muted-foreground">
+            <div className="mb-3 text-4xl">🎯</div>
+            <h3 className="mb-2 font-semibold">Quest System</h3>
+            <p className="text-sm text-foreground">
               Complete quests to level up and earn rewards
             </p>
           </CardContent>
@@ -37,9 +37,9 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
 
         <Card>
           <CardContent className="pt-6">
-            <div className="text-4xl mb-3">🚀</div>
-            <h3 className="font-semibold mb-2">Ship Fast</h3>
-            <p className="text-sm text-muted-foreground">
+            <div className="mb-3 text-4xl">🚀</div>
+            <h3 className="mb-2 font-semibold">Ship Fast</h3>
+            <p className="text-sm text-foreground">
               Launch your project with structured accountability
             </p>
           </CardContent>
@@ -52,5 +52,5 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
         </Button>
       </div>
     </div>
-  );
+  )
 }

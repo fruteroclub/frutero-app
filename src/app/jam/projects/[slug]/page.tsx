@@ -107,7 +107,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando proyecto...</p>
+                <p className="text-foreground">Cargando proyecto...</p>
               </div>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           {/* Back Link */}
           <Link
             href="/jam/projects"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 text-sm text-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a Proyectos
@@ -213,7 +213,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                     </Badge>
                   )}
 
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-foreground">
                     <Users className="h-4 w-4" />
                     <span>
                       {members.length}{' '}
@@ -221,7 +221,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-foreground">
                     <Calendar className="h-4 w-4" />
                     <span>
                       {new Date(project.createdAt).toLocaleDateString('es-ES', {
@@ -344,7 +344,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   <CardTitle className="text-2xl">Sobre el Proyecto</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-base leading-relaxed text-muted-foreground">
+                  <p className="text-base leading-relaxed text-foreground">
                     {project.description}
                   </p>
                 </CardContent>
@@ -403,7 +403,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 </CardHeader>
                 <CardContent>
                   {members.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-foreground">
                       No hay miembros en el equipo aún
                     </p>
                   ) : (
@@ -460,7 +460,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                           <Wallet className="h-4 w-4" />
                           <span>Treasury Wallet</span>
                         </div>
-                        <p className="rounded bg-muted p-2 font-mono text-xs break-all text-muted-foreground">
+                        <p className="rounded bg-muted p-2 font-mono text-xs break-all text-foreground">
                           {project.walletAddress}
                         </p>
                       </div>

@@ -1,48 +1,51 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Target } from 'lucide-react';
-import type { Deadline } from '@/types/jam';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Calendar, Target } from 'lucide-react'
+import type { Deadline } from '@/types/jam'
 
 interface UpcomingDeadlinesProps {
-  deadlines: Deadline[];
+  deadlines: Deadline[]
 }
 
 export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
   if (deadlines.length === 0) {
     return (
-      <Card className="h-full flex flex-col">
+      <Card className="flex h-full flex-col">
         <CardHeader>
           <CardTitle>Próximos Vencimientos</CardTitle>
         </CardHeader>
-        <CardContent className="text-center py-6">
-          <p className="text-muted-foreground">No hay vencimientos próximos</p>
+        <CardContent className="py-6 text-center">
+          <p className="text-foreground">No hay vencimientos próximos</p>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Próximos Vencimientos</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {deadlines.map((deadline) => {
-          const icon = deadline.type === 'quest' ? Target : Calendar;
-          const Icon = icon;
+          const icon = deadline.type === 'quest' ? Target : Calendar
+          const Icon = icon
           const daysUntil = Math.ceil(
-            (new Date(deadline.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-          );
-          const isUrgent = daysUntil <= 3;
+            (new Date(deadline.dueDate).getTime() - new Date().getTime()) /
+              (1000 * 60 * 60 * 24),
+          )
+          const isUrgent = daysUntil <= 3
 
           return (
             <div
               key={deadline.id}
-              className="flex items-start gap-3 p-3 rounded-lg border"
+              className="flex items-start gap-3 rounded-lg border p-3"
             >
-              <Icon className={`h-5 w-5 mt-0.5 ${isUrgent ? 'text-destructive' : 'text-muted-foreground'}`} />
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{deadline.title}</p>
-                <p className="text-xs text-muted-foreground">
+              <Icon
+                className={`mt-0.5 h-5 w-5 ${isUrgent ? 'text-destructive' : 'text-foreground'}`}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{deadline.title}</p>
+                <p className="text-xs text-foreground">
                   {daysUntil <= 0
                     ? 'Vence hoy'
                     : daysUntil === 1
@@ -50,16 +53,16 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
                       : `Vence en ${daysUntil} días`}
                 </p>
               </div>
-              <time className="text-xs text-muted-foreground whitespace-nowrap">
+              <time className="text-xs whitespace-nowrap text-foreground">
                 {new Date(deadline.dueDate).toLocaleDateString('es-ES', {
                   day: 'numeric',
                   month: 'short',
                 })}
               </time>
             </div>
-          );
+          )
         })}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -88,9 +88,7 @@ export default function AuthButtonPara({
           {/* Use Para's display address method */}
           {wallet.id ? `${wallet.id.slice(0, 6)}...${wallet.id.slice(-4)}` : ''}
           {isGuest && (
-            <span className="ml-1 text-xs text-muted-foreground">
-              (Invitado)
-            </span>
+            <span className="ml-1 text-xs text-foreground">(Invitado)</span>
           )}
         </span>
         <Button
@@ -105,7 +103,7 @@ export default function AuthButtonPara({
           onClick={handleLogout} // App logout functionality
           size="sm"
           variant="ghost"
-          className="font-funnel font-medium text-muted-foreground hover:text-foreground"
+          className="font-funnel font-medium text-foreground hover:text-foreground"
         >
           Salir
         </Button>

@@ -45,8 +45,12 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
   const joinMutation = useMutation({
     mutationFn: (programId: string) => joinProgram(projectSlug, programId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
-      queryClient.invalidateQueries({ queryKey: ['available-programs', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-programs', projectSlug],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['available-programs', projectSlug],
+      })
       setOpen(false)
     },
   })
@@ -60,27 +64,28 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Unirse a Programa
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Unirse a un Programa</DialogTitle>
           <DialogDescription>
-            Selecciona un programa para participar. Tu proyecto tendrá acceso a los quests y recursos del programa.
+            Selecciona un programa para participar. Tu proyecto tendrá acceso a
+            los quests y recursos del programa.
           </DialogDescription>
         </DialogHeader>
 
         {isLoading && (
-          <p className="text-center text-muted-foreground py-8">
+          <p className="py-8 text-center text-foreground">
             Cargando programas disponibles...
           </p>
         )}
 
         {!isLoading && availablePrograms.length === 0 && (
           <Card className="p-6 text-center">
-            <p className="text-muted-foreground">
+            <p className="text-foreground">
               No hay programas disponibles en este momento.
             </p>
           </Card>
@@ -89,12 +94,15 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
         {!isLoading && availablePrograms.length > 0 && (
           <div className="space-y-3">
             {availablePrograms.map((program) => (
-              <Card key={program.id} className="hover:border-primary transition-colors">
+              <Card
+                key={program.id}
+                className="transition-colors hover:border-primary"
+              >
                 <CardHeader>
-                  <div className="flex justify-between items-start gap-4">
+                  <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <CardTitle className="text-lg">{program.name}</CardTitle>
-                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
                         <Badge variant="secondary">{program.type}</Badge>
                         <Badge variant="outline">{program.status}</Badge>
                       </div>
@@ -109,19 +117,23 @@ export function JoinProgramDialog({ projectSlug }: JoinProgramDialogProps) {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="line-clamp-2 text-sm text-foreground">
                     {program.description}
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-foreground">
                     <Calendar className="h-3 w-3" />
                     <span>
-                      Inicio: {new Date(program.startDate).toLocaleDateString('es-ES')}
+                      Inicio:{' '}
+                      {new Date(program.startDate).toLocaleDateString('es-ES')}
                     </span>
                     {program.endDate && (
                       <>
                         <span>-</span>
                         <span>
-                          Fin: {new Date(program.endDate).toLocaleDateString('es-ES')}
+                          Fin:{' '}
+                          {new Date(program.endDate).toLocaleDateString(
+                            'es-ES',
+                          )}
                         </span>
                       </>
                     )}

@@ -11,7 +11,7 @@ interface Stats {
 
 async function getVerificationStats(adminId: string): Promise<Stats> {
   const response = await fetch(
-    `/api/jam/admin/submissions?stats=true&adminId=${adminId}`
+    `/api/jam/admin/submissions?stats=true&adminId=${adminId}`,
   )
   if (!response.ok) {
     throw new Error('Failed to fetch stats')
@@ -36,8 +36,16 @@ export function VerificationStats() {
   return (
     <div className="flex gap-4">
       <StatCard label="Pendientes" value={stats.pending} color="yellow" />
-      <StatCard label="Verificados Hoy" value={stats.verifiedToday} color="green" />
-      <StatCard label="Bounties Pagados" value={`$${stats.totalPaid}`} color="blue" />
+      <StatCard
+        label="Verificados Hoy"
+        value={stats.verifiedToday}
+        color="green"
+      />
+      <StatCard
+        label="Bounties Pagados"
+        value={`$${stats.totalPaid}`}
+        color="blue"
+      />
     </div>
   )
 }
@@ -58,8 +66,8 @@ function StatCard({
   }
 
   return (
-    <div className={`${colorClasses[color]} p-4 rounded-lg`}>
-      <p className="text-xs text-muted-foreground">{label}</p>
+    <div className={`${colorClasses[color]} rounded-lg p-4`}>
+      <p className="text-xs text-foreground">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
     </div>
   )

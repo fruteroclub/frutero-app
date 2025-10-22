@@ -32,9 +32,11 @@ export function SessionCard({
               <CardTitle className="text-lg">Sesión con {mentorName}</CardTitle>
             )}
             {participantName && (
-              <CardTitle className="text-lg">Sesión con {participantName}</CardTitle>
+              <CardTitle className="text-lg">
+                Sesión con {participantName}
+              </CardTitle>
             )}
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
                 <span>{formattedDate}</span>
@@ -45,7 +47,8 @@ export function SessionCard({
               </div>
               {showRole && (
                 <span className="rounded-full bg-muted px-2 py-1 text-xs">
-                  Registrado por: {session.loggedBy === 'mentor' ? 'Mentor' : 'Participante'}
+                  Registrado por:{' '}
+                  {session.loggedBy === 'mentor' ? 'Mentor' : 'Participante'}
                 </span>
               )}
             </div>
@@ -58,19 +61,19 @@ export function SessionCard({
         {session.objectives && (
           <div>
             <h4 className="mb-1 font-medium">Objetivos</h4>
-            <p className="text-sm text-muted-foreground">{session.objectives}</p>
+            <p className="text-sm text-foreground">{session.objectives}</p>
           </div>
         )}
 
         <div>
           <h4 className="mb-1 font-medium">Resultados Clave</h4>
-          <p className="text-sm text-muted-foreground">{session.outcomes}</p>
+          <p className="text-sm text-foreground">{session.outcomes}</p>
         </div>
 
         {session.nextSteps && (
           <div>
             <h4 className="mb-1 font-medium">Próximos Pasos</h4>
-            <p className="text-sm text-muted-foreground">{session.nextSteps}</p>
+            <p className="text-sm text-foreground">{session.nextSteps}</p>
           </div>
         )}
       </CardContent>

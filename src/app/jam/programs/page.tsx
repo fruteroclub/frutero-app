@@ -77,7 +77,7 @@ export default function ProgramsPage() {
               <h1 className="text-3xl font-bold md:text-4xl">
                 Programas Externos
               </h1>
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 text-foreground">
                 Descubre hackathons, cursos e incubadoras para aplicar tus
                 habilidades
               </p>
@@ -102,7 +102,7 @@ export default function ProgramsPage() {
 
           {isLoading ? (
             <div className="py-12 text-center">
-              <p className="text-muted-foreground">Cargando programas...</p>
+              <p className="text-foreground">Cargando programas...</p>
             </div>
           ) : (
             <Tabs defaultValue="recommended" className="w-full">

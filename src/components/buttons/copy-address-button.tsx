@@ -23,7 +23,7 @@ export function CopyButton({
   return (
     <button
       onClick={handleCopy}
-      className={`text-muted-foreground transition-colors hover:text-primary ${className}`}
+      className={`text-foreground transition-colors hover:text-primary ${className}`}
     >
       {hasCopied ? (
         <CheckIcon className="h-[0.875rem] w-[0.875rem]" />

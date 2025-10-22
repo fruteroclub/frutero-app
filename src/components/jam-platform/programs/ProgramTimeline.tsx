@@ -56,25 +56,23 @@ export function ProgramTimeline({ program }: ProgramTimelineProps) {
             return (
               <div key={index} className="flex items-start gap-3">
                 <div
-                  className={`p-2 rounded-full ${
+                  className={`rounded-full p-2 ${
                     isPast ? 'bg-muted' : 'bg-primary/10'
                   }`}
                 >
                   <Icon
                     className={`h-4 w-4 ${
-                      isPast ? 'text-muted-foreground' : 'text-primary'
+                      isPast ? 'text-foreground' : 'text-primary'
                     }`}
                   />
                 </div>
                 <div className="flex-1">
                   <p
-                    className={`font-medium ${
-                      isPast ? 'text-muted-foreground' : ''
-                    }`}
+                    className={`font-medium ${isPast ? 'text-foreground' : ''}`}
                   >
                     {event.label}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     {event.date.toLocaleDateString('es-ES', {
                       year: 'numeric',
                       month: 'long',

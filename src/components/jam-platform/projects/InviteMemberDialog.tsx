@@ -26,9 +26,12 @@ export function InviteMemberDialog({ projectSlug }: InviteMemberDialogProps) {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: (userId: string) => addProjectMember(projectSlug, userId, 'MEMBER'),
+    mutationFn: (userId: string) =>
+      addProjectMember(projectSlug, userId, 'MEMBER'),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-members', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-members', projectSlug],
+      })
       setOpen(false)
       setUserId('')
     },
@@ -43,7 +46,7 @@ export function InviteMemberDialog({ projectSlug }: InviteMemberDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <UserPlus className="h-4 w-4 mr-2" />
+          <UserPlus className="mr-2 h-4 w-4" />
           Agregar Miembro
         </Button>
       </DialogTrigger>
@@ -73,7 +76,7 @@ export function InviteMemberDialog({ projectSlug }: InviteMemberDialogProps) {
               placeholder="did:privy:... o usuario@ejemplo.com"
               required
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-foreground">
               Ingresa el ID de Privy del usuario o su email
             </p>
           </div>

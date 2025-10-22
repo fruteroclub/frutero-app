@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface ProfileData {
-  firstName?: string;
-  lastName?: string;
-  cityRegion?: string;
-  country?: string;
-  primaryRole?: string;
-  isStudent?: boolean;
-  githubUsername?: string;
-  discordUsername?: string;
-  xUsername?: string;
-  telegramUsername?: string;
+  firstName?: string
+  lastName?: string
+  cityRegion?: string
+  country?: string
+  primaryRole?: string
+  isStudent?: boolean
+  githubUsername?: string
+  discordUsername?: string
+  xUsername?: string
+  telegramUsername?: string
 }
 
 interface ProfileStepProps {
-  data: ProfileData;
-  onUpdate: (data: ProfileData) => void;
-  onNext: () => void;
-  onBack: () => void;
+  data: ProfileData
+  onUpdate: (data: ProfileData) => void
+  onNext: () => void
+  onBack: () => void
 }
 
 export function ProfileStep({
@@ -33,28 +33,28 @@ export function ProfileStep({
   onNext,
   onBack,
 }: ProfileStepProps) {
-  const [formData, setFormData] = useState<ProfileData>(data);
+  const [formData, setFormData] = useState<ProfileData>(data)
 
   const handleChange = (field: keyof ProfileData, value: string | boolean) => {
-    const updated = { ...formData, [field]: value };
-    setFormData(updated);
-    onUpdate(updated);
-  };
+    const updated = { ...formData, [field]: value }
+    setFormData(updated)
+    onUpdate(updated)
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!formData.firstName) {
-      alert('Please enter your first name');
-      return;
+      alert('Please enter your first name')
+      return
     }
-    onNext();
-  };
+    onNext()
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Tell Us About Yourself</h2>
-        <p className="text-muted-foreground">
+        <h2 className="mb-2 text-2xl font-bold">Tell Us About Yourself</h2>
+        <p className="text-foreground">
           Help us personalize your JAM experience
         </p>
       </div>
@@ -64,7 +64,7 @@ export function ProfileStep({
           <CardTitle>Basic Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">
                 First Name <span className="text-destructive">*</span>
@@ -88,7 +88,7 @@ export function ProfileStep({
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="cityRegion">City / Region</Label>
               <Input
@@ -139,15 +139,13 @@ export function ProfileStep({
           <CardTitle>Connect Your Socials (Optional)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="githubUsername">GitHub</Label>
               <Input
                 id="githubUsername"
                 value={formData.githubUsername || ''}
-                onChange={(e) =>
-                  handleChange('githubUsername', e.target.value)
-                }
+                onChange={(e) => handleChange('githubUsername', e.target.value)}
                 placeholder="username"
               />
             </div>
@@ -164,7 +162,7 @@ export function ProfileStep({
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="xUsername">X (Twitter)</Label>
               <Input
@@ -198,5 +196,5 @@ export function ProfileStep({
         </Button>
       </div>
     </form>
-  );
+  )
 }

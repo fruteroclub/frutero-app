@@ -59,7 +59,8 @@ export function VerificationDialog({
           projectQuestId: submission.id,
           action,
           verificationNotes: notes || undefined,
-          paymentTxHash: action === 'verify' ? paymentTxHash || undefined : undefined,
+          paymentTxHash:
+            action === 'verify' ? paymentTxHash || undefined : undefined,
           adminId: user.id, // TODO: Remove once we have server-side auth
         }),
       })
@@ -68,7 +69,7 @@ export function VerificationDialog({
         toast.success(
           action === 'verify'
             ? 'Submission verificado exitosamente'
-            : 'Submission rechazado'
+            : 'Submission rechazado',
         )
         setOpen(false)
         setNotes('')
@@ -91,12 +92,12 @@ export function VerificationDialog({
       <DialogTrigger asChild>
         {action === 'verify' ? (
           <Button variant="default" className="flex-1">
-            <CheckCircle2 className="h-4 w-4 mr-2" />
+            <CheckCircle2 className="mr-2 h-4 w-4" />
             Verificar & Aprobar
           </Button>
         ) : (
           <Button variant="outline" className="flex-1">
-            <XCircle className="h-4 w-4 mr-2" />
+            <XCircle className="mr-2 h-4 w-4" />
             Rechazar
           </Button>
         )}
@@ -147,7 +148,7 @@ export function VerificationDialog({
                 onChange={(e) => setPaymentTxHash(e.target.value)}
                 placeholder="0x..."
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-foreground">
                 Registra la transacción on-chain del pago del bounty
               </p>
             </div>

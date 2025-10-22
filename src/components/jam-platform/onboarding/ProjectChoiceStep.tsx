@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Users, ArrowRight } from 'lucide-react';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Plus, Users, ArrowRight } from 'lucide-react'
 
 interface ProjectChoiceStepProps {
-  userId: string;
-  choice: 'create' | 'join' | 'skip';
-  onUpdate: (choice: 'create' | 'join' | 'skip', projectId?: string) => void;
-  onNext: () => void;
-  onBack: () => void;
+  userId: string
+  choice: 'create' | 'join' | 'skip'
+  onUpdate: (choice: 'create' | 'join' | 'skip', projectId?: string) => void
+  onNext: () => void
+  onBack: () => void
 }
 
 export function ProjectChoiceStep({
@@ -21,62 +21,62 @@ export function ProjectChoiceStep({
   onBack,
 }: ProjectChoiceStepProps) {
   const [selected, setSelected] = useState<'create' | 'join' | 'skip' | null>(
-    choice === 'skip' ? null : choice
-  );
-  const [joinCode, setJoinCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+    choice === 'skip' ? null : choice,
+  )
+  const [joinCode, setJoinCode] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleCreateProject = () => {
-    setSelected('create');
-    onUpdate('create');
-    onNext();
-  };
+    setSelected('create')
+    onUpdate('create')
+    onNext()
+  }
 
   const handleJoinProject = async () => {
     if (!joinCode.trim()) {
-      alert('Please enter a project code');
-      return;
+      alert('Please enter a project code')
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       // Look up project by code/ID
       const response = await fetch(
-        `/api/jam/projects/lookup?code=${encodeURIComponent(joinCode)}`
-      );
+        `/api/jam/projects/lookup?code=${encodeURIComponent(joinCode)}`,
+      )
 
       if (!response.ok) {
-        throw new Error('Project not found');
+        throw new Error('Project not found')
       }
 
-      const project = await response.json();
+      const project = await response.json()
 
       // Update choice with project ID
-      onUpdate('join', project.id);
-      onNext();
+      onUpdate('join', project.id)
+      onNext()
     } catch (error) {
-      alert('Project not found. Please check the code and try again.');
-      console.error('Project lookup error:', error);
+      alert('Project not found. Please check the code and try again.')
+      console.error('Project lookup error:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleSkip = () => {
-    onUpdate('skip');
-    onNext();
-  };
+    onUpdate('skip')
+    onNext()
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Team Setup</h2>
-        <p className="text-muted-foreground">
+        <h2 className="mb-2 text-2xl font-bold">Team Setup</h2>
+        <p className="text-foreground">
           Create a new project or join an existing team
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Create New Project */}
         <Card
           className={`cursor-pointer transition-all hover:shadow-lg ${
@@ -93,7 +93,7 @@ export function ProjectChoiceStep({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               Start a new project as the team admin. You can invite members
               later.
             </p>
@@ -122,7 +122,7 @@ export function ProjectChoiceStep({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground mb-3">
+            <p className="mb-3 text-sm text-foreground">
               Join a team that&apos;s already been created
             </p>
             {selected === 'join' && (
@@ -133,7 +133,7 @@ export function ProjectChoiceStep({
                   placeholder="Enter project code or ID"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleJoinProject();
+                      handleJoinProject()
                     }
                   }}
                 />
@@ -162,9 +162,9 @@ export function ProjectChoiceStep({
         </Button>
       </div>
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-center text-xs text-foreground">
         💡 You can join multiple projects later from your dashboard
       </p>
     </div>
-  );
+  )
 }

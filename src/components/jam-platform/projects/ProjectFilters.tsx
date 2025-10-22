@@ -27,13 +27,13 @@ export function ProjectFilters({
   onStageChange,
 }: ProjectFiltersProps) {
   return (
-    <div className="space-y-4 p-4 border rounded-lg bg-card">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="space-y-4 rounded-lg border bg-card p-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Search */}
         <div className="md:col-span-3">
           <Label htmlFor="search">Buscar</Label>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground" />
             <Input
               id="search"
               type="text"

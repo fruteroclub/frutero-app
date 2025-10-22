@@ -29,10 +29,10 @@ export function QuestSubmissionForm({
 }: QuestSubmissionFormProps) {
   const { user } = useAppAuth()
   const [submissionLink, setSubmissionLink] = useState(
-    currentSubmission?.submissionLink || ''
+    currentSubmission?.submissionLink || '',
   )
   const [submissionText, setSubmissionText] = useState(
-    currentSubmission?.submissionText || ''
+    currentSubmission?.submissionText || '',
   )
   const [progress, setProgress] = useState(currentSubmission?.progress || 0)
   const [loading, setLoading] = useState(false)
@@ -59,7 +59,8 @@ export function QuestSubmissionForm({
       onUpdate?.()
     } catch (error) {
       console.error('Failed to save:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Error al guardar progreso'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error al guardar progreso'
       toast.error(errorMessage)
     } finally {
       setLoading(false)
@@ -94,7 +95,8 @@ export function QuestSubmissionForm({
       onUpdate?.()
     } catch (error) {
       console.error('Failed to submit:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Error al enviar quest'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error al enviar quest'
       toast.error(errorMessage)
     } finally {
       setLoading(false)
@@ -108,13 +110,13 @@ export function QuestSubmissionForm({
           <CardTitle>Quest Verificado ✅</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-foreground">
             Este quest ha sido verificado y aprobado.
           </p>
           {currentSubmission.verificationNotes && (
-            <div className="mt-4 bg-muted p-3 rounded-md">
-              <p className="text-xs font-medium mb-1">Notas de verificación:</p>
-              <p className="text-xs text-muted-foreground">
+            <div className="mt-4 rounded-md bg-muted p-3">
+              <p className="mb-1 text-xs font-medium">Notas de verificación:</p>
+              <p className="text-xs text-foreground">
                 {currentSubmission.verificationNotes}
               </p>
             </div>
@@ -134,12 +136,12 @@ export function QuestSubmissionForm({
       <CardContent>
         {isSubmitted ? (
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               Tu quest ha sido enviado y está pendiente de verificación.
             </p>
             {submissionLink && (
               <div>
-                <p className="text-xs font-medium mb-1">Link enviado:</p>
+                <p className="mb-1 text-xs font-medium">Link enviado:</p>
                 <a
                   href={submissionLink}
                   target="_blank"
@@ -152,8 +154,8 @@ export function QuestSubmissionForm({
             )}
             {submissionText && (
               <div>
-                <p className="text-xs font-medium mb-1">Descripción:</p>
-                <p className="text-sm text-muted-foreground">{submissionText}</p>
+                <p className="mb-1 text-xs font-medium">Descripción:</p>
+                <p className="text-sm text-foreground">{submissionText}</p>
               </div>
             )}
           </div>
@@ -171,7 +173,7 @@ export function QuestSubmissionForm({
                   onChange={(e) => setProgress(parseInt(e.target.value))}
                   className="flex-1"
                 />
-                <span className="text-sm font-semibold w-12">{progress}%</span>
+                <span className="w-12 text-sm font-semibold">{progress}%</span>
               </div>
             </div>
 
@@ -185,7 +187,7 @@ export function QuestSubmissionForm({
                 placeholder="https://github.com/equipo/proyecto"
                 required
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-foreground">
                 Link a tu proyecto, demo, o repositorio
               </p>
             </div>
@@ -217,7 +219,7 @@ export function QuestSubmissionForm({
             </div>
 
             {progress < 100 && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground">
                 Completa el quest al 100% para enviarlo para verificación
               </p>
             )}

@@ -10,7 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { SessionLogger } from '@/components/jam-platform/mentors/SessionLogger'
 import { SessionHistory } from '@/components/jam-platform/mentors/SessionHistory'
 import { SessionStats } from '@/components/jam-platform/mentors/SessionStats'
-import { getMentorshipSessions, type MentorshipSession } from '@/services/jam/mentors.service'
+import {
+  getMentorshipSessions,
+  type MentorshipSession,
+} from '@/services/jam/mentors.service'
 import { MapPin } from 'lucide-react'
 
 export default function MentorshipDetailPage({
@@ -52,7 +55,7 @@ export default function MentorshipDetailPage({
                   </Avatar>
                   <div>
                     <CardTitle className="text-2xl">Mentoría</CardTitle>
-                    <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="mt-1 flex items-center gap-2 text-sm text-foreground">
                       <MapPin className="h-4 w-4" />
                       <span>Ciudad de México, México</span>
                     </div>
@@ -67,11 +70,15 @@ export default function MentorshipDetailPage({
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">Objetivos de Mentoría</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Aprender desarrollo frontend y construir mi primer proyecto web
+                  <p className="mt-1 text-sm text-foreground">
+                    Aprender desarrollo frontend y construir mi primer proyecto
+                    web
                   </p>
                 </div>
-                <SessionLogger mentorshipId={mentorshipId} userRole={userRole} />
+                <SessionLogger
+                  mentorshipId={mentorshipId}
+                  userRole={userRole}
+                />
               </div>
             </CardContent>
           </Card>

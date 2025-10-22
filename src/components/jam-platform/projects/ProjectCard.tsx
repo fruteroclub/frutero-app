@@ -36,12 +36,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
       ? project.description.slice(0, 150) + '...'
       : project.description
 
-  const categoryColor = CATEGORY_COLORS[project.category as keyof typeof CATEGORY_COLORS] ||
+  const categoryColor =
+    CATEGORY_COLORS[project.category as keyof typeof CATEGORY_COLORS] ||
     'bg-gray-500/10 text-gray-500 border-gray-500/20'
 
   return (
     <Link href={`/jam/projects/${project.slug}`}>
-      <Card className="group relative overflow-hidden h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 hover:border-primary/50">
+      <Card className="group relative h-full cursor-pointer overflow-hidden border-2 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 hover:shadow-2xl">
         {/* Project Image/Avatar */}
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
           {project.avatarUrl ? (
@@ -64,20 +65,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
           {/* Stage badge overlay */}
           <div className="absolute top-3 right-3">
-            <Badge className="bg-background/90 backdrop-blur-sm border">
-              {STAGE_EMOJI[project.stage as keyof typeof STAGE_EMOJI]} {project.stage}
+            <Badge className="border bg-background/90 backdrop-blur-sm">
+              {STAGE_EMOJI[project.stage as keyof typeof STAGE_EMOJI]}{' '}
+              {project.stage}
             </Badge>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="space-y-4 p-6">
           {/* Title and external link icon */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="line-clamp-2 text-xl font-bold transition-colors group-hover:text-primary">
               {project.name}
             </h3>
-            <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
+            <ExternalLink className="mt-1 h-5 w-5 flex-shrink-0 text-foreground transition-colors group-hover:text-primary" />
           </div>
 
           {/* Category */}
@@ -91,28 +93,31 @@ export function ProjectCard({ project }: ProjectCardProps) {
           )}
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+          <p className="line-clamp-3 text-sm leading-relaxed text-foreground">
             {truncatedDescription}
           </p>
 
           {/* Footer with icons */}
-          <div className="flex items-center gap-4 pt-2 border-t">
+          <div className="flex items-center gap-4 border-t pt-2">
             {project.repositoryUrl && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-xs text-foreground">
                 <Github className="h-3.5 w-3.5" />
                 <span>Code</span>
               </div>
             )}
             {project.productionUrl && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-xs text-foreground">
                 <Globe className="h-3.5 w-3.5" />
                 <span>Live</span>
               </div>
             )}
             {project.members && project.members.length > 0 && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground ml-auto">
+              <div className="ml-auto flex items-center gap-1.5 text-xs text-foreground">
                 <Users className="h-3.5 w-3.5" />
-                <span>{project.members.length} {project.members.length === 1 ? 'member' : 'members'}</span>
+                <span>
+                  {project.members.length}{' '}
+                  {project.members.length === 1 ? 'member' : 'members'}
+                </span>
               </div>
             )}
           </div>

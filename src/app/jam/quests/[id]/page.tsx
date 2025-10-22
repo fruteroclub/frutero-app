@@ -22,8 +22,16 @@ import {
   Loader2,
 } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
-import { getQuest, getUserQuests, type Quest, type UserQuest } from '@/services/jam/quests.service'
-import { startQuest, getQuestSubmissionHistory } from '@/services/jam/user-quests.service'
+import {
+  getQuest,
+  getUserQuests,
+  type Quest,
+  type UserQuest,
+} from '@/services/jam/quests.service'
+import {
+  startQuest,
+  getQuestSubmissionHistory,
+} from '@/services/jam/user-quests.service'
 import { IndividualQuestSubmissionForm } from '@/components/jam-platform/quests/IndividualQuestSubmissionForm'
 import { QuestSubmissionHistory } from '@/components/jam-platform/quests/QuestSubmissionHistory'
 import { toast } from 'sonner'
@@ -99,7 +107,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando quest...</p>
+                <p className="text-foreground">Cargando quest...</p>
               </div>
             </div>
           </div>
@@ -114,7 +122,9 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
 
   // Format dates
   const dueDate = new Date(quest.dueDate || quest.end)
-  const daysUntilDue = Math.ceil((dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  const daysUntilDue = Math.ceil(
+    (dueDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  )
 
   // Quest type badge variant
   const getQuestTypeBadgeVariant = (type: string) => {
@@ -146,7 +156,8 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
 
   // Check if this is a team-only quest
   const isTeamOnlyQuest = quest.questType === 'TEAM'
-  const canStartIndividually = quest.questType === 'INDIVIDUAL' || quest.questType === 'BOTH'
+  const canStartIndividually =
+    quest.questType === 'INDIVIDUAL' || quest.questType === 'BOTH'
   const isStarted = !!userQuest
 
   return (
@@ -159,7 +170,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
           {/* Back Link */}
           <Link
             href="/jam/quests"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+            className="inline-flex items-center gap-2 text-sm text-foreground hover:text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a Quests
@@ -171,7 +182,9 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
               <h1 className="mb-3 text-3xl font-bold">{quest.title}</h1>
               <div className="flex flex-wrap gap-2">
                 <Badge variant={getQuestTypeBadgeVariant(quest.questType)}>
-                  {quest.questType === 'TEAM' && <Users className="mr-1 h-3 w-3" />}
+                  {quest.questType === 'TEAM' && (
+                    <Users className="mr-1 h-3 w-3" />
+                  )}
                   {quest.questType}
                 </Badge>
                 <Badge variant="outline">{quest.category}</Badge>
@@ -184,8 +197,8 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                 </Badge>
                 {quest.bountyUsd && (
                   <Badge variant="default" className="bg-green-600">
-                    <DollarSign className="mr-1 h-3 w-3" />
-                    ${quest.bountyUsd} USD
+                    <DollarSign className="mr-1 h-3 w-3" />${quest.bountyUsd}{' '}
+                    USD
                   </Badge>
                 )}
               </div>
@@ -224,7 +237,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   <CardTitle>Descripción</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{quest.description}</p>
+                  <p className="text-foreground">{quest.description}</p>
                 </CardContent>
               </Card>
 
@@ -237,7 +250,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   <ul className="space-y-2">
                     {quest.requirements.map((requirement, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <Circle className="mt-1 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                        <Circle className="mt-1 h-4 w-4 flex-shrink-0 text-foreground" />
                         <span>{requirement}</span>
                       </li>
                     ))}
@@ -270,7 +283,9 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   onClick={handleStartQuest}
                   disabled={starting}
                 >
-                  {starting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {starting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {starting ? 'Iniciando...' : 'Iniciar Quest'}
                 </Button>
               )}
@@ -292,9 +307,12 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
               )}
 
               {/* Submission History - Show if user has submissions */}
-              {canStartIndividually && isStarted && user && submissionHistory.length > 0 && (
-                <QuestSubmissionHistory history={submissionHistory} />
-              )}
+              {canStartIndividually &&
+                isStarted &&
+                user &&
+                submissionHistory.length > 0 && (
+                  <QuestSubmissionHistory history={submissionHistory} />
+                )}
             </div>
 
             {/* Sidebar */}
@@ -306,7 +324,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Calendar className="h-4 w-4 text-foreground" />
                     <span>
                       {dueDate.toLocaleDateString('es-ES', {
                         year: 'numeric',
@@ -317,7 +335,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   </div>
                   <p
                     className={`mt-2 text-sm ${
-                      daysUntilDue < 3 ? 'text-red-600' : 'text-muted-foreground'
+                      daysUntilDue < 3 ? 'text-red-600' : 'text-foreground'
                     }`}
                   >
                     {daysUntilDue > 0
@@ -335,7 +353,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Users className="h-4 w-4 text-foreground" />
                       <span>
                         {quest.maxSubmissions - quest.currentSubmissions} /{' '}
                         {quest.maxSubmissions} espacios
@@ -356,7 +374,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   <CardTitle className="text-base">Recompensas</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-primary/10 p-3">
                     <div className="flex items-center gap-2">
                       <Trophy className="h-5 w-5 text-primary" />
                       <span className="text-sm font-medium">Puntos</span>
@@ -368,8 +386,8 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   {quest.bountyUsd && (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Bounty</span>
+                        <DollarSign className="h-4 w-4 text-foreground" />
+                        <span className="text-sm text-foreground">Bounty</span>
                       </div>
                       <span className="font-semibold text-green-600">
                         ${quest.bountyUsd} USD
