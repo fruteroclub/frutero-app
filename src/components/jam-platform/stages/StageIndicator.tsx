@@ -1,6 +1,11 @@
 'use client'
 
-import { STAGES, STAGE_ORDER, calculateStageProgress, type ProjectStage } from '@/lib/jam/stages'
+import {
+  STAGES,
+  STAGE_ORDER,
+  calculateStageProgress,
+  type ProjectStage,
+} from '@/lib/jam/stages'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Check } from 'lucide-react'
@@ -11,7 +16,11 @@ interface StageIndicatorProps {
   variant?: 'compact' | 'full'
 }
 
-export function StageIndicator({ currentStage, showProgress = true, variant = 'compact' }: StageIndicatorProps) {
+export function StageIndicator({
+  currentStage,
+  showProgress = true,
+  variant = 'compact',
+}: StageIndicatorProps) {
   const stageConfig = STAGES[currentStage]
   const progress = calculateStageProgress(currentStage)
   const currentIndex = STAGE_ORDER.indexOf(currentStage)
@@ -24,7 +33,7 @@ export function StageIndicator({ currentStage, showProgress = true, variant = 'c
           <Badge variant="secondary" className="mb-1">
             {stageConfig.title}
           </Badge>
-          <p className="text-xs text-muted-foreground">{stageConfig.description}</p>
+          <p className="text-xs text-foreground">{stageConfig.description}</p>
         </div>
         {showProgress && (
           <div className="ml-auto text-sm font-medium text-primary">
@@ -44,13 +53,13 @@ export function StageIndicator({ currentStage, showProgress = true, variant = 'c
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-muted-foreground">{stageConfig.description}</p>
+        <p className="text-foreground">{stageConfig.description}</p>
 
         {/* Progress Bar */}
         {showProgress && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Progreso General</span>
+              <span className="text-foreground">Progreso General</span>
               <span className="font-medium">{progress}%</span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -79,7 +88,7 @@ export function StageIndicator({ currentStage, showProgress = true, variant = 'c
                         ? 'border-primary bg-primary text-primary-foreground'
                         : isPast
                           ? 'border-primary bg-primary text-primary-foreground'
-                          : 'border-muted-foreground/30 bg-background text-muted-foreground'
+                          : 'border-muted-foreground/30 bg-background text-foreground'
                     }`}
                     title={config.title}
                   >
@@ -100,7 +109,7 @@ export function StageIndicator({ currentStage, showProgress = true, variant = 'c
               )
             })}
           </div>
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div className="flex justify-between text-xs text-foreground">
             {STAGE_ORDER.map((stage) => (
               <span key={stage} className="flex-1 text-center">
                 {STAGES[stage].title}
@@ -114,7 +123,10 @@ export function StageIndicator({ currentStage, showProgress = true, variant = 'c
           <p className="text-sm font-medium">Requisitos del Stage</p>
           <ul className="space-y-1">
             {stageConfig.requirements.map((req, index) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <li
+                key={index}
+                className="flex items-start gap-2 text-sm text-foreground"
+              >
                 <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                 <span>{req}</span>
               </li>

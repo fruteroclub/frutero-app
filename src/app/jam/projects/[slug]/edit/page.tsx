@@ -39,7 +39,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground">Cargando proyecto...</p>
+                <p className="text-foreground">Cargando proyecto...</p>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
           {/* Back Link */}
           <Link
             href={`/jam/projects/${slug}`}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 text-sm text-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver al Proyecto
@@ -79,7 +79,7 @@ export default function EditProjectPage({ params }: EditProjectPageProps) {
             <h1 className="text-3xl font-bold tracking-tight">
               Editar Proyecto
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-foreground">
               Actualiza la información y recursos de tu proyecto
             </p>
           </div>

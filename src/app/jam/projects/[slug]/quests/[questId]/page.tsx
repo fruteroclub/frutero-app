@@ -45,7 +45,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
           </div>
           <div className="container max-w-4xl pl-64">
             <div className="flex min-h-[400px] items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <Loader2 className="h-8 w-8 animate-spin text-foreground" />
             </div>
           </div>
         </div>
@@ -70,29 +70,30 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
           {/* Back Link */}
           <Link
             href={`/jam/projects/${slug}/quests`}
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center text-sm text-foreground hover:text-foreground"
           >
             ← Volver a Quests
           </Link>
 
           {/* Quest Header */}
           <div>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <h1 className="text-3xl font-bold">{quest.title}</h1>
               {quest.bountyUsd && (
                 <Badge variant="default" className="flex items-center gap-1">
-                  <DollarSign className="h-4 w-4" />
-                  ${quest.bountyUsd}
+                  <DollarSign className="h-4 w-4" />${quest.bountyUsd}
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              {quest.category && <Badge variant="secondary">{quest.category}</Badge>}
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              {quest.category && (
+                <Badge variant="secondary">{quest.category}</Badge>
+              )}
               {quest.difficulty && (
                 <Badge variant="outline">{quest.difficulty}</Badge>
               )}
               <Badge variant="outline">
-                <Users className="h-3 w-3 mr-1" />
+                <Users className="mr-1 h-3 w-3" />
                 {quest.questType}
               </Badge>
             </div>
@@ -104,7 +105,7 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
               <CardTitle>Descripción</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+              <p className="text-sm whitespace-pre-wrap text-foreground">
                 {quest.description}
               </p>
             </CardContent>
@@ -115,11 +116,11 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
             {/* Deadline */}
             <Card>
               <CardContent className="pt-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                <div className="mb-1 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-foreground" />
                   <p className="text-sm font-medium">Fecha Límite</p>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-foreground">
                   {new Date(deadline).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
@@ -132,16 +133,16 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
             {/* Rewards */}
             <Card>
               <CardContent className="pt-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <div className="mb-1 flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-foreground" />
                   <p className="text-sm font-medium">Recompensas</p>
                 </div>
                 {quest.bountyUsd ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     ${quest.bountyUsd} USD + {quest.rewardPoints} puntos
                   </p>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     {quest.rewardPoints} puntos
                   </p>
                 )}
@@ -153,8 +154,8 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
           {projectQuest.status === 'REJECTED' && (
             <Alert variant="destructive">
               <AlertDescription>
-                Este quest fue rechazado. Revisa las notas de verificación abajo y
-                vuelve a enviar con las correcciones necesarias.
+                Este quest fue rechazado. Revisa las notas de verificación abajo
+                y vuelve a enviar con las correcciones necesarias.
               </AlertDescription>
             </Alert>
           )}

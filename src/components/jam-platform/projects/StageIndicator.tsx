@@ -1,7 +1,12 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { STAGES, STAGE_ORDER, getStageIndex, type ProjectStage } from '@/lib/jam/stages'
+import {
+  STAGES,
+  STAGE_ORDER,
+  getStageIndex,
+  type ProjectStage,
+} from '@/lib/jam/stages'
 import { cn } from '@/lib/utils'
 
 interface StageIndicatorProps {
@@ -9,7 +14,10 @@ interface StageIndicatorProps {
   className?: string
 }
 
-export function StageIndicator({ currentStage, className }: StageIndicatorProps) {
+export function StageIndicator({
+  currentStage,
+  className,
+}: StageIndicatorProps) {
   const currentIndex = getStageIndex(currentStage)
 
   return (
@@ -35,7 +43,7 @@ export function StageIndicator({ currentStage, className }: StageIndicatorProps)
                         'border-primary bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20',
                       !isCompleted &&
                         !isCurrent &&
-                        'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500'
+                        'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500',
                     )}
                   >
                     {stageConfig.icon}
@@ -48,13 +56,15 @@ export function StageIndicator({ currentStage, className }: StageIndicatorProps)
                         'text-xs font-medium',
                         isCurrent && 'text-primary',
                         isCompleted && 'text-green-600 dark:text-green-500',
-                        !isCompleted && !isCurrent && 'text-gray-500 dark:text-gray-400'
+                        !isCompleted &&
+                          !isCurrent &&
+                          'text-gray-500 dark:text-gray-400',
                       )}
                     >
                       {stageConfig.title}
                     </div>
                     {stageConfig.minQuestsCompleted && (
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-foreground">
                         {stageConfig.minQuestsCompleted} quests
                       </div>
                     )}
@@ -69,7 +79,7 @@ export function StageIndicator({ currentStage, className }: StageIndicatorProps)
                         className={cn(
                           'h-full transition-all',
                           isCompleted && 'bg-green-600 dark:bg-green-500',
-                          !isCompleted && 'bg-transparent'
+                          !isCompleted && 'bg-transparent',
                         )}
                         style={{ width: isCompleted ? '100%' : '0%' }}
                       />
@@ -88,9 +98,11 @@ export function StageIndicator({ currentStage, className }: StageIndicatorProps)
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">{STAGES[currentStage].icon}</span>
-              <h3 className="text-lg font-semibold">{STAGES[currentStage].title}</h3>
+              <h3 className="text-lg font-semibold">
+                {STAGES[currentStage].title}
+              </h3>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-foreground">
               {STAGES[currentStage].description}
             </p>
 
@@ -98,7 +110,7 @@ export function StageIndicator({ currentStage, className }: StageIndicatorProps)
             <div className="mt-3 space-y-1">
               {STAGES[currentStage].requirements.map((req, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">•</span>
+                  <span className="text-foreground">•</span>
                   <span>{req}</span>
                 </div>
               ))}

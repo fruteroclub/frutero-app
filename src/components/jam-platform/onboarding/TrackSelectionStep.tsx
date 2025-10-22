@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sprout, Rocket, Briefcase, Target } from 'lucide-react';
-import { TRACKS, type Track } from '@/lib/jam/tracks';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Sprout, Rocket, Briefcase, Target } from 'lucide-react'
+import { TRACKS, type Track } from '@/lib/jam/tracks'
 
 interface TrackSelectionStepProps {
-  selected?: Track;
-  onUpdate: (track: Track) => void;
-  onNext: () => void;
-  onBack: () => void;
+  selected?: Track
+  onUpdate: (track: Track) => void
+  onNext: () => void
+  onBack: () => void
 }
 
 const TRACK_ICONS = {
@@ -18,12 +18,9 @@ const TRACK_ICONS = {
   FOUNDER: Rocket,
   PROFESSIONAL: Briefcase,
   FREELANCER: Target,
-};
+}
 
-const TRACK_UI_CONFIG: Record<
-  Track,
-  { details: string[] }
-> = {
+const TRACK_UI_CONFIG: Record<Track, { details: string[] }> = {
   LEARNING: {
     details: [
       'Fundamentos de programación',
@@ -56,7 +53,7 @@ const TRACK_UI_CONFIG: Record<
       'Productización de servicios',
     ],
   },
-};
+}
 
 export function TrackSelectionStep({
   selected,
@@ -65,39 +62,39 @@ export function TrackSelectionStep({
   onBack,
 }: TrackSelectionStepProps) {
   const [selectedTrack, setSelectedTrack] = useState<Track | undefined>(
-    selected
-  );
+    selected,
+  )
 
   const handleSelect = (track: Track) => {
-    setSelectedTrack(track);
-    onUpdate(track);
-  };
+    setSelectedTrack(track)
+    onUpdate(track)
+  }
 
   const handleSubmit = () => {
     if (!selectedTrack) {
-      alert('Por favor selecciona una ruta');
-      return;
+      alert('Por favor selecciona una ruta')
+      return
     }
-    onNext();
-  };
+    onNext()
+  }
 
-  const allTracks = Object.keys(TRACKS) as Track[];
+  const allTracks = Object.keys(TRACKS) as Track[]
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Elige Tu Ruta</h2>
-        <p className="text-muted-foreground">
+        <h2 className="mb-2 text-2xl font-bold">Elige Tu Ruta</h2>
+        <p className="text-foreground">
           Selecciona el camino que se alinea con tus objetivos
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {allTracks.map((trackKey) => {
-          const track = TRACKS[trackKey];
-          const Icon = TRACK_ICONS[trackKey];
-          const uiConfig = TRACK_UI_CONFIG[trackKey];
-          const isSelected = selectedTrack === trackKey;
+          const track = TRACKS[trackKey]
+          const Icon = TRACK_ICONS[trackKey]
+          const uiConfig = TRACK_UI_CONFIG[trackKey]
+          const isSelected = selectedTrack === trackKey
 
           return (
             <Card
@@ -110,10 +107,12 @@ export function TrackSelectionStep({
               onClick={() => handleSelect(trackKey)}
             >
               <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
+                <div className="mb-2 flex items-center gap-3">
                   <div
-                    className={`p-2 rounded-lg ${
-                      isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    className={`rounded-lg p-2 ${
+                      isSelected
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -126,22 +125,26 @@ export function TrackSelectionStep({
                 <p className="text-sm font-medium">{track.descriptionEs}</p>
                 <ul className="space-y-1.5">
                   {uiConfig.details.map((detail, idx) => (
-                    <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
-                      <span className="text-primary mt-0.5">✓</span>
+                    <li
+                      key={idx}
+                      className="flex items-start gap-2 text-xs text-foreground"
+                    >
+                      <span className="mt-0.5 text-primary">✓</span>
                       <span>{detail}</span>
                     </li>
                   ))}
                 </ul>
               </CardContent>
             </Card>
-          );
+          )
         })}
       </div>
 
-      <div className="bg-muted/50 p-4 rounded-lg">
-        <p className="text-sm text-muted-foreground">
-          <strong>Nota:</strong> Tu ruta determina las misiones y mentores con los que
-          serás emparejado. Puedes cambiar de ruta más adelante si tus objetivos cambian.
+      <div className="rounded-lg bg-muted/50 p-4">
+        <p className="text-sm text-foreground">
+          <strong>Nota:</strong> Tu ruta determina las misiones y mentores con
+          los que serás emparejado. Puedes cambiar de ruta más adelante si tus
+          objetivos cambian.
         </p>
       </div>
 
@@ -149,10 +152,14 @@ export function TrackSelectionStep({
         <Button type="button" variant="outline" onClick={onBack}>
           Atrás
         </Button>
-        <Button onClick={handleSubmit} className="flex-1" disabled={!selectedTrack}>
+        <Button
+          onClick={handleSubmit}
+          className="flex-1"
+          disabled={!selectedTrack}
+        >
           Continuar
         </Button>
       </div>
     </div>
-  );
+  )
 }

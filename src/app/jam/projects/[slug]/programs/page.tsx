@@ -15,7 +15,10 @@ import {
   type Project,
   type ProjectMember,
 } from '@/services/jam/projects.service'
-import { getProjectPrograms, type ProgramParticipation } from '@/services/jam/programs.service'
+import {
+  getProjectPrograms,
+  type ProgramParticipation,
+} from '@/services/jam/programs.service'
 
 interface ProgramsPageProps {
   params: Promise<{ slug: string }>
@@ -25,22 +28,26 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
   const { user } = useAppAuth()
   const { slug } = use(params)
 
-  const { data: project, isLoading: projectLoading } = useQuery<Project | null>({
-    queryKey: ['project', slug],
-    queryFn: () => getProject(slug),
-  })
+  const { data: project, isLoading: projectLoading } = useQuery<Project | null>(
+    {
+      queryKey: ['project', slug],
+      queryFn: () => getProject(slug),
+    },
+  )
 
-  const { data: activePrograms = [], isLoading: activeProgramsLoading } = useQuery<ProgramParticipation[]>({
-    queryKey: ['project-programs', slug, 'ACTIVE'],
-    queryFn: () => getProjectPrograms(slug, 'ACTIVE'),
-    enabled: !!project,
-  })
+  const { data: activePrograms = [], isLoading: activeProgramsLoading } =
+    useQuery<ProgramParticipation[]>({
+      queryKey: ['project-programs', slug, 'ACTIVE'],
+      queryFn: () => getProjectPrograms(slug, 'ACTIVE'),
+      enabled: !!project,
+    })
 
-  const { data: completedPrograms = [], isLoading: completedProgramsLoading } = useQuery<ProgramParticipation[]>({
-    queryKey: ['project-programs', slug, 'COMPLETED'],
-    queryFn: () => getProjectPrograms(slug, 'COMPLETED'),
-    enabled: !!project,
-  })
+  const { data: completedPrograms = [], isLoading: completedProgramsLoading } =
+    useQuery<ProgramParticipation[]>({
+      queryKey: ['project-programs', slug, 'COMPLETED'],
+      queryFn: () => getProjectPrograms(slug, 'COMPLETED'),
+      enabled: !!project,
+    })
 
   const { data: members = [] } = useQuery<ProjectMember[]>({
     queryKey: ['project-members', slug],
@@ -52,7 +59,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
     return (
       <PageWrapper>
         <div className="container py-6">
-          <p className="text-center text-muted-foreground">Cargando proyecto...</p>
+          <p className="text-center text-foreground">Cargando proyecto...</p>
         </div>
       </PageWrapper>
     )
@@ -63,7 +70,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
       <PageWrapper>
         <div className="container py-6">
           <Card className="p-6 text-center">
-            <p className="text-muted-foreground mb-4">Proyecto no encontrado</p>
+            <p className="mb-4 text-foreground">Proyecto no encontrado</p>
             <Link href="/jam/projects" className="text-primary hover:underline">
               ← Volver a Proyectos
             </Link>
@@ -74,27 +81,28 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
   }
 
   const isAdmin = members.find(
-    (m) => m.userId === user?.id && m.role === 'ADMIN'
+    (m) => m.userId === user?.id && m.role === 'ADMIN',
   )
 
   const isLoading = activeProgramsLoading || completedProgramsLoading
 
   return (
     <PageWrapper>
-      <div className="container py-6 space-y-6">
+      <div className="container space-y-6 py-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <Link
               href={`/jam/projects/${slug}`}
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-2"
+              className="mb-2 inline-flex items-center gap-2 text-sm text-foreground hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" />
               Volver al Proyecto
             </Link>
             <h1 className="text-3xl font-bold">{project.name} - Programas</h1>
-            <p className="text-muted-foreground mt-2">
-              Participa en múltiples programas para acceder a más quests y oportunidades
+            <p className="mt-2 text-foreground">
+              Participa en múltiples programas para acceder a más quests y
+              oportunidades
             </p>
           </div>
 
@@ -102,7 +110,7 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
         </div>
 
         {isLoading && (
-          <p className="text-center text-muted-foreground py-8">
+          <p className="py-8 text-center text-foreground">
             Cargando programas...
           </p>
         )}
@@ -111,9 +119,9 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
           <>
             {/* Active Programs */}
             <section>
-              <h2 className="text-2xl font-semibold mb-4">Programas Activos</h2>
+              <h2 className="mb-4 text-2xl font-semibold">Programas Activos</h2>
               {activePrograms.length === 0 ? (
-                <Card className="p-6 text-center text-muted-foreground">
+                <Card className="p-6 text-center text-foreground">
                   No hay programas activos actualmente.
                   {isAdmin && (
                     <p className="mt-2 text-sm">
@@ -138,7 +146,9 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
             {/* Completed Programs */}
             {completedPrograms.length > 0 && (
               <section>
-                <h2 className="text-2xl font-semibold mb-4">Programas Completados</h2>
+                <h2 className="mb-4 text-2xl font-semibold">
+                  Programas Completados
+                </h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {completedPrograms.map((pp: ProgramParticipation) => (
                     <ProgramParticipationCard

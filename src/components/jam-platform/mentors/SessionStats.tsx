@@ -9,10 +9,14 @@ interface SessionStatsProps {
 export function SessionStats({ sessions }: SessionStatsProps) {
   const sessionCount = sessions.length
   const totalDuration = sessions.reduce((sum, s) => sum + s.duration, 0)
-  const avgDuration = sessionCount > 0 ? Math.round(totalDuration / sessionCount) : 0
-  const avgRating = sessionCount > 0
-    ? (sessions.reduce((sum, s) => sum + s.rating, 0) / sessionCount).toFixed(1)
-    : '0.0'
+  const avgDuration =
+    sessionCount > 0 ? Math.round(totalDuration / sessionCount) : 0
+  const avgRating =
+    sessionCount > 0
+      ? (sessions.reduce((sum, s) => sum + s.rating, 0) / sessionCount).toFixed(
+          1,
+        )
+      : '0.0'
 
   const stats = [
     {
@@ -51,7 +55,7 @@ export function SessionStats({ sessions }: SessionStatsProps) {
             </div>
             <div>
               <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-sm text-foreground">{stat.label}</p>
             </div>
           </CardContent>
         </Card>

@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { useAppAuth } from '@/store/auth-context';
-import { OnboardingWizard } from '@/components/jam-platform/onboarding/OnboardingWizard';
-import PageWrapper from '@/components/layout/page-wrapper';
-import Link from 'next/link';
+import { useAppAuth } from '@/store/auth-context'
+import { OnboardingWizard } from '@/components/jam-platform/onboarding/OnboardingWizard'
+import PageWrapper from '@/components/layout/page-wrapper'
+import Link from 'next/link'
 
 export default function OnboardingPage() {
-  const { user, isAppAuthenticated, isLoading } = useAppAuth();
+  const { user, isAppAuthenticated, isLoading } = useAppAuth()
 
   // Debug logging
   console.log('🔍 JAM Onboarding - Auth State:', {
@@ -14,7 +14,7 @@ export default function OnboardingPage() {
     isAppAuthenticated,
     hasUser: !!user,
     userId: user?.id,
-  });
+  })
 
   // Show loading state while auth is loading
   if (isLoading) {
@@ -23,13 +23,13 @@ export default function OnboardingPage() {
         <div className="page">
           <div className="container flex items-center justify-center">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading...</p>
+              <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
+              <p className="text-foreground">Loading...</p>
             </div>
           </div>
         </div>
       </PageWrapper>
-    );
+    )
   }
 
   // If not authenticated, show message
@@ -38,14 +38,14 @@ export default function OnboardingPage() {
       <PageWrapper>
         <div className="page">
           <div className="container flex items-center justify-center">
-            <div className="text-center space-y-4">
+            <div className="space-y-4 text-center">
               <h2 className="text-2xl font-bold">Authentication Required</h2>
-              <p className="text-muted-foreground">
+              <p className="text-foreground">
                 Please log in to access the onboarding flow.
               </p>
               <Link
                 href="/"
-                className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+                className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
               >
                 Go to Home
               </Link>
@@ -53,7 +53,7 @@ export default function OnboardingPage() {
           </div>
         </div>
       </PageWrapper>
-    );
+    )
   }
 
   // TODO: Check if user already completed JAM onboarding
@@ -69,5 +69,5 @@ export default function OnboardingPage() {
         </div>
       </div>
     </PageWrapper>
-  );
+  )
 }

@@ -20,7 +20,7 @@ export function WelcomeHeader({ user }: WelcomeHeaderProps) {
       <h1 className="text-3xl font-bold tracking-tight">
         {greeting}, {firstName}
       </h1>
-      <p className="text-muted-foreground">
+      <p className="text-foreground">
         Bienvenido a tu centro de comando JAM. Aquí puedes ver tu progreso y
         próximas tareas.
       </p>

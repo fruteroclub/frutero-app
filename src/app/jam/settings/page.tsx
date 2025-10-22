@@ -3,7 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useAppAuth } from '@/store/auth-context'
 import { TrackChanger } from '@/components/jam-platform/settings/TrackChanger'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
@@ -54,7 +60,7 @@ export default function SettingsPage() {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando...</p>
+                <p className="text-foreground">Cargando...</p>
               </div>
             </div>
           </div>
@@ -71,7 +77,7 @@ export default function SettingsPage() {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <h2 className="text-2xl font-bold">Autenticación Requerida</h2>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   Debes iniciar sesión para ver tus configuraciones
                 </p>
               </div>
@@ -90,7 +96,7 @@ export default function SettingsPage() {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <h2 className="text-2xl font-bold">Onboarding Requerido</h2>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   Completa el onboarding para seleccionar tu ruta
                 </p>
               </div>
@@ -116,7 +122,7 @@ export default function SettingsPage() {
               </Button>
             </Link>
             <h1 className="text-3xl font-bold">Configuración</h1>
-            <p className="mt-2 text-muted-foreground">
+            <p className="mt-2 text-foreground">
               Administra tu perfil y preferencias de JAM Platform
             </p>
           </div>

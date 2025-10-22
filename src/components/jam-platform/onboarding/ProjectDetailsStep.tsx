@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface ProjectData {
-  name?: string;
-  description?: string;
+  name?: string
+  description?: string
 }
 
 interface ProjectDetailsStepProps {
-  data?: ProjectData;
-  onUpdate: (data: ProjectData) => void;
-  onNext: () => void;
-  onBack: () => void;
+  data?: ProjectData
+  onUpdate: (data: ProjectData) => void
+  onNext: () => void
+  onBack: () => void
 }
 
 export function ProjectDetailsStep({
@@ -25,28 +25,28 @@ export function ProjectDetailsStep({
   onNext,
   onBack,
 }: ProjectDetailsStepProps) {
-  const [formData, setFormData] = useState<ProjectData>(data || {});
+  const [formData, setFormData] = useState<ProjectData>(data || {})
 
   const handleChange = (field: keyof ProjectData, value: string) => {
-    const updated = { ...formData, [field]: value };
-    setFormData(updated);
-    onUpdate(updated);
-  };
+    const updated = { ...formData, [field]: value }
+    setFormData(updated)
+    onUpdate(updated)
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!formData.name || !formData.description) {
-      alert('Please fill in project name and description');
-      return;
+      alert('Please fill in project name and description')
+      return
     }
-    onNext();
-  };
+    onNext()
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Project Details</h2>
-        <p className="text-muted-foreground">
+        <h2 className="mb-2 text-2xl font-bold">Project Details</h2>
+        <p className="text-foreground">
           Tell us about what you&apos;re building
         </p>
       </div>
@@ -67,7 +67,7 @@ export function ProjectDetailsStep({
               placeholder="e.g., AI-Powered Task Manager"
               required
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-foreground">
               Choose a clear, memorable name for your project
             </p>
           </div>
@@ -84,15 +84,15 @@ export function ProjectDetailsStep({
               rows={4}
               required
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-foreground">
               Explain your project in 2-3 sentences
             </p>
           </div>
 
-          <div className="bg-muted/50 p-4 rounded-lg">
+          <div className="rounded-lg bg-muted/50 p-4">
             <p className="text-sm">
-              <strong>💡 Tip:</strong> You&apos;ll be able to add more details like
-              repository URL, demo links, and team members later from your
+              <strong>💡 Tip:</strong> You&apos;ll be able to add more details
+              like repository URL, demo links, and team members later from your
               dashboard.
             </p>
           </div>
@@ -108,5 +108,5 @@ export function ProjectDetailsStep({
         </Button>
       </div>
     </form>
-  );
+  )
 }

@@ -116,7 +116,7 @@ function CountdownTimer({ deadline }: { deadline: Date }) {
 //         {count}
 //         {item.suffix}
 //       </span>
-//       <span className="text-sm text-muted-foreground">{item.description}</span>
+//       <span className="text-sm text-foreground">{item.description}</span>
 //     </motion.div>
 //   )
 // }

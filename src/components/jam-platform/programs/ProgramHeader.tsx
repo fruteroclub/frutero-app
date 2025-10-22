@@ -11,27 +11,27 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
   return (
     <div className="space-y-4">
       {program.bannerUrl && (
-        <div className="w-full h-48 md:h-64 rounded-lg overflow-hidden">
+        <div className="h-48 w-full overflow-hidden rounded-lg md:h-64">
           <img
             src={program.bannerUrl}
             alt={program.name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
       )}
 
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="mb-2 text-3xl font-bold md:text-4xl">
             {program.name}
           </h1>
           {program.organizer && (
-            <p className="text-lg text-muted-foreground mb-4">
+            <p className="mb-4 text-lg text-foreground">
               Organizado por {program.organizer}
             </p>
           )}
 
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap gap-2">
             <Badge variant="secondary" className="text-sm">
               {program.type}
             </Badge>
@@ -45,7 +45,7 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
             ))}
           </div>
 
-          <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-2 text-sm text-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <span>
@@ -76,7 +76,7 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
           <img
             src={program.avatarUrl}
             alt={program.name}
-            className="w-24 h-24 rounded-lg object-cover"
+            className="h-24 w-24 rounded-lg object-cover"
           />
         )}
       </div>
@@ -89,7 +89,7 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <ExternalLink className="h-4 w-4 mr-2" />
+              <ExternalLink className="mr-2 h-4 w-4" />
               Sitio Web
             </a>
           </Button>

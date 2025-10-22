@@ -45,7 +45,7 @@ export function VerificationQueue({
   if (submissions.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <p className="text-muted-foreground">No hay submissions en esta categoría</p>
+        <p className="text-foreground">No hay submissions en esta categoría</p>
       </Card>
     )
   }
@@ -73,18 +73,20 @@ function SubmissionCard({
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <CardTitle className="text-lg">{submission.quest.title}</CardTitle>
+            <div className="mb-1 flex items-center gap-2">
+              <CardTitle className="text-lg">
+                {submission.quest.title}
+              </CardTitle>
               {submission.quest.bountyUsd && (
                 <Badge variant="default" className="flex items-center gap-1">
-                  <DollarSign className="h-3 w-3" />
-                  ${submission.quest.bountyUsd}
+                  <DollarSign className="h-3 w-3" />$
+                  {submission.quest.bountyUsd}
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-foreground">
               <span>{submission.project.name}</span>
               <span>•</span>
               <span>
@@ -118,12 +120,12 @@ function SubmissionCard({
         <div className="space-y-2">
           {submission.submissionLink && (
             <div>
-              <p className="text-sm font-medium mb-1">Link de Entrega</p>
+              <p className="mb-1 text-sm font-medium">Link de Entrega</p>
               <a
                 href={submission.submissionLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-primary hover:underline flex items-center gap-1"
+                className="flex items-center gap-1 text-sm text-primary hover:underline"
               >
                 {submission.submissionLink}
                 <ExternalLink className="h-3 w-3" />
@@ -133,8 +135,8 @@ function SubmissionCard({
 
           {submission.submissionText && (
             <div>
-              <p className="text-sm font-medium mb-1">Descripción</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="mb-1 text-sm font-medium">Descripción</p>
+              <p className="text-sm text-foreground">
                 {submission.submissionText}
               </p>
             </div>
@@ -143,8 +145,8 @@ function SubmissionCard({
 
         {/* Payment Info */}
         {submission.project.walletAddress && (
-          <div className="bg-muted p-3 rounded-md">
-            <p className="text-xs font-medium mb-1">Wallet del Equipo</p>
+          <div className="rounded-md bg-muted p-3">
+            <p className="mb-1 text-xs font-medium">Wallet del Equipo</p>
             <code className="text-xs break-all">
               {submission.project.walletAddress}
             </code>

@@ -34,14 +34,18 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
   const { type = 'ALL', category, difficulty } = params
 
   // Fetch all available quests
-  const { data: availableQuests = [], isLoading: loadingAvailable } = useQuery<Quest[]>({
+  const { data: availableQuests = [], isLoading: loadingAvailable } = useQuery<
+    Quest[]
+  >({
     queryKey: ['quests', type, category, difficulty],
     queryFn: () => getAllQuests(type),
     enabled: isAppAuthenticated,
   })
 
   // Fetch user's quests with progress
-  const { data: userQuestData = [], isLoading: loadingUser } = useQuery<UserQuest[]>({
+  const { data: userQuestData = [], isLoading: loadingUser } = useQuery<
+    UserQuest[]
+  >({
     queryKey: ['user-quests', user?.id, type],
     queryFn: () => getUserQuests(user!.id, type),
     enabled: isAppAuthenticated && !!user,
@@ -71,15 +75,15 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
 
   // Categorize quests
   const activeQuests = questsWithProgress.filter(
-    (q) => q.userQuest && q.userQuest.status === 'IN_PROGRESS'
+    (q) => q.userQuest && q.userQuest.status === 'IN_PROGRESS',
   )
 
   const availableNewQuests = questsWithProgress.filter(
-    (q) => !q.userQuest || q.userQuest.status === 'NOT_STARTED'
+    (q) => !q.userQuest || q.userQuest.status === 'NOT_STARTED',
   )
 
   const completedQuests = questsWithProgress.filter(
-    (q) => q.userQuest && q.userQuest.status === 'COMPLETED'
+    (q) => q.userQuest && q.userQuest.status === 'COMPLETED',
   )
 
   return (
@@ -94,14 +98,15 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
             <div className="flex-1">
               <Link
                 href="/jam/dashboard"
-                className="mb-2 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+                className="mb-2 inline-flex items-center gap-2 text-sm text-foreground hover:text-primary"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Volver al Dashboard
               </Link>
               <h1 className="text-3xl font-bold">Quests</h1>
-              <p className="mt-2 text-muted-foreground">
-                Completa quests para ganar puntos, aprender habilidades y hacer crecer tu proyecto
+              <p className="mt-2 text-foreground">
+                Completa quests para ganar puntos, aprender habilidades y hacer
+                crecer tu proyecto
               </p>
             </div>
 
@@ -112,8 +117,8 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
-              Los quests individuales son para ti solo. Los quests de equipo requieren que tu
-              proyecto complete el trabajo colaborativamente.
+              Los quests individuales son para ti solo. Los quests de equipo
+              requieren que tu proyecto complete el trabajo colaborativamente.
             </AlertDescription>
           </Alert>
 
@@ -125,7 +130,7 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
             <div className="flex min-h-[400px] items-center justify-center">
               <div className="space-y-4 text-center">
                 <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Cargando quests...</p>
+                <p className="text-foreground">Cargando quests...</p>
               </div>
             </div>
           )}
@@ -136,7 +141,9 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
               {/* Active Quests */}
               {activeQuests.length > 0 && (
                 <section>
-                  <h2 className="mb-4 text-2xl font-semibold">Quests Activos</h2>
+                  <h2 className="mb-4 text-2xl font-semibold">
+                    Quests Activos
+                  </h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {activeQuests.map(({ quest, userQuest }) => (
                       <QuestCard
@@ -153,18 +160,24 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
               {/* Available Quests */}
               <section>
                 <h2 className="mb-4 text-2xl font-semibold">
-                  {activeQuests.length > 0 ? 'Quests Disponibles' : 'Todos los Quests'}
+                  {activeQuests.length > 0
+                    ? 'Quests Disponibles'
+                    : 'Todos los Quests'}
                 </h2>
                 {availableNewQuests.length === 0 ? (
                   <Card className="p-6 text-center">
-                    <p className="text-muted-foreground">
+                    <p className="text-foreground">
                       No hay quests disponibles en este momento.
                     </p>
                   </Card>
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2">
                     {availableNewQuests.map(({ quest, userQuest }) => (
-                      <QuestCard key={quest.id} quest={quest} userQuest={userQuest} />
+                      <QuestCard
+                        key={quest.id}
+                        quest={quest}
+                        userQuest={userQuest}
+                      />
                     ))}
                   </div>
                 )}
@@ -178,7 +191,11 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
                   </summary>
                   <div className="grid gap-4 md:grid-cols-2">
                     {completedQuests.map(({ quest, userQuest }) => (
-                      <QuestCard key={quest.id} quest={quest} userQuest={userQuest} />
+                      <QuestCard
+                        key={quest.id}
+                        quest={quest}
+                        userQuest={userQuest}
+                      />
                     ))}
                   </div>
                 </details>

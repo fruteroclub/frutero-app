@@ -3,7 +3,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAppAuth } from '@/store/auth-context'
 import PageWrapper from '@/components/layout/page-wrapper'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { AdminProtected } from '@/components/auth/AdminProtected'
 import {
@@ -39,7 +45,7 @@ export default function AdminDashboardPage() {
               <div className="flex min-h-[400px] items-center justify-center">
                 <div className="space-y-4 text-center">
                   <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
-                  <p className="text-muted-foreground">Cargando estadísticas...</p>
+                  <p className="text-foreground">Cargando estadísticas...</p>
                 </div>
               </div>
             ) : !stats ? null : (
@@ -47,7 +53,7 @@ export default function AdminDashboardPage() {
                 {/* Header */}
                 <div>
                   <h1 className="mb-2 text-3xl font-bold">Admin Dashboard</h1>
-                  <p className="text-muted-foreground">
+                  <p className="text-foreground">
                     Vista general de la plataforma y métricas clave
                   </p>
                 </div>
@@ -58,16 +64,20 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Usuarios</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">
+                          Usuarios
+                        </CardTitle>
+                        <Users className="h-4 w-4 text-foreground" />
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{stats.users.total}</div>
-                      <p className="text-xs text-muted-foreground">
+                      <div className="text-2xl font-bold">
+                        {stats.users.total}
+                      </div>
+                      <p className="text-xs text-foreground">
                         {stats.users.recentlyJoined} nuevos esta semana
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className="mt-1 text-xs text-foreground">
                         {stats.users.admins} administradores
                       </p>
                     </CardContent>
@@ -77,13 +87,17 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Proyectos</CardTitle>
-                        <FolderKanban className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">
+                          Proyectos
+                        </CardTitle>
+                        <FolderKanban className="h-4 w-4 text-foreground" />
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{stats.projects.total}</div>
-                      <p className="text-xs text-muted-foreground">
+                      <div className="text-2xl font-bold">
+                        {stats.projects.total}
+                      </div>
+                      <p className="text-xs text-foreground">
                         {stats.projects.activeProjects} activos (30 días)
                       </p>
                     </CardContent>
@@ -93,16 +107,20 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Quests</CardTitle>
-                        <Target className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">
+                          Quests
+                        </CardTitle>
+                        <Target className="h-4 w-4 text-foreground" />
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{stats.quests.total}</div>
-                      <p className="text-xs text-muted-foreground">
+                      <div className="text-2xl font-bold">
+                        {stats.quests.total}
+                      </div>
+                      <p className="text-xs text-foreground">
                         {stats.quests.completed} completados
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className="mt-1 text-xs text-foreground">
                         {stats.quests.pending} pendientes
                       </p>
                     </CardContent>
@@ -112,13 +130,17 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Bounties Pagados</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">
+                          Bounties Pagados
+                        </CardTitle>
+                        <DollarSign className="h-4 w-4 text-foreground" />
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">${stats.submissions.totalBountiesPaid}</div>
-                      <p className="text-xs text-muted-foreground">USD en total</p>
+                      <div className="text-2xl font-bold">
+                        ${stats.submissions.totalBountiesPaid}
+                      </div>
+                      <p className="text-xs text-foreground">USD en total</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -128,7 +150,9 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Pendientes</CardTitle>
+                        <CardTitle className="text-sm font-medium">
+                          Pendientes
+                        </CardTitle>
                         <Calendar className="h-4 w-4 text-yellow-600" />
                       </div>
                     </CardHeader>
@@ -136,7 +160,7 @@ export default function AdminDashboardPage() {
                       <div className="text-2xl font-bold text-yellow-600">
                         {stats.submissions.pendingVerification}
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-foreground">
                         Submissions esperando verificación
                       </p>
                     </CardContent>
@@ -145,7 +169,9 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Verificados Hoy</CardTitle>
+                        <CardTitle className="text-sm font-medium">
+                          Verificados Hoy
+                        </CardTitle>
                         <CheckCircle className="h-4 w-4 text-green-600" />
                       </div>
                     </CardHeader>
@@ -153,20 +179,26 @@ export default function AdminDashboardPage() {
                       <div className="text-2xl font-bold text-green-600">
                         {stats.submissions.verifiedToday}
                       </div>
-                      <p className="text-xs text-muted-foreground">Quests verificados hoy</p>
+                      <p className="text-xs text-foreground">
+                        Quests verificados hoy
+                      </p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">Programas</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">
+                          Programas
+                        </CardTitle>
+                        <TrendingUp className="h-4 w-4 text-foreground" />
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{stats.programs.total}</div>
-                      <p className="text-xs text-muted-foreground">
+                      <div className="text-2xl font-bold">
+                        {stats.programs.total}
+                      </div>
+                      <p className="text-xs text-foreground">
                         {stats.programs.active} activos
                       </p>
                     </CardContent>
@@ -185,16 +217,19 @@ export default function AdminDashboardPage() {
                     <div className="space-y-3">
                       {STAGE_ORDER.map((stage) => {
                         const count = stats.projects.byStage[stage] || 0
-                        const percentage = stats.projects.total > 0
-                          ? (count / stats.projects.total) * 100
-                          : 0
+                        const percentage =
+                          stats.projects.total > 0
+                            ? (count / stats.projects.total) * 100
+                            : 0
                         const stageConfig = STAGES[stage]
 
                         return (
                           <div key={stage} className="space-y-1">
                             <div className="flex items-center justify-between text-sm">
                               <span className="flex items-center gap-2">
-                                <span className="text-lg">{stageConfig.icon}</span>
+                                <span className="text-lg">
+                                  {stageConfig.icon}
+                                </span>
                                 {stageConfig.title}
                               </span>
                               <span className="font-medium">
@@ -219,22 +254,30 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader>
                       <CardTitle>Quest Types</CardTitle>
-                      <CardDescription>Distribución por tipo de quest</CardDescription>
+                      <CardDescription>
+                        Distribución por tipo de quest
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Individual</span>
-                          <span className="font-medium">{stats.quests.individual}</span>
+                          <span className="font-medium">
+                            {stats.quests.individual}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Team</span>
-                          <span className="font-medium">{stats.quests.team}</span>
+                          <span className="font-medium">
+                            {stats.quests.team}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Both</span>
                           <span className="font-medium">
-                            {stats.quests.total - stats.quests.individual - stats.quests.team}
+                            {stats.quests.total -
+                              stats.quests.individual -
+                              stats.quests.team}
                           </span>
                         </div>
                       </div>
@@ -244,7 +287,9 @@ export default function AdminDashboardPage() {
                   <Card>
                     <CardHeader>
                       <CardTitle>Quest Completion</CardTitle>
-                      <CardDescription>Estado de completitud de quests</CardDescription>
+                      <CardDescription>
+                        Estado de completitud de quests
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
@@ -264,7 +309,11 @@ export default function AdminDashboardPage() {
                           <span className="text-sm">Tasa de Completitud</span>
                           <span className="font-medium">
                             {stats.quests.total > 0
-                              ? ((stats.quests.completed / stats.quests.total) * 100).toFixed(1)
+                              ? (
+                                  (stats.quests.completed /
+                                    stats.quests.total) *
+                                  100
+                                ).toFixed(1)
                               : 0}
                             %
                           </span>

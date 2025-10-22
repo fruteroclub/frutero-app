@@ -2,7 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { SessionCard } from './SessionCard'
-import { getMentorshipSessions, type MentorshipSession } from '@/services/jam/mentors.service'
+import {
+  getMentorshipSessions,
+  type MentorshipSession,
+} from '@/services/jam/mentors.service'
 
 interface SessionHistoryProps {
   mentorshipId: string
@@ -26,7 +29,7 @@ export function SessionHistory({
   if (isLoading) {
     return (
       <div className="py-8 text-center">
-        <p className="text-muted-foreground">Cargando sesiones...</p>
+        <p className="text-foreground">Cargando sesiones...</p>
       </div>
     )
   }
@@ -34,7 +37,7 @@ export function SessionHistory({
   if (sessions.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-muted-foreground">
+        <p className="text-foreground">
           No hay sesiones registradas todavía. ¡Registra tu primera sesión!
         </p>
       </div>

@@ -30,7 +30,7 @@ export function AdminProtected({
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="space-y-4 text-center">
           <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Verificando permisos...</p>
+          <p className="text-sm text-foreground">Verificando permisos...</p>
         </div>
       </div>
     )
@@ -64,7 +64,9 @@ export function AdminProtected({
         <Alert variant="destructive" className="max-w-md">
           <Shield className="h-4 w-4" />
           <AlertDescription className="space-y-3">
-            <p>No tienes permisos de administrador para acceder a esta página.</p>
+            <p>
+              No tienes permisos de administrador para acceder a esta página.
+            </p>
             <Button variant="outline" size="sm" asChild>
               <Link href={redirectTo}>Volver</Link>
             </Button>

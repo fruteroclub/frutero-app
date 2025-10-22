@@ -12,12 +12,12 @@ interface MentorshipCardProps {
 export function MentorshipCard({ mentorship }: MentorshipCardProps) {
   if (!mentorship) {
     return (
-      <Card className="h-full flex flex-col">
+      <Card className="flex h-full flex-col">
         <CardHeader>
           <CardTitle>Mentoría</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 py-6 text-center">
-          <p className="text-muted-foreground">No tienes un mentor asignado</p>
+          <p className="text-foreground">No tienes un mentor asignado</p>
           <Button variant="outline" className="w-full" asChild>
             <Link href="/jam/mentors">Explorar Mentores</Link>
           </Button>
@@ -33,7 +33,7 @@ export function MentorshipCard({ mentorship }: MentorshipCardProps) {
   }[mentorship.status]
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Tu Mentor</CardTitle>
       </CardHeader>
@@ -45,20 +45,20 @@ export function MentorshipCard({ mentorship }: MentorshipCardProps) {
           </Avatar>
           <div className="flex-1">
             <p className="font-medium">{mentorship.mentorName}</p>
-            <p className="text-sm text-muted-foreground">{statusLabel}</p>
+            <p className="text-sm text-foreground">{statusLabel}</p>
           </div>
         </div>
 
         <div className="space-y-2 border-t pt-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Sesiones completadas:</span>
+            <span className="text-foreground">Sesiones completadas:</span>
             <span className="font-medium">{mentorship.sessionsCompleted}</span>
           </div>
 
           {mentorship.nextSession && (
             <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Próxima sesión:</span>
+              <Calendar className="h-4 w-4 text-foreground" />
+              <span className="text-foreground">Próxima sesión:</span>
               <span className="font-medium">
                 {new Date(mentorship.nextSession).toLocaleDateString('es-ES', {
                   day: 'numeric',

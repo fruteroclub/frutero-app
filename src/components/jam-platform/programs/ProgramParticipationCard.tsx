@@ -34,16 +34,25 @@ export function ProgramParticipationCard({
 
   const markCompleteMutation = useMutation({
     mutationFn: () =>
-      updateProgramStatus(projectSlug, programParticipation.program.id, 'COMPLETED'),
+      updateProgramStatus(
+        projectSlug,
+        programParticipation.program.id,
+        'COMPLETED',
+      ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-programs', projectSlug],
+      })
     },
   })
 
   const withdrawMutation = useMutation({
-    mutationFn: () => leaveProgram(projectSlug, programParticipation.program.id),
+    mutationFn: () =>
+      leaveProgram(projectSlug, programParticipation.program.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-programs', projectSlug] })
+      queryClient.invalidateQueries({
+        queryKey: ['project-programs', projectSlug],
+      })
     },
   })
 
@@ -62,12 +71,12 @@ export function ProgramParticipationCard({
   return (
     <Card className={completed ? 'opacity-75' : ''}>
       <CardHeader>
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <CardTitle className="text-lg">
               {programParticipation.program.name}
             </CardTitle>
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <Badge
                 variant={completed ? 'secondary' : 'default'}
                 className="flex items-center gap-1"
@@ -81,8 +90,11 @@ export function ProgramParticipationCard({
                   'Activo'
                 )}
               </Badge>
-              <span className="text-xs text-muted-foreground">
-                Unido el {new Date(programParticipation.joinedAt).toLocaleDateString('es-ES')}
+              <span className="text-xs text-foreground">
+                Unido el{' '}
+                {new Date(programParticipation.joinedAt).toLocaleDateString(
+                  'es-ES',
+                )}
               </span>
             </div>
           </div>
@@ -96,14 +108,14 @@ export function ProgramParticipationCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handleMarkComplete}>
-                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
                   Marcar como Completado
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleWithdraw}
                   className="text-destructive"
                 >
-                  <XCircle className="h-4 w-4 mr-2" />
+                  <XCircle className="mr-2 h-4 w-4" />
                   Retirarse del Programa
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -113,15 +125,18 @@ export function ProgramParticipationCard({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="line-clamp-2 text-sm text-foreground">
           {programParticipation.program.description}
         </p>
 
         {programParticipation.program.endDate && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-foreground">
             <Calendar className="h-4 w-4" />
             <span>
-              Finaliza: {new Date(programParticipation.program.endDate).toLocaleDateString('es-ES')}
+              Finaliza:{' '}
+              {new Date(
+                programParticipation.program.endDate,
+              ).toLocaleDateString('es-ES')}
             </span>
           </div>
         )}
