@@ -4,7 +4,7 @@
  */
 
 import { db } from '@/db'
-import { quests, userQuests } from '@/db/schema'
+import { quests, userQuests, proofOfCommunities } from '@/db/schema'
 import { eq, and, sql } from 'drizzle-orm'
 
 /**
@@ -144,6 +144,12 @@ export async function updateQuestProgress(
     .where(and(eq(userQuests.userId, userId), eq(userQuests.questId, questId)))
     .returning()
 
+  // Award points if quest just completed
+  // Note: existing.status is guaranteed to not be COMPLETED due to check above (line 104-106)
+  if (newStatus === 'COMPLETED') {
+    await awardQuestPoints(userId, questId)
+  }
+
   return updated
 }
 
@@ -199,4 +205,26 @@ export async function getQuestSubmissionHistory(userId: string, questId: string)
       submittedAt: userQuest.updatedAt,
     },
   ]
+}
+
+/**
+ * Award points to user when quest is completed
+ */
+async function awardQuestPoints(userId: string, questId: string) {
+  // Get quest reward points
+  const [quest] = await db.select().from(quests).where(eq(quests.id, questId))
+
+  if (!quest || quest.rewardPoints === 0) {
+    return
+  }
+
+  // Update user points in proof of community
+  await db
+    .update(proofOfCommunities)
+    .set({
+      points: sql`${proofOfCommunities.points} + ${quest.rewardPoints}`,
+    })
+    .where(eq(proofOfCommunities.userId, userId))
+
+  console.log(`Awarded ${quest.rewardPoints} points to user ${userId} for completing quest ${questId}`)
 }
