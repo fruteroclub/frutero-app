@@ -1,271 +1,243 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
-import { Plus, X, CheckCircle } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Slider } from '@/components/ui/slider'
+import { Plus, X, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import {
-  updateQuestProgress,
-  submitQuestForCompletion,
-} from '@/services/jam/user-quests.service'
-import { useAppAuth } from '@/store/auth-context'
 
 interface IndividualQuestSubmissionFormProps {
   questId: string
+  userId: string
   currentProgress?: number
-  currentStatus?: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED'
   currentSubmission?: {
     submissionText?: string | null
     submissionUrls?: string[] | null
+    status?: string
   }
-  onSuccess?: () => void
+  onUpdate?: () => void
 }
 
 export function IndividualQuestSubmissionForm({
   questId,
+  userId,
   currentProgress = 0,
-  currentStatus = 'NOT_STARTED',
   currentSubmission,
-  onSuccess,
+  onUpdate,
 }: IndividualQuestSubmissionFormProps) {
-  const { user } = useAppAuth()
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [progress, setProgress] = useState(currentProgress)
   const [submissionText, setSubmissionText] = useState(
     currentSubmission?.submissionText || ''
   )
-  const [submissionUrls, setSubmissionUrls] = useState<string[]>(
-    currentSubmission?.submissionUrls || ['']
+  const [links, setLinks] = useState<string[]>(
+    currentSubmission?.submissionUrls && currentSubmission.submissionUrls.length > 0
+      ? currentSubmission.submissionUrls
+      : ['']
   )
-  const [loading, setLoading] = useState(false)
 
-  const isCompleted = currentStatus === 'COMPLETED'
-
-  const handleAddUrl = () => {
-    setSubmissionUrls([...submissionUrls, ''])
-  }
-
-  const handleRemoveUrl = (index: number) => {
-    setSubmissionUrls(submissionUrls.filter((_, i) => i !== index))
-  }
-
-  const handleUpdateUrl = (index: number, value: string) => {
-    const newUrls = [...submissionUrls]
-    newUrls[index] = value
-    setSubmissionUrls(newUrls)
-  }
-
-  const handleSaveProgress = async () => {
-    if (!user) {
-      toast.error('Debes iniciar sesión')
-      return
-    }
-
-    setLoading(true)
-    try {
-      await updateQuestProgress(questId, user.id, {
-        progress,
-        submissionText: submissionText || undefined,
-        submissionUrls: submissionUrls.filter((url) => url.trim() !== ''),
-      })
-
-      toast.success('Progreso guardado')
-      onSuccess?.()
-    } catch (error) {
-      console.error('Failed to save progress:', error)
-      const errorMessage =
-        error instanceof Error ? error.message : 'Error al guardar progreso'
-      toast.error(errorMessage)
-    } finally {
-      setLoading(false)
+  const addLink = () => {
+    if (links.length < 5) {
+      setLinks([...links, ''])
     }
   }
 
-  const handleSubmit = async () => {
-    if (!user) {
-      toast.error('Debes iniciar sesión')
-      return
+  const removeLink = (index: number) => {
+    if (links.length > 1) {
+      setLinks(links.filter((_, i) => i !== index))
     }
+  }
+
+  const updateLink = (index: number, value: string) => {
+    const newLinks = [...links]
+    newLinks[index] = value
+    setLinks(newLinks)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
     if (!submissionText.trim()) {
-      toast.error('Debes describir tu trabajo')
+      toast.error('Por favor describe tu trabajo')
       return
     }
 
-    setLoading(true)
+    setIsSubmitting(true)
+
     try {
-      await submitQuestForCompletion(questId, user.id, {
-        submissionText,
-        submissionUrls: submissionUrls.filter((url) => url.trim() !== ''),
+      const response = await fetch(`/api/jam/quests/${questId}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          progress,
+          submissionText,
+          submissionUrls: links.filter((l) => l.trim()),
+        }),
       })
 
-      toast.success('¡Quest completado!')
-      onSuccess?.()
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to submit progress')
+      }
+
+      const data = await response.json()
+
+      if (data.status === 'COMPLETED') {
+        toast.success('🎉 Quest completado! Puntos otorgados!', {
+          description: 'Excelente trabajo completando este quest!',
+        })
+      } else {
+        toast.success('Progreso actualizado exitosamente!', {
+          description: `El quest está ahora ${progress}% completo`,
+        })
+      }
+
+      // Refresh page data
+      router.refresh()
+      onUpdate?.()
     } catch (error) {
-      console.error('Failed to submit quest:', error)
-      const errorMessage =
-        error instanceof Error ? error.message : 'Error al enviar quest'
-      toast.error(errorMessage)
+      console.error('Error submitting progress:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Error al enviar progreso'
+      )
     } finally {
-      setLoading(false)
+      setIsSubmitting(false)
     }
   }
 
-  if (isCompleted) {
-    return (
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Quest Completado</CardTitle>
-            <Badge variant="default" className="bg-green-600">
-              <CheckCircle className="mr-1 h-4 w-4" />
-              Completado
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label>Descripción del Trabajo</Label>
-              <p className="mt-2 rounded-md border p-3 text-sm">
-                {currentSubmission?.submissionText}
-              </p>
-            </div>
-
-            {currentSubmission?.submissionUrls &&
-              currentSubmission.submissionUrls.length > 0 && (
-                <div>
-                  <Label>Links de Evidencia</Label>
-                  <div className="mt-2 space-y-2">
-                    {currentSubmission.submissionUrls.map((url, i) => (
-                      <a
-                        key={i}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block text-sm text-blue-600 hover:underline"
-                      >
-                        {url}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
+  const isComplete = currentProgress >= 100
+  const status = currentSubmission?.status
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Envía tu Progreso</CardTitle>
+        <CardTitle>
+          {isComplete ? 'Quest Completado' : 'Enviar Progreso'}
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (progress >= 100) {
-              handleSubmit()
-            } else {
-              handleSaveProgress()
-            }
-          }}
-          className="space-y-6"
-        >
-          {/* Progress Slider */}
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <Label>Progreso Completado</Label>
-              <span className="text-sm font-medium">{progress}%</span>
+        {isComplete && status === 'COMPLETED' ? (
+          <div className="text-center py-8">
+            <div className="mb-4 text-4xl">🎉</div>
+            <p className="text-lg font-medium mb-2">
+              ¡Felicitaciones! Completaste este quest!
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Tu envío ha sido registrado y los puntos han sido otorgados.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Progress Slider */}
+            <div className="space-y-3">
+              <Label htmlFor="progress">Progreso Completado</Label>
+              <div className="flex items-center gap-4">
+                <Slider
+                  id="progress"
+                  value={[progress]}
+                  onValueChange={([v]) => setProgress(v)}
+                  max={100}
+                  step={10}
+                  className="flex-1"
+                  disabled={isSubmitting}
+                />
+                <span className="w-16 text-right font-medium tabular-nums">
+                  {progress}%
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Desliza para indicar cuánto del quest has completado
+              </p>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="5"
-              value={progress}
-              onChange={(e) => setProgress(parseInt(e.target.value))}
-              className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted"
-            />
-            <Progress value={progress} className="mt-2" />
-          </div>
 
-          {/* Submission Text */}
-          <div>
-            <Label htmlFor="submissionText">
-              Descripción del Trabajo
-              {progress >= 100 && <span className="text-red-500"> *</span>}
-            </Label>
-            <Textarea
-              id="submissionText"
-              value={submissionText}
-              onChange={(e) => setSubmissionText(e.target.value)}
-              placeholder="¿Qué lograste? ¿Qué aprendiste?"
-              rows={4}
-              className="mt-2"
-            />
-          </div>
-
-          {/* Submission URLs */}
-          <div>
-            <Label>Pruebas de Trabajo (Links)</Label>
-            <div className="mt-2 space-y-2">
-              {submissionUrls.map((url, i) => (
-                <div key={i} className="flex gap-2">
-                  <Input
-                    type="url"
-                    value={url}
-                    onChange={(e) => handleUpdateUrl(i, e.target.value)}
-                    placeholder="GitHub, demo, screenshot, etc."
-                  />
-                  {submissionUrls.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveUrl(i)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddUrl}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Agregar Link
-              </Button>
+            {/* Submission Text */}
+            <div className="space-y-2">
+              <Label htmlFor="submission-text">
+                Descripción del Trabajo{' '}
+                <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
+                id="submission-text"
+                value={submissionText}
+                onChange={(e) => setSubmissionText(e.target.value)}
+                placeholder="¿Qué lograste? ¿Qué aprendiste? ¿Qué desafíos enfrentaste?"
+                rows={6}
+                required
+                disabled={isSubmitting}
+                className="resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                Comparte tu progreso, aprendizajes y obstáculos que encontraste
+              </p>
             </div>
-          </div>
 
-          {/* Actions */}
-          <div className="flex gap-2">
-            {progress < 100 ? (
-              <Button type="submit" disabled={loading} className="w-full">
-                {loading ? 'Guardando...' : 'Guardar Progreso'}
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                disabled={loading || !submissionText.trim()}
-                className="w-full"
-              >
-                {loading ? 'Enviando...' : 'Enviar para Completar'}
-              </Button>
-            )}
-          </div>
-        </form>
+            {/* Proof of Work Links */}
+            <div className="space-y-3">
+              <Label>Prueba de Trabajo (Links)</Label>
+              <div className="space-y-2">
+                {links.map((link, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input
+                      type="url"
+                      value={link}
+                      onChange={(e) => updateLink(i, e.target.value)}
+                      placeholder="GitHub, demo, screenshot, etc."
+                      disabled={isSubmitting}
+                    />
+                    {links.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeLink(i)}
+                        disabled={isSubmitting}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addLink}
+                  disabled={isSubmitting || links.length >= 5}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar Otro Link {links.length >= 5 && '(Máx 5)'}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Agrega links a tu trabajo (GitHub, demo, screenshots, etc.)
+              </p>
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || !submissionText.trim()}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>Actualizar Progreso</>
+              )}
+            </Button>
+          </form>
+        )}
       </CardContent>
     </Card>
   )
