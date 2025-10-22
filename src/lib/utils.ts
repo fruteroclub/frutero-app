@@ -33,5 +33,7 @@ export async function handleResponse<T>(
       data: undefined,
     }
   }
-  return { success: true, data: data.data as T }
+  // Handle both wrapped { data: T } and direct T responses
+  const responseData = data.data !== undefined ? data.data : data
+  return { success: true, data: responseData as T }
 }
