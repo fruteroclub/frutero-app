@@ -38,13 +38,14 @@ export async function getAvailableMentors() {
   return mentorsData.map((m) => {
     const menteeCount = m.menteeCount || 0
     const maxParticipants = m.mentorProfile.maxParticipants || 5
+    const availability = (m.mentorProfile.availability || 'UNAVAILABLE').toLowerCase() as 'available' | 'limited' | 'unavailable'
 
     return {
       ...m.user,
       profile: m.profile,
       mentorProfile: m.mentorProfile,
       menteeCount,
-      availability: m.mentorProfile.availability || 'UNAVAILABLE',
+      availability,
       expertiseAreas: m.mentorProfile.expertiseAreas || [],
       mentoringApproach: m.mentorProfile.mentoringApproach || '',
       experience: m.mentorProfile.experience || '',
@@ -83,6 +84,7 @@ export async function getMentorById(mentorId: string) {
 
   const menteeCount = mentorData.menteeCount || 0
   const maxParticipants = mentorData.mentorProfile.maxParticipants || 5
+  const availability = (mentorData.mentorProfile.availability || 'UNAVAILABLE').toLowerCase() as 'available' | 'limited' | 'unavailable'
 
   return {
     ...mentorData.user,
@@ -90,7 +92,7 @@ export async function getMentorById(mentorId: string) {
     mentorProfile: mentorData.mentorProfile,
     menteeCount,
     rating: mentorData.avgRating || 0,
-    availability: mentorData.mentorProfile.availability || 'UNAVAILABLE',
+    availability,
     expertiseAreas: mentorData.mentorProfile.expertiseAreas || [],
     mentoringApproach: mentorData.mentorProfile.mentoringApproach || '',
     experience: mentorData.mentorProfile.experience || '',
