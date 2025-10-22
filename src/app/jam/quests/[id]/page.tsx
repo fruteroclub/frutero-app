@@ -23,8 +23,9 @@ import {
 } from 'lucide-react'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { getQuest, getUserQuests, type Quest, type UserQuest } from '@/services/jam/quests.service'
-import { startQuest } from '@/services/jam/user-quests.service'
+import { startQuest, getQuestSubmissionHistory } from '@/services/jam/user-quests.service'
 import { IndividualQuestSubmissionForm } from '@/components/jam-platform/quests/IndividualQuestSubmissionForm'
+import { QuestSubmissionHistory } from '@/components/jam-platform/quests/QuestSubmissionHistory'
 import { toast } from 'sonner'
 
 interface QuestDetailPageProps {
@@ -56,6 +57,14 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
   })
 
   const userQuest = userQuests.find((uq) => uq.questId === id)
+
+  // Fetch submission history if user has started the quest
+  const { data: submissionHistory = [] } = useQuery({
+    queryKey: ['quest-history', id, user?.id],
+    queryFn: () => getQuestSubmissionHistory(id, user!.id),
+    enabled: isAppAuthenticated && !!user && !!userQuest,
+  })
+
   const isLoading = questLoading || userQuestsLoading
 
   const handleStartQuest = async () => {
@@ -279,6 +288,11 @@ export default function QuestDetailPage({ params }: QuestDetailPageProps) {
                   }}
                   onUpdate={refetchUserQuests}
                 />
+              )}
+
+              {/* Submission History - Show if user has submissions */}
+              {canStartIndividually && isStarted && user && submissionHistory.length > 0 && (
+                <QuestSubmissionHistory history={submissionHistory} />
               )}
             </div>
 
