@@ -37,6 +37,7 @@ const NAV_ITEMS = [
 const ADMIN_NAV_ITEMS = [
   { href: '/jam/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/jam/admin/users', label: 'Usuarios', icon: Users },
+  { href: '/jam/admin/mentors', label: 'Mentores', icon: UserCheck },
   { href: '/jam/admin/quests', label: 'Gestionar Quests', icon: Target },
   {
     href: '/jam/admin/verifications',
