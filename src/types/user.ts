@@ -11,6 +11,7 @@ export interface User {
   bannerUrl: string | null
   metadata?: Record<string, unknown> | null
   isAdmin: boolean
+  onboardingCompletedAt?: Date | null
   createdAt?: Date
   updatedAt?: Date
 }

@@ -1,7 +1,8 @@
 import { db } from '@/db'
-import { users, profiles, projects, projectMembers } from '@/db/schema'
+import { users, profiles, projects, projectMembers, userSettings } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { generateUniqueSlug } from './projects'
+import type { Track } from '@/types/jam'
 
 export interface ProfileData {
   firstName?: string
@@ -26,7 +27,8 @@ export interface OnboardingData {
   projectChoice: 'create' | 'join' | 'skip'
   projectData?: ProjectData
   projectId?: string
-  track?: 'founder' | 'professional' | 'freelancer'
+  track?: Track
+  interests?: string[]
   goals?: string
 }
 
@@ -103,12 +105,30 @@ export async function completeOnboarding(
       })
     }
 
-    // 3. Update user with onboarding complete flag
+    // 3. Create or update user settings with track and interests
+    await db
+      .insert(userSettings)
+      .values({
+        userId,
+        track: data.track,
+        interests: data.interests || [],
+        onboardingCompletedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: userSettings.userId,
+        set: {
+          track: data.track,
+          interests: data.interests || [],
+          onboardingCompletedAt: new Date(),
+          updatedAt: new Date(),
+        },
+      })
+
+    // 4. Update user timestamp
     await db
       .update(users)
       .set({
         updatedAt: new Date(),
-        // Note: Add onboardingComplete field to schema if not exists
       })
       .where(eq(users.id, userId))
 

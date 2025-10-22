@@ -10,6 +10,7 @@ import { ProjectStageCard } from '@/components/jam-platform/dashboard/ProjectSta
 import { QuickActions } from '@/components/jam-platform/dashboard/QuickActions'
 import { UpcomingDeadlines } from '@/components/jam-platform/dashboard/UpcomingDeadlines'
 import { RecentActivity } from '@/components/jam-platform/dashboard/RecentActivity'
+import { TrackCard } from '@/components/jam-platform/dashboard/TrackCard'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { JamNav } from '@/components/jam-platform/navigation/JamNav'
 import { getDashboardStats, type DashboardStats } from '@/services/jam/dashboard.service'
@@ -96,8 +97,12 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <TrackCard track={stats.userSettings?.track} />
             <UpcomingDeadlines deadlines={stats.deadlines} />
             <QuickActions />
+          </div>
+
+          <div className="grid w-full items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
             <RecentActivity activities={stats.recentActivities} />
           </div>
         </div>
