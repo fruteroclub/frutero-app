@@ -10,7 +10,6 @@ import { MentorHeader } from '@/components/jam-platform/mentors/MentorHeader'
 import { MentorStats } from '@/components/jam-platform/mentors/MentorStats'
 import { MentorConnection } from '@/components/jam-platform/mentors/MentorConnection'
 import { SessionHistory } from '@/components/jam-platform/mentors/SessionHistory'
-import { SessionLogger } from '@/components/jam-platform/mentors/SessionLogger'
 import {
   getMentorById,
   getMentorshipStatus,
@@ -121,19 +120,11 @@ export default function MentorDetailPage({
 
             <div className="lg:col-span-1">
               {isAppAuthenticated && user ? (
-                <div className="space-y-4">
-                  <MentorConnection
-                    mentor={mentor}
-                    userId={user.id}
-                    hasExistingConnection={connectionStatus?.exists || false}
-                  />
-                  {connectionStatus?.exists && connectionStatus.mentorship && (
-                    <SessionLogger
-                      mentorshipId={connectionStatus.mentorship.id}
-                      userRole="participant"
-                    />
-                  )}
-                </div>
+                <MentorConnection
+                  mentor={mentor}
+                  userId={user.id}
+                  hasExistingConnection={connectionStatus?.exists || false}
+                />
               ) : (
                 <Card>
                   <CardHeader>

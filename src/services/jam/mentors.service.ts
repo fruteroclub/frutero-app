@@ -286,6 +286,26 @@ export async function updateSessionRating(
 }
 
 /**
+ * Get single mentorship by ID
+ */
+export async function getMentorshipById(
+  mentorshipId: string
+): Promise<ServiceResponse<UserMentorship>> {
+  try {
+    const response = await fetch(`/api/jam/mentorships/${mentorshipId}`)
+    return handleResponse<UserMentorship>(response)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Network error fetching mentorship'
+    return {
+      success: false,
+      error: new Error(message),
+      errorMsg: message,
+      data: null,
+    }
+  }
+}
+
+/**
  * Get all mentorships for a user (as mentor or participant)
  */
 export async function getUserMentorships(
