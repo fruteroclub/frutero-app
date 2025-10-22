@@ -16,7 +16,7 @@ export function MentorHeader({ mentor }: MentorHeaderProps) {
 
   const availabilityLabels = {
     available: 'Disponible',
-    limited: 'Disponibilidad Limitada',
+    limited: 'Limitada',
     unavailable: 'No Disponible',
   }
 

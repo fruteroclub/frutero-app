@@ -18,7 +18,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 
   const availabilityLabels = {
     available: 'Disponible',
-    limited: 'Disponibilidad Limitada',
+    limited: 'Limitada',
     unavailable: 'No Disponible',
   }
 
@@ -39,31 +39,29 @@ export function MentorCard({ mentor }: MentorCardProps) {
   return (
     <Link href={`/jam/mentors/${mentor.id}`}>
       <Card className="group h-full transition-all hover:shadow-lg">
-        <CardHeader className="space-y-4">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-12 w-12">
-                <AvatarImage src={mentor.avatarUrl || undefined} />
-                <AvatarFallback>
-                  {getInitials(mentor.displayName)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold group-hover:text-primary">
-                  {mentor.displayName || mentor.username || 'Sin nombre'}
-                </h3>
-                {location && (
-                  <div className="flex items-center gap-1 text-sm text-foreground">
-                    <MapPin className="h-3 w-3" />
-                    <span>{location}</span>
-                  </div>
-                )}
-              </div>
+        <CardHeader className="space-y-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={mentor.avatarUrl || undefined} />
+              <AvatarFallback>
+                {getInitials(mentor.displayName)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold group-hover:text-primary truncate">
+                {mentor.displayName || mentor.username || 'Sin nombre'}
+              </h3>
+              {location && (
+                <div className="flex items-center gap-1 text-sm text-foreground">
+                  <MapPin className="h-3 w-3" />
+                  <span className="truncate">{location}</span>
+                </div>
+              )}
             </div>
-            <Badge className={availabilityColors[mentor.availability]}>
-              {availabilityLabels[mentor.availability]}
-            </Badge>
           </div>
+          <Badge className={`${availabilityColors[mentor.availability]} w-fit`}>
+            {availabilityLabels[mentor.availability]}
+          </Badge>
         </CardHeader>
 
         <CardContent className="space-y-4">
