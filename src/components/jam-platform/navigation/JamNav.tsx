@@ -16,6 +16,7 @@ import {
   Shield,
   CheckSquare,
   LayoutDashboard,
+  UserCheck,
 } from 'lucide-react'
 import { NavLink } from './NavLink'
 import { Button } from '@/components/ui/button'
@@ -28,6 +29,7 @@ const NAV_ITEMS = [
   { href: '/jam/quests', label: 'Quests', icon: Target },
   { href: '/jam/programs', label: 'Programs', icon: Calendar },
   { href: '/jam/mentors', label: 'Mentors', icon: Users },
+  { href: '/jam/mentorships', label: 'Mis Mentorías', icon: UserCheck },
   { href: '/jam/community', label: 'Community', icon: MessageSquare },
   { href: '/profile', label: 'Profile', icon: User },
 ]

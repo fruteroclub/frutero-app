@@ -70,7 +70,7 @@ export function MentorshipCard({ mentorship }: MentorshipCardProps) {
         </div>
 
         <Button className="w-full" variant="outline" asChild>
-          <Link href="/jam/mentors">Ver Detalles</Link>
+          <Link href="/jam/mentorships">Mis Mentorías</Link>
         </Button>
       </CardContent>
     </Card>
