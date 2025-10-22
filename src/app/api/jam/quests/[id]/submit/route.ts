@@ -8,6 +8,7 @@ import {
 /**
  * POST /api/jam/quests/[id]/submit
  * Submit or update progress for an individual quest
+ * Supports both action-based (legacy) and direct progress updates
  */
 export async function POST(
   request: NextRequest,
@@ -23,7 +24,38 @@ export async function POST(
       return NextResponse.json({ error: 'User ID required' }, { status: 400 })
     }
 
-    // Handle different actions
+    // New simplified flow: if no action, auto-start quest if needed, then update progress
+    if (!action) {
+      // Validate required fields
+      if (progress === undefined) {
+        return NextResponse.json(
+          { error: 'Progress is required' },
+          { status: 400 }
+        )
+      }
+
+      // Auto-start quest if not started yet
+      try {
+        await startQuest(userId, questId)
+      } catch (error) {
+        // Ignore "already started" error
+        const errorMessage = error instanceof Error ? error.message : ''
+        if (!errorMessage.includes('already started')) {
+          throw error
+        }
+      }
+
+      // Update progress
+      const updated = await updateQuestProgress(userId, questId, {
+        progress,
+        submissionText,
+        submissionUrls,
+      })
+
+      return NextResponse.json(updated)
+    }
+
+    // Legacy action-based flow
     if (action === 'start') {
       // Start/assign quest to user
       const userQuest = await startQuest(userId, questId)
