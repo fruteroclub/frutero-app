@@ -337,6 +337,46 @@ export async function getMentorshipSessions(mentorshipId: string) {
 /**
  * Get all mentorships for a user (as mentor or participant)
  */
+/**
+ * Get single mentorship by ID with full details
+ */
+export async function getMentorshipById(mentorshipId: string) {
+  const result = await db.query.mentorships.findFirst({
+    where: eq(mentorships.id, mentorshipId),
+    with: {
+      mentor: {
+        columns: {
+          id: true,
+          username: true,
+          displayName: true,
+          avatarUrl: true,
+        },
+      },
+      participant: {
+        columns: {
+          id: true,
+          username: true,
+          displayName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  })
+
+  if (!result) {
+    throw new Error('Mentorship not found')
+  }
+
+  const sessionNotes = (result.sessionNotes as Record<string, unknown>) || {}
+  const sessions = (sessionNotes.sessions as MentorshipSession[]) || []
+
+  return {
+    ...result,
+    sessionCount: sessions.length,
+    lastSessionDate: sessions.length > 0 ? sessions[0].date : null,
+  }
+}
+
 export async function getUserMentorships(userId: string) {
   const mentorshipsData = await db
     .select({
