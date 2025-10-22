@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
 import { SparklesIcon } from 'lucide-react'
+import AuthButtonPrivy from '../buttons/auth-button-privy'
 
 export default function HeroSection() {
   return (
@@ -26,13 +26,13 @@ export default function HeroSection() {
 
         {/* CTA Button */}
         <div className="flex justify-center">
-          <Button
+          <AuthButtonPrivy
             size="xl"
             className="text-2xl font-medium transition duration-300 ease-in-out hover:scale-105 lg:px-14 lg:py-6"
           >
             Quiero unirme{' '}
             <SparklesIcon className="ml-2 h-5 w-5 fill-background" />
-          </Button>
+          </AuthButtonPrivy>
         </div>
 
         {/* Subtítulo */}

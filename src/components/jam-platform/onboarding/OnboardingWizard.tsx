@@ -69,24 +69,24 @@ export function OnboardingWizard({ userId }: { userId: string }) {
   };
 
   const nextStep = () => {
-    // Skip project details step if not creating a project
+    // Skip project details step (step 3) if joining or skipping project
     if (
       currentStep === 2 &&
-      formData.projectChoice !== 'create'
+      (formData.projectChoice === 'join' || formData.projectChoice === 'skip')
     ) {
-      setCurrentStep(4); // Jump to track selection
+      setCurrentStep(4); // Jump to track selection (skip project details)
     } else {
       setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
     }
   };
 
   const prevStep = () => {
-    // Skip project details step when going back if not creating
+    // Skip project details step (step 3) when going back if joined or skipped
     if (
       currentStep === 4 &&
-      formData.projectChoice !== 'create'
+      (formData.projectChoice === 'join' || formData.projectChoice === 'skip')
     ) {
-      setCurrentStep(2); // Jump back to project choice
+      setCurrentStep(2); // Jump back to project choice (skip project details)
     } else {
       setCurrentStep((prev) => Math.max(prev - 1, 0));
     }
