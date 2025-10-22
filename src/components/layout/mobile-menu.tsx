@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/sheet'
 import { MenuIcon, SparkleIcon } from 'lucide-react'
 import { type MenuItemType } from './navbar'
-import AuthButton from '../buttons/auth-button-para'
+import AuthButton from '../buttons/auth-button-privy'
 import { cn } from '@/lib/utils'
 
 type MobileMenuProps = {
@@ -42,7 +42,7 @@ export default function MobileMenu({ menuItems, pathname }: MobileMenuProps) {
               className={cn(
                 'inline-flex items-center justify-center px-4 py-2 text-lg font-medium text-foreground transition-colors hover:text-primary focus:text-primary focus:outline-none',
                 pathname === menuItem.href &&
-                'pointer-events-none underline decoration-primary decoration-[1.5px] underline-offset-[6px] hover:!text-secondary-foreground'
+                  'pointer-events-none underline decoration-primary decoration-[1.5px] underline-offset-[6px] hover:!text-secondary-foreground',
               )}
               href={menuItem.href}
             >
@@ -51,7 +51,9 @@ export default function MobileMenu({ menuItems, pathname }: MobileMenuProps) {
           ))}
           <div className="flex justify-center py-2">
             <AuthButton size="lg" setIsMenuOpen={setIsMenuOpen}>
-              <SparkleIcon className="mr-2 -ml-2 h-4 w-4 fill-background" /> Únete</AuthButton>
+              <SparkleIcon className="mr-2 -ml-2 h-4 w-4 fill-background" />{' '}
+              Únete
+            </AuthButton>
           </div>
         </div>
       </SheetContent>

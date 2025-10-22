@@ -15,7 +15,7 @@ const PageWrapper: React.FC<NavbarProps & { children: React.ReactNode }> = ({
     <>
       <Navbar />
       <main
-        className={`top-[96px] flex h-[calc(100vh-96px)] w-full flex-col items-center overflow-x-hidden`}
+        className={`top-[96px] flex min-h-[calc(100vh-96px)] w-full flex-col items-center overflow-x-hidden`}
       >
         {children}
       </main>
