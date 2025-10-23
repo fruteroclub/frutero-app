@@ -190,8 +190,9 @@ async function getUserMentorship(userId: string): Promise<MentorshipInfo | null>
   }
 
   // Count completed sessions from session notes
-  const sessionNotes = (mentorshipData.sessionNotes as Array<{ completedAt?: string }>) || []
-  const sessionsCompleted = sessionNotes.filter((note) => note.completedAt).length
+  const sessionNotes = (mentorshipData.sessionNotes as Record<string, unknown>) || {}
+  const sessions = (sessionNotes.sessions as Array<{ date?: string }>) || []
+  const sessionsCompleted = sessions.length
 
   return {
     id: mentorshipData.id,
