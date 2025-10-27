@@ -6,6 +6,8 @@
 import { db } from '@/db'
 import { users, projects, quests, userQuests, projectQuests, programs } from '@/db/schema'
 import { sql, eq, and, gte } from 'drizzle-orm'
+import { getTrackAnalytics } from '../admin'
+import type { Track } from '@/types/jam'
 
 export interface AdminDashboardStats {
   users: {
@@ -33,6 +35,13 @@ export interface AdminDashboardStats {
   programs: {
     total: number
     active: number
+  }
+  tracks: {
+    distribution: Record<Track, number>
+    activeByTrack: Record<Track, number>
+    totalWithTrack: number
+    noTrack: number
+    totalUsers: number
   }
 }
 
@@ -158,6 +167,9 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
       .from(programs)
       .where(eq(programs.status, 'ACTIVE'))
 
+    // Track analytics (JAM-013)
+    const trackStats = await getTrackAnalytics()
+
     return {
       users: {
         total: Number(totalUsersResult.count),
@@ -185,6 +197,7 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
         total: Number(totalProgramsResult.count),
         active: Number(activeProgramsResult.count),
       },
+      tracks: trackStats,
     }
   } catch (error) {
     console.error('Get admin dashboard stats error:', error)

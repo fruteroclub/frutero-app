@@ -3,6 +3,8 @@
  * Frontend service layer for admin dashboard API calls
  */
 
+import type { Track } from '@/types/jam'
+
 export interface AdminDashboardStats {
   users: {
     total: number
@@ -29,6 +31,13 @@ export interface AdminDashboardStats {
   programs: {
     total: number
     active: number
+  }
+  tracks: {
+    distribution: Record<Track, number>
+    activeByTrack: Record<Track, number>
+    totalWithTrack: number
+    noTrack: number
+    totalUsers: number
   }
 }
 
