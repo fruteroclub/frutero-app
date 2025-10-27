@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useAppAuth } from '@/store/auth-context'
@@ -19,6 +19,8 @@ import {
   type UserQuest,
   type QuestType,
 } from '@/services/jam/quests.service'
+import { doesQuestMatchTrack } from '@/lib/jam/tracks'
+import type { Track } from '@/types/jam'
 
 interface QuestsPageProps {
   searchParams: Promise<{
@@ -53,16 +55,28 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
 
   const isLoading = loadingAvailable || loadingUser
 
-  // Apply client-side filtering for category and difficulty
-  const filteredQuests = availableQuests.filter((quest) => {
-    if (category && category !== 'all' && quest.category !== category) {
-      return false
-    }
-    if (difficulty && difficulty !== 'all' && quest.difficulty !== difficulty) {
-      return false
-    }
-    return true
-  })
+  // Get user's track for track-based filtering
+  const userTrack = (user?.settings?.track as Track | null) || null
+
+  // Apply client-side filtering for category, difficulty, and track matching
+  const filteredQuests = useMemo(() => {
+    return availableQuests.map((quest) => ({
+      ...quest,
+      trackRelevant: userTrack && quest.category ? doesQuestMatchTrack(quest.category, userTrack) : false,
+    })).filter((quest) => {
+      // Category filter
+      if (category && category !== 'all' && quest.category !== category) {
+        return false
+      }
+
+      // Difficulty filter
+      if (difficulty && difficulty !== 'all' && quest.difficulty !== difficulty) {
+        return false
+      }
+
+      return true
+    })
+  }, [availableQuests, category, difficulty, userTrack])
 
   // Merge filtered quests with user progress
   const questsWithProgress = filteredQuests.map((quest) => {
@@ -73,14 +87,24 @@ export default function QuestsPage({ searchParams }: QuestsPageProps) {
     }
   })
 
-  // Categorize quests
-  const activeQuests = questsWithProgress.filter(
-    (q) => q.userQuest && q.userQuest.status === 'IN_PROGRESS',
-  )
+  // Categorize quests with track-based sorting
+  const activeQuests = questsWithProgress
+    .filter((q) => q.userQuest && q.userQuest.status === 'IN_PROGRESS')
+    .sort((a, b) => {
+      // Prioritize track-relevant quests
+      if (a.quest.trackRelevant && !b.quest.trackRelevant) return -1
+      if (!a.quest.trackRelevant && b.quest.trackRelevant) return 1
+      return 0
+    })
 
-  const availableNewQuests = questsWithProgress.filter(
-    (q) => !q.userQuest || q.userQuest.status === 'NOT_STARTED',
-  )
+  const availableNewQuests = questsWithProgress
+    .filter((q) => !q.userQuest || q.userQuest.status === 'NOT_STARTED')
+    .sort((a, b) => {
+      // Prioritize track-relevant quests
+      if (a.quest.trackRelevant && !b.quest.trackRelevant) return -1
+      if (!a.quest.trackRelevant && b.quest.trackRelevant) return 1
+      return 0
+    })
 
   const completedQuests = questsWithProgress.filter(
     (q) => q.userQuest && q.userQuest.status === 'COMPLETED',

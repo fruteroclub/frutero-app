@@ -85,7 +85,7 @@ export function TrackCard({ track }: TrackCardProps) {
             Ver todas las rutas →
           </Link>
           <Link
-            href="/jam/settings"
+            href="/jam/profile/track"
             className="text-xs text-foreground hover:text-primary hover:underline"
           >
             Cambiar ruta

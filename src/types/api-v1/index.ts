@@ -13,6 +13,7 @@ import type {
 } from '@/db/schema'
 import type { InferSelectModel } from 'drizzle-orm'
 import { Address } from 'viem'
+import type { UserSettings } from '@/types/jam'
 
 // Infer types from Drizzle schema
 export type User = InferSelectModel<typeof users>
@@ -42,6 +43,7 @@ export interface ErrorDetails {
 
 export interface UserExtended extends User {
   profile?: Profile
+  settings?: UserSettings
   proofOfCommunity: ProofOfCommunityExtended
   communities?: UserCommunity[]
   projects?: Project[]

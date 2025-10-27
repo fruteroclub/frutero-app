@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import type { Program } from '@/services/jam/programs.service'
 import { Calendar, MapPin, ExternalLink } from 'lucide-react'
@@ -11,11 +12,13 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
   return (
     <div className="space-y-4">
       {program.bannerUrl && (
-        <div className="h-48 w-full overflow-hidden rounded-lg md:h-64">
-          <img
+        <div className="relative h-48 w-full overflow-hidden rounded-lg md:h-64">
+          <Image
             src={program.bannerUrl}
             alt={program.name}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
         </div>
       )}
@@ -73,9 +76,11 @@ export function ProgramHeader({ program }: ProgramHeaderProps) {
         </div>
 
         {program.avatarUrl && (
-          <img
+          <Image
             src={program.avatarUrl}
             alt={program.name}
+            width={96}
+            height={96}
             className="h-24 w-24 rounded-lg object-cover"
           />
         )}

@@ -4,9 +4,10 @@
  */
 
 import { db } from '@/db'
-import { users, projectQuests, quests, projects } from '@/db/schema'
+import { users, projectQuests, quests, projects, userSettings } from '@/db/schema'
 import { eq, and, sql, gte } from 'drizzle-orm'
 import { checkStageAdvancement } from './jam/stages.controller'
+import type { Track } from '@/types/jam'
 
 /**
  * Check if user has admin permissions
@@ -387,4 +388,79 @@ export async function deleteQuest(questId: string, adminId: string) {
   await db.delete(quests).where(eq(quests.id, questId))
 
   return { success: true }
+}
+
+/**
+ * Get track analytics for admin dashboard
+ * JAM-013: Track Selection System
+ */
+export async function getTrackAnalytics() {
+  // Get total users per track
+  const trackDistribution = await db
+    .select({
+      track: userSettings.track,
+      count: sql<number>`count(*)`,
+    })
+    .from(userSettings)
+    .where(sql`${userSettings.track} IS NOT NULL`)
+    .groupBy(userSettings.track)
+
+  // Get users without track selected
+  const [noTrackResult] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(userSettings)
+    .where(sql`${userSettings.track} IS NULL`)
+
+  // Calculate track completion rates (users who changed tracks at least once)
+  const activeTrackers = await db
+    .select({
+      track: userSettings.track,
+      count: sql<number>`count(*)`,
+    })
+    .from(userSettings)
+    .where(
+      and(
+        sql`${userSettings.track} IS NOT NULL`,
+        sql`${userSettings.trackChangeCount} > 0`
+      )
+    )
+    .groupBy(userSettings.track)
+
+  // Format results
+  const distribution: Record<Track, number> = {
+    LEARNING: 0,
+    FOUNDER: 0,
+    PROFESSIONAL: 0,
+    FREELANCER: 0,
+  }
+
+  const activeByTrack: Record<Track, number> = {
+    LEARNING: 0,
+    FOUNDER: 0,
+    PROFESSIONAL: 0,
+    FREELANCER: 0,
+  }
+
+  trackDistribution.forEach((item) => {
+    if (item.track) {
+      distribution[item.track as Track] = Number(item.count)
+    }
+  })
+
+  activeTrackers.forEach((item) => {
+    if (item.track) {
+      activeByTrack[item.track as Track] = Number(item.count)
+    }
+  })
+
+  const totalWithTrack = Object.values(distribution).reduce((a, b) => a + b, 0)
+  const noTrack = Number(noTrackResult.count)
+
+  return {
+    distribution,
+    activeByTrack,
+    totalWithTrack,
+    noTrack,
+    totalUsers: totalWithTrack + noTrack,
+  }
 }
