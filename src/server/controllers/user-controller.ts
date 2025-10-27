@@ -1,15 +1,18 @@
 import { db } from '@/db'
-import { users, profiles } from '@/db/schema'
+import { users, profiles, userSettings } from '@/db/schema'
 import type { InferSelectModel } from 'drizzle-orm'
 import {
   CreateUserInput,
   createUserSchema,
   ProfileFormValues,
 } from '@/server/schema/user-services-schema'
+import { UpdateTrackInput } from '@/server/schema/track-schema'
 import { AppError } from '@/server/utils'
 import { UserExtended } from '@/types/api-v1'
 import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
+import { canChangeTrack } from '@/lib/jam/tracks'
+import type { Track } from '@/types/jam'
 
 // Infer User type from Drizzle schema
 type User = InferSelectModel<typeof users>
@@ -20,6 +23,7 @@ export class UserControllerDrizzle {
       const usersData = await db.query.users.findMany({
         with: {
           profile: true,
+          settings: true,
           proofOfCommunity: {
             with: {
               user: true,
@@ -54,6 +58,7 @@ export class UserControllerDrizzle {
         where: eq(users.id, id),
         with: {
           profile: true,
+          settings: true,
           proofOfCommunity: {
             with: {
               user: true,
@@ -76,7 +81,7 @@ export class UserControllerDrizzle {
         },
       })
 
-      return user as UserExtended
+      return user as UserExtended | null
     } catch (error) {
       console.error('Error finding user:', error)
       throw new AppError('Failed to fetch user', 500)
@@ -110,6 +115,7 @@ export class UserControllerDrizzle {
         where: eq(users.id, input.id),
         with: {
           profile: true,
+          settings: true,
           proofOfCommunity: {
             with: {
               user: true,
@@ -150,6 +156,7 @@ export class UserControllerDrizzle {
         where: eq(users.id, newUser.id),
         with: {
           profile: true,
+          settings: true,
           proofOfCommunity: {
             with: {
               user: true,
@@ -266,6 +273,7 @@ export class UserControllerDrizzle {
         where: eq(users.id, id),
         with: {
           profile: true,
+          settings: true,
         },
       })
 
@@ -327,6 +335,7 @@ export class UserControllerDrizzle {
         where: eq(users.id, id),
         with: {
           profile: true,
+          settings: true,
         },
       })
 
@@ -355,6 +364,108 @@ export class UserControllerDrizzle {
       console.error('Error deleting user:', error)
       if (error instanceof AppError) throw error
       throw new AppError('Failed to delete user', 500)
+    }
+  }
+
+  /**
+   * Update user track with validation
+   * JAM-013: Track Selection System
+   */
+  static async updateUserTrack(
+    userId: string,
+    data: UpdateTrackInput
+  ): Promise<UserExtended> {
+    try {
+      // Get current user settings
+      const existingSettings = await db.query.userSettings.findFirst({
+        where: eq(userSettings.userId, userId),
+      })
+
+      if (!existingSettings) {
+        throw new AppError('User settings not found', 404)
+      }
+
+      // Validate track change eligibility
+      const eligibility = canChangeTrack(
+        existingSettings.trackChangedAt,
+        existingSettings.trackChangeCount
+      )
+
+      if (!eligibility.canChange) {
+        throw new AppError(
+          eligibility.reason || 'Cannot change track at this time',
+          400
+        )
+      }
+
+      // Update user settings with new track
+      await db
+        .update(userSettings)
+        .set({
+          track: data.track,
+          trackChangedAt: new Date(),
+          trackChangeCount: existingSettings.trackChangeCount + 1,
+          updatedAt: new Date(),
+        })
+        .where(eq(userSettings.userId, userId))
+
+      // Fetch updated user with profile
+      const updatedUser = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        with: {
+          profile: true,
+          settings: true,
+        },
+      })
+
+      if (!updatedUser) {
+        throw new AppError('User not found', 404)
+      }
+
+      return updatedUser as UserExtended
+    } catch (error) {
+      console.error('Error updating user track:', error)
+      if (error instanceof AppError) throw error
+      throw new AppError('Failed to update track', 500)
+    }
+  }
+
+  /**
+   * Get user's current track
+   * JAM-013: Track Selection System
+   */
+  static async getUserTrack(userId: string): Promise<{
+    track: Track | null
+    trackChangedAt: Date | null
+    trackChangeCount: number
+    canChange: boolean
+    changeReason?: string
+  }> {
+    try {
+      const settings = await db.query.userSettings.findFirst({
+        where: eq(userSettings.userId, userId),
+      })
+
+      if (!settings) {
+        throw new AppError('User settings not found', 404)
+      }
+
+      const eligibility = canChangeTrack(
+        settings.trackChangedAt,
+        settings.trackChangeCount
+      )
+
+      return {
+        track: settings.track as Track | null,
+        trackChangedAt: settings.trackChangedAt,
+        trackChangeCount: settings.trackChangeCount,
+        canChange: eligibility.canChange,
+        changeReason: eligibility.reason,
+      }
+    } catch (error) {
+      console.error('Error getting user track:', error)
+      if (error instanceof AppError) throw error
+      throw new AppError('Failed to get user track', 500)
     }
   }
 }

@@ -42,12 +42,10 @@ export default function MentorSettingsPage() {
       if (!user?.id) throw new Error('User not authenticated')
       const result = await getMentorSettings(user.id)
       if (!result.data) throw new Error('Mentor profile not found')
+      setExpertiseList(result.data.expertiseAreas)
       return result.data
     },
     enabled: isAppAuthenticated && !!user,
-    onSuccess: (data) => {
-      setExpertiseList(data.expertiseAreas)
-    },
   })
 
   const {
@@ -148,12 +146,6 @@ export default function MentorSettingsPage() {
     )
   }
 
-  const availabilityLabels = {
-    AVAILABLE: 'Disponible',
-    LIMITED: 'Limitada',
-    UNAVAILABLE: 'No disponible',
-  }
-
   return (
     <PageWrapper>
       <div className="page py-6">
@@ -184,7 +176,7 @@ export default function MentorSettingsPage() {
                   <Label>Disponibilidad</Label>
                   <Select
                     value={availability}
-                    onValueChange={(value) => setValue('availability', value as any)}
+                    onValueChange={(value) => setValue('availability', value as 'AVAILABLE' | 'LIMITED' | 'UNAVAILABLE')}
                   >
                     <SelectTrigger>
                       <SelectValue />

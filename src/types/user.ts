@@ -1,4 +1,5 @@
 // User type definitions matching Drizzle schema
+import type { UserSettings } from './jam'
 
 export interface User {
   id: string
@@ -37,4 +38,5 @@ export interface UserProfile {
 
 export interface UserWithProfile extends User {
   profile: UserProfile | null
+  settings?: UserSettings | null
 }

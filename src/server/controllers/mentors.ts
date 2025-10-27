@@ -172,9 +172,9 @@ function calculateMatchScore(
   }
 
   // Availability (20%)
-  if (mentor.availability === 'AVAILABLE') {
+  if (mentor.availability === 'available') {
     score += 20
-  } else if (mentor.availability === 'LIMITED') {
+  } else if (mentor.availability === 'limited') {
     score += 10
   }
 

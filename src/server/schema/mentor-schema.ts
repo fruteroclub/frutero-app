@@ -11,8 +11,8 @@ export const mentorAvailabilityEnum = z.enum(['AVAILABLE', 'LIMITED', 'UNAVAILAB
  */
 export const createMentorProfileSchema = z.object({
   userId: z.string().min(1, 'User ID is required'),
-  availability: mentorAvailabilityEnum.default('UNAVAILABLE'),
-  maxParticipants: z.number().int().min(1).max(50).default(5),
+  availability: mentorAvailabilityEnum,
+  maxParticipants: z.number().int().min(1).max(50),
   expertiseAreas: z.array(z.string()).min(1, 'At least one expertise area is required'),
   mentoringApproach: z.string().optional(),
   experience: z.string().optional(),

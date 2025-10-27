@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -66,11 +66,9 @@ export function MentorProfileForm({ trigger, onSuccess }: MentorProfileFormProps
     resolver: zodResolver(createMentorProfileSchema),
     defaultValues: {
       userId: '',
-      availability: 'UNAVAILABLE',
+      availability: 'UNAVAILABLE' as const,
       maxParticipants: 5,
       expertiseAreas: [],
-      mentoringApproach: '',
-      experience: '',
     },
   })
 
@@ -204,7 +202,7 @@ export function MentorProfileForm({ trigger, onSuccess }: MentorProfileFormProps
             <Label>Disponibilidad *</Label>
             <Select
               value={availability}
-              onValueChange={(value) => setValue('availability', value as any)}
+              onValueChange={(value) => setValue('availability', value as 'AVAILABLE' | 'LIMITED' | 'UNAVAILABLE')}
             >
               <SelectTrigger>
                 <SelectValue />

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -51,9 +52,11 @@ export function ProgramCard({
             )}
           </div>
           {program.avatarUrl && (
-            <img
+            <Image
               src={program.avatarUrl}
               alt={program.name}
+              width={64}
+              height={64}
               className="h-16 w-16 rounded object-cover"
             />
           )}

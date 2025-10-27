@@ -15,6 +15,8 @@ import {
   getMentorRecommendations,
   type Mentor,
 } from '@/services/jam/mentors.service'
+import { doesMentorMatchTrack } from '@/lib/jam/tracks'
+import type { Track } from '@/types/jam'
 
 export default function MentorsPage() {
   const { user, isAppAuthenticated } = useAppAuth()
@@ -39,9 +41,12 @@ export default function MentorsPage() {
     enabled: isAppAuthenticated && !!user,
   })
 
-  // Filter mentors based on selected filters
+  // Get user's track for track-based mentor matching
+  const userTrack = (user?.settings?.track as Track | null) || null
+
+  // Filter and sort mentors based on selected filters and track matching
   const filteredMentors = useMemo(() => {
-    return mentors.filter((mentor) => {
+    const filtered = mentors.filter((mentor) => {
       // Availability filter
       if (availability !== 'all' && mentor.availability !== availability) {
         return false
@@ -56,7 +61,22 @@ export default function MentorsPage() {
 
       return true
     })
-  }, [mentors, availability, expertiseArea])
+
+    // Sort by track relevance (JAM-013)
+    if (userTrack) {
+      return filtered.sort((a, b) => {
+        const aMatches = doesMentorMatchTrack(a.expertiseAreas, userTrack)
+        const bMatches = doesMentorMatchTrack(b.expertiseAreas, userTrack)
+
+        // Prioritize mentors whose expertise matches user's track
+        if (aMatches && !bMatches) return -1
+        if (!aMatches && bMatches) return 1
+        return 0
+      })
+    }
+
+    return filtered
+  }, [mentors, availability, expertiseArea, userTrack])
 
   return (
     <PageWrapper>

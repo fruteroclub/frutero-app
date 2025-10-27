@@ -23,6 +23,8 @@ import {
 } from 'lucide-react'
 import { getAdminDashboardStats } from '@/services/jam/admin-dashboard.service'
 import { STAGE_ORDER, STAGES } from '@/lib/jam/stages'
+import { TRACKS } from '@/lib/jam/tracks'
+import type { Track } from '@/types/jam'
 
 export default function AdminDashboardPage() {
   const { user } = useAppAuth()
@@ -322,6 +324,84 @@ export default function AdminDashboardPage() {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Track Analytics (JAM-013) */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Distribución por Ruta</CardTitle>
+                    <CardDescription>
+                      Usuarios en cada ruta de desarrollo
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Track distribution */}
+                      <div className="space-y-3">
+                        {(Object.keys(TRACKS) as Track[]).map((trackKey) => {
+                          const track = TRACKS[trackKey]
+                          const count = stats.tracks.distribution[trackKey]
+                          const percentage =
+                            stats.tracks.totalWithTrack > 0
+                              ? (count / stats.tracks.totalWithTrack) * 100
+                              : 0
+
+                          return (
+                            <div key={trackKey} className="space-y-1">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="flex items-center gap-2">
+                                  <span className="text-lg">{track.icon}</span>
+                                  {track.titleEs}
+                                </span>
+                                <span className="font-medium">
+                                  {count} ({percentage.toFixed(0)}%)
+                                </span>
+                              </div>
+                              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                <div
+                                  className="h-full bg-primary transition-all"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+                      {/* Summary stats */}
+                      <div className="space-y-2 border-t pt-4">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-foreground">
+                            Usuarios con ruta
+                          </span>
+                          <span className="font-medium">
+                            {stats.tracks.totalWithTrack}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-foreground">Sin ruta</span>
+                          <span className="font-medium text-yellow-600">
+                            {stats.tracks.noTrack}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-foreground">
+                            Tasa de adopción
+                          </span>
+                          <span className="font-medium text-green-600">
+                            {stats.tracks.totalUsers > 0
+                              ? (
+                                  (stats.tracks.totalWithTrack /
+                                    stats.tracks.totalUsers) *
+                                  100
+                                ).toFixed(1)
+                              : 0}
+                            %
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
           </AdminProtected>

@@ -25,7 +25,7 @@ export default function MentorshipDetailPage({
   params: Promise<{ mentorshipId: string }>
 }) {
   const { mentorshipId } = use(params)
-  const { user, isAppAuthenticated } = useAppAuth()
+  const { user } = useAppAuth()
 
   const { data: mentorship, isLoading } = useQuery<UserMentorship>({
     queryKey: ['mentorship', mentorshipId],
