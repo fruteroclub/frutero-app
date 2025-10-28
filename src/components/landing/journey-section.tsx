@@ -43,11 +43,11 @@ export default function JourneyPage() {
             <br />
             en cuatro simples <span className="text-secondary">Etapas</span>
           </h2>
-          <p className="text-xl text-muted">
+          <p className="text-2xl text-muted">
             Una metodología probada que transforma talento en éxito
             <br />
-            <span className="text-3xl">en solo </span>
-            <span className="text-3xl font-semibold underline decoration-secondary decoration-2 underline-offset-4">
+            en solo{' '}
+            <span className="font-semibold underline decoration-secondary decoration-2 underline-offset-4">
               1 mes
             </span>
           </p>
@@ -84,15 +84,17 @@ export default function JourneyPage() {
                   {/* Contenido */}
                   <div className="w-2/3 pl-2">
                     <div className="flex items-center justify-between gap-x-2">
-                      <div className="text-xl font-semibold text-primary">
+                      <div className="text-2xl font-medium text-primary">
                         {phase.phase}
                       </div>
-                      <div className="text-sm text-muted">{phase.duration}</div>
+                      <div className="text-base text-muted">
+                        {phase.duration}
+                      </div>
                     </div>
-                    <div className="font-funnel text-xl font-bold">
+                    <div className="font-funnel text-xl font-medium">
                       {phase.title}
                     </div>
-                    <div className="text-sm text-muted">
+                    <div className="text-base text-muted">
                       {phase.description}
                     </div>
                   </div>
