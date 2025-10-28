@@ -37,3 +37,17 @@ export async function handleResponse<T>(
   const responseData = data.data !== undefined ? data.data : data
   return { success: true, data: responseData as T }
 }
+
+export async function scrollToNextSection(id: string) {
+  const nextSection = document.getElementById(id)
+  if (nextSection) {
+    const navbarHeight = 80 // Approximate navbar height in pixels
+    const elementPosition = nextSection.getBoundingClientRect().top
+    const offsetPosition = elementPosition + window.pageYOffset - navbarHeight
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    })
+  }
+}
