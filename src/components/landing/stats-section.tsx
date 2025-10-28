@@ -1,24 +1,32 @@
 import { JSX, SVGProps } from 'react'
 import StatCard from '@/components/stats/stat-card'
-import { CoinsIcon, GlobeIcon, HandshakeIcon, RocketIcon, TestTubeDiagonalIcon, TrophyIcon } from 'lucide-react'
-import { Button } from '../ui/button'
-import { cn } from '@/lib/utils'
+import {
+  CoinsIcon,
+  GlobeIcon,
+  HandshakeIcon,
+  RocketIcon,
+  TestTubeDiagonalIcon,
+  TrophyIcon,
+} from 'lucide-react'
 
 export default function StatsSection() {
-
   return (
     <section className="page py-12">
       <div className="container gap-y-8">
-        <div className="text-center flex flex-col gap-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+        <div className="flex flex-col gap-y-4 text-center">
+          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
             Nuestro <span className="text-primary">impacto</span> en números
           </h2>
-          <p className="text-xl text-muted max-w-2xl mx-auto">
-            No son promesas, son <span className='text-foreground underline underline-offset-2 decoration-primary decoration-2 font-semibold'>resultados</span> de nuestra comunidad
+          <p className="mx-auto max-w-2xl text-xl text-muted">
+            No son promesas, son{' '}
+            <span className="font-semibold text-foreground underline decoration-primary decoration-2 underline-offset-2">
+              resultados
+            </span>{' '}
+            de nuestra comunidad
           </p>
         </div>
 
-        <div className="md:max-w-xl grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 lg:max-w-screen-md mx-auto">
+        <div className="mx-auto grid grid-cols-2 gap-4 md:max-w-xl md:grid-cols-3 lg:max-w-screen-md lg:gap-6">
           {stats.map((stat, index) => (
             <StatCard
               key={index}
@@ -28,13 +36,13 @@ export default function StatsSection() {
             />
           ))}
         </div>
-        <div className="flex justify-center w-full pt-6 lg:pt-4">
+        {/* <div className="flex justify-center w-full pt-6 lg:pt-4">
           <Button variant='secondary' size='xl'
             className={cn(
               'lg:px-14 lg:py-6 text-2xl font-medium transition duration-300 ease-in-out hover:scale-105',
               'w-2/3 md:w-auto')}
           >¡Quiero unirme!</Button>
-        </div>
+        </div> */}
       </div>
     </section>
   )
@@ -82,5 +90,5 @@ const stats = [
     ),
     number: '150+',
     description: 'Proyectos construidos',
-  }
+  },
 ]

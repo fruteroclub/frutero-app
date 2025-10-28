@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function TestimonialsSection() {
   const testimonials = [
@@ -35,7 +35,7 @@ export default function TestimonialsSection() {
   return (
     <section className="page py-12">
       <div className="container gap-y-6">
-        <div className="text-center space-y-2 px-8">
+        <div className="space-y-2 px-8 text-center">
           <h2 className="text-3xl font-bold text-foreground md:text-4xl">
             Historias reales de{' '}
             <span className="text-secondary">transformación</span>
@@ -45,10 +45,9 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3 max-w-xs md:max-w-sm lg:max-w-screen-md">
+        <div className="section grid gap-6 lg:grid-cols-3">
           {testimonials.map((testimonial, index) => (
-            <Card
-              key={index}>
+            <Card key={index}>
               <CardContent>
                 <div className="mb-6">
                   <blockquote className="text-lg leading-relaxed text-foreground">
@@ -58,12 +57,13 @@ export default function TestimonialsSection() {
 
                 <div className="mb-4 flex items-center space-x-4">
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-full ${testimonial.color === 'green'
-                      ? 'bg-accent'
-                      : testimonial.color === 'blue'
-                        ? 'bg-blue-500'
-                        : 'bg-secondary'
-                      }`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-full ${
+                      testimonial.color === 'green'
+                        ? 'bg-accent'
+                        : testimonial.color === 'blue'
+                          ? 'bg-blue-500'
+                          : 'bg-secondary'
+                    }`}
                   >
                     <span className="text-sm font-bold text-white">
                       {testimonial.name
@@ -76,14 +76,12 @@ export default function TestimonialsSection() {
                     <p className="font-bold text-foreground">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-muted">
-                      {testimonial.role}
-                    </p>
+                    <p className="text-sm text-muted">{testimonial.role}</p>
                   </div>
                 </div>
 
-                <div className="rounded-lg bg-background p-3 border-2 border-foreground">
-                  <p className="font-semibold text-primary text-center">
+                <div className="rounded-lg border-2 border-foreground bg-background p-3">
+                  <p className="text-center font-semibold text-primary">
                     {testimonial.achievement}
                   </p>
                 </div>
@@ -97,6 +95,6 @@ export default function TestimonialsSection() {
           </Button>
         </div>
       </div>
-    </section >
+    </section>
   )
 }
