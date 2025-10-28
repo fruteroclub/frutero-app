@@ -3,31 +3,32 @@ import { SparkleIcon } from 'lucide-react'
 
 const phases = [
   {
-    phase: 'Aprende',
-    title: 'Monetizando en Internet: IA y Cripto',
-    duration: '2 Semanas',
-    description: 'Aprende fundamentos, identifica un problema y desarrolla tu idea',
+    phase: 'Metas',
+    title: 'Te ayudamos a definir lo que lograrás en 30 días',
+    duration: '1 día',
+    description:
+      'Conoce a tu mentor y recibe una ruta de crecimiento personalizada',
     mascot: '/images/fruits/avocado.svg',
   },
   {
-    phase: 'Construye',
-    title: 'Construyendo tu MVP con IA',
-    duration: '4 Semanas',
-    description: 'Construye tu producto, obtén tus primeros usuarios e itera',
+    phase: 'Fundamentos',
+    title: 'Encuentra un problema y descubre tus herramientas',
+    duration: '13 días',
+    description: 'Aprende a construir soluciones tecnológicas con IA',
     mascot: '/images/fruits/cherries.svg',
   },
   {
-    phase: 'Crece',
-    title: 'Lanza tu producto y monetiza',
-    duration: '4 Semanas',
-    description: 'Growth Hacking, Marketing y Ventas para ganar',
+    phase: 'Retos',
+    title: 'Prueba tu aprendizaje y gana tu primer recompensa',
+    duration: '7 días',
+    description: 'Resuelve retos y demuestra tu capacidad de ejecución',
     mascot: '/images/fruits/platano.svg',
   },
   {
-    phase: 'Impacta',
-    title: 'Incubación de talento',
-    duration: '6 Semanas',
-    description: 'Acelera tu startup o inicia un internship',
+    phase: 'Prácticas',
+    title: 'Trabaja en proyectos prácticos y gana dinero',
+    duration: '7 días',
+    description: 'Aplica tus conocimientos para contribuir a proyectos activos',
     mascot: '/images/fruits/manzana.svg',
   },
 ]
@@ -35,20 +36,26 @@ const phases = [
 export default function JourneyPage() {
   return (
     <section className="page py-12">
-      <div className="container gap-y-12 items-center md:max-w-lg lg:max-w-xl">
-        <div className="text-center space-y-4 md:max-w-lg lg:max-w-md">
+      <div className="container items-center gap-y-12">
+        <div className="space-y-4 text-center">
           <h2 className="text-4xl font-bold md:text-5xl">
-            Tu camino de <br /><span className="text-primary">Hacker</span> a{' '}
-            <span className="text-secondary">Founder</span>
+            Tu camino a <span className="text-primary">$30 USD</span>
+            <br />
+            en cuatro simples <span className="text-secondary">Etapas</span>
           </h2>
-          <p className="text-lg text-muted">
-            Una metodología probada que transforma talento en éxito en solo <span className="font-semibold underline underline-offset-4 decoration-secondary decoration-2">4 meses</span>
+          <p className="text-xl text-muted">
+            Una metodología probada que transforma talento en éxito
+            <br />
+            <span className="text-3xl">en solo </span>
+            <span className="text-3xl font-semibold underline decoration-secondary decoration-2 underline-offset-4">
+              1 mes
+            </span>
           </p>
         </div>
-        <div className="w-full flex justify-start px-4 lg:-ml-12">
+        <div className="flex w-full justify-start px-4 md:max-w-lg lg:-ml-12 lg:max-w-xl">
           <div className="relative">
             {/* Línea vertical */}
-            <div className="absolute top-0 left-1/3 h-full -translate-x-1/3 bg-foreground w-[2px]" />
+            <div className="absolute top-0 left-1/3 h-full w-[2px] -translate-x-1/3 bg-foreground" />
 
             {/* Fases */}
             <div className="space-y-8">
@@ -59,7 +66,7 @@ export default function JourneyPage() {
                 >
                   {/* Línea y punto */}
                   <div className="absolute top-1/2 left-1/3 flex -translate-x-1/3 -translate-y-1/2 items-center justify-center">
-                    <SparkleIcon className="w-5 h-5 text-foreground fill-foreground mr-2" />
+                    <SparkleIcon className="mr-2 h-5 w-5 fill-foreground text-foreground" />
                   </div>
 
                   {/* Mascota */}
@@ -80,11 +87,11 @@ export default function JourneyPage() {
                       <div className="text-xl font-semibold text-primary">
                         {phase.phase}
                       </div>
-                      <div className="text-sm text-muted">
-                        {phase.duration}
-                      </div>
+                      <div className="text-sm text-muted">{phase.duration}</div>
                     </div>
-                    <div className="text-xl font-bold font-funnel">{phase.title}</div>
+                    <div className="font-funnel text-xl font-bold">
+                      {phase.title}
+                    </div>
                     <div className="text-sm text-muted">
                       {phase.description}
                     </div>
