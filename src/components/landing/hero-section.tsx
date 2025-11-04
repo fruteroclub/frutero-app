@@ -13,9 +13,10 @@ export default function HeroSection() {
             <span className="inline-block -rotate-2 transform rounded-lg bg-accent px-4 py-2 text-foreground">
               $30 USD
             </span>{' '}
-            mientras
+            <br className="md:hidden" />
+            en 30 días
             <br />
-            dominas{' '}
+            mientras dominas{' '}
             <span className="inline-block rotate-2 transform rounded-lg bg-secondary px-4 py-2 text-white">
               IA y Cripto
             </span>

@@ -65,31 +65,36 @@ export default function DifferentiatorSection() {
             </div>
 
             {/* Right Column - Value Proposition Card */}
-            <div className="flex flex-col items-center justify-center lg:col-span-5">
+            <div className="flex h-full flex-col items-start justify-center space-y-4 lg:col-span-5">
+              <div className="flex w-full items-center">
+                <h3 className="w-full text-center text-2xl font-medium text-foreground">
+                  No pierdas más tiempo
+                </h3>
+              </div>
               <Card className="w-full max-w-md bg-muted py-8 text-background shadow-2xl">
                 <CardHeader className="text-center">
                   <CardTitle className="font-funnel text-2xl font-normal md:text-3xl">
-                    ¿Quieres dar el
+                    Atrévete a dar el
                     <br />
                     <span className="underline decoration-primary underline-offset-8">
                       siguiente
                     </span>{' '}
-                    paso?
+                    paso
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex w-full justify-center py-2 md:py-4">
                   <ul className="space-y-2 text-lg">
                     <li className="flex items-center px-2">
                       <SparkleIcon className="mr-2 h-4 w-4 text-secondary" />{' '}
-                      Conseguir trabajo
+                      Consigue trabajo
                     </li>
                     <li className="flex items-center px-2">
                       <SparkleIcon className="mr-2 h-4 w-4 text-secondary" />{' '}
-                      Lanzar tu startup
+                      Lanza tu startup
                     </li>
                     <li className="flex items-center px-2">
                       <SparkleIcon className="mr-2 h-4 w-4 text-secondary" />{' '}
-                      Crear tu propio negocio
+                      Genera ingresos
                     </li>
                   </ul>
                 </CardContent>
