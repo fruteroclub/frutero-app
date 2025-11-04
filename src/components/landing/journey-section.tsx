@@ -3,29 +3,29 @@ import { SparkleIcon } from 'lucide-react'
 
 const phases = [
   {
-    phase: 'Metas',
+    phase: '1. Metas',
     title: 'Te ayudamos a definir lo que lograrás en 30 días',
-    duration: '1 día',
+    duration: '4 días',
     description:
       'Conoce a tu mentor y recibe una ruta de crecimiento personalizada',
     mascot: '/images/fruits/avocado.svg',
   },
   {
-    phase: 'Fundamentos',
+    phase: '2. Fundamentos',
     title: 'Encuentra un problema y descubre tus herramientas',
-    duration: '13 días',
+    duration: '10 días',
     description: 'Aprende a construir soluciones tecnológicas con IA',
     mascot: '/images/fruits/cherries.svg',
   },
   {
-    phase: 'Retos',
+    phase: '3. Retos',
     title: 'Prueba tu aprendizaje y gana tu primer recompensa',
     duration: '7 días',
     description: 'Resuelve retos y demuestra tu capacidad de ejecución',
     mascot: '/images/fruits/platano.svg',
   },
   {
-    phase: 'Prácticas',
+    phase: '4. Prácticas',
     title: 'Trabaja en proyectos prácticos y gana dinero',
     duration: '7 días',
     description: 'Aplica tus conocimientos para contribuir a proyectos activos',
