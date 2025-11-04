@@ -56,7 +56,8 @@ export const mentorAvailabilityEnum = pgEnum('mentor_availability', [
 
 // 1. Users - Simplified without complex permissions
 export const users = pgTable('users', {
-  id: text('id').primaryKey(), // Using text to support Privy DID format (did:privy:...)
+  id: uuid('id').primaryKey().defaultRandom(), // Auto-generated UUID primary key
+  privyId: text('privy_id').unique(), // Privy DID format (did:privy:...)
   username: text('username').notNull().unique(),
   displayName: text('display_name').notNull(),
   email: text('email').unique(),
@@ -85,7 +86,7 @@ export const profiles = pgTable('profiles', {
   githubUsername: text('github_username'),
   xUsername: text('x_username'),
   telegramUsername: text('telegram_username'),
-  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -144,7 +145,7 @@ export const projects = pgTable('projects', {
   githubUsername: text('github_username'),
   xUsername: text('x_username'),
   telegramUsername: text('telegram_username'),
-  adminId: text('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  adminId: uuid('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   walletAddress: text('wallet_address').unique(), // Team treasury wallet for bounties
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -201,7 +202,7 @@ export const posts = pgTable('posts', {
   upvotes: integer('upvotes').notNull().default(0),
   downvotes: integer('downvotes').notNull().default(0),
   viewCount: integer('view_count').notNull().default(0),
-  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  authorId: uuid('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   projectId: uuid('project_id').references(() => projects.id, { onDelete: 'set null' }),
   programId: uuid('program_id').references(() => programs.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -214,7 +215,7 @@ export const comments = pgTable('comments', {
   content: text('content').notNull(),
   upvotes: integer('upvotes').notNull().default(0),
   downvotes: integer('downvotes').notNull().default(0),
-  authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  authorId: uuid('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   postId: uuid('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
   parentCommentId: uuid('parent_comment_id'), // Self-reference for nested comments
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -232,7 +233,7 @@ export const proofOfCommunities = pgTable('proof_of_communities', {
   percentage: real('percentage').notNull().default(0),
   tier: text('tier').notNull(),
   stage: integer('stage').notNull().default(0),
-  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -245,7 +246,7 @@ export const rewards = pgTable('rewards', {
   category: text('category').notNull(),
   amount: integer('amount').notNull(),
   imageUrl: text('image_url'),
-  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
   questId: uuid('quest_id').references(() => quests.id, { onDelete: 'set null' }),
   badgeId: uuid('badge_id').references(() => badges.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -269,7 +270,7 @@ export const tiers = pgTable('tiers', {
 export const userBadges = pgTable('user_badges', {
   id: uuid('id').primaryKey().defaultRandom(),
   points: integer('points').notNull().default(0),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   badgeId: uuid('badge_id').notNull().references(() => badges.id, { onDelete: 'cascade' }),
   tierReachedId: uuid('tier_reached_id').references(() => tiers.id, { onDelete: 'set null' }),
   earnedAt: timestamp('earned_at').notNull().defaultNow(),
@@ -282,8 +283,8 @@ export const userBadges = pgTable('user_badges', {
 // 13. Mentorships - JAM Platform mentor-participant relationships
 export const mentorships = pgTable('mentorships', {
   id: uuid('id').primaryKey().defaultRandom(),
-  mentorId: text('mentor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  participantId: text('participant_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  mentorId: uuid('mentor_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  participantId: uuid('participant_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   status: text('status').notNull().default('active'), // 'active', 'paused', 'completed'
   sessionNotes: jsonb('session_notes'), // Flexible storage for session data
   mentorRating: integer('mentor_rating'), // 1-5 rating from participant
@@ -297,7 +298,7 @@ export const mentorships = pgTable('mentorships', {
 // 14. User Settings - JAM participant preferences and settings
 export const userSettings = pgTable('user_settings', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
 
   // Track Selection (JAM-013)
   track: trackEnum('track'),
@@ -318,7 +319,7 @@ export const userSettings = pgTable('user_settings', {
 // 15. Mentor Profiles - Mentor capabilities (entity existence = is mentor)
 export const mentorProfiles = pgTable('mentor_profiles', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: text('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
 
   // Mentor Settings
   availability: mentorAvailabilityEnum('availability').notNull().default('UNAVAILABLE'),
@@ -340,7 +341,7 @@ export const mentorProfiles = pgTable('mentor_profiles', {
 export const programUsers = pgTable('program_users', {
   id: uuid('id').primaryKey().defaultRandom(),
   programId: uuid('program_id').notNull().references(() => programs.id, { onDelete: 'cascade' }),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   role: text('role').notNull().default('PARTICIPANT'), // 'PARTICIPANT', 'MENTOR', 'ORGANIZER'
   status: text('status').notNull().default('ACTIVE'), // 'ACTIVE', 'COMPLETED', 'DROPPED'
   joinedAt: timestamp('joined_at').notNull().defaultNow(),
@@ -356,7 +357,7 @@ export const userQuests = pgTable('user_quests', {
   id: uuid('id').primaryKey().defaultRandom(),
   status: userQuestStatusEnum('status').notNull().default('NOT_STARTED'),
   progress: integer('progress').notNull().default(0), // 0-100 percentage
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   questId: uuid('quest_id').notNull().references(() => quests.id, { onDelete: 'cascade' }),
   // JAM Platform enhancements
   submissionText: text('submission_text'), // Written proof of work
@@ -386,7 +387,7 @@ export const programProjects = pgTable('program_projects', {
 // Project team members (many-to-many)
 export const projectMembers = pgTable('project_members', {
   projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   role: text('role').notNull().default('MEMBER'), // 'ADMIN', 'MEMBER'
   joinedAt: timestamp('joined_at').notNull().defaultNow(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -405,10 +406,10 @@ export const projectQuests = pgTable('project_quests', {
   submissionLink: text('submission_link'),
   submissionText: text('submission_text'),
   submittedAt: timestamp('submitted_at'),
-  submittedBy: text('submitted_by').references(() => users.id), // Team member who submitted
+  submittedBy: uuid('submitted_by').references(() => users.id), // Team member who submitted
   // Verification workflow
   isVerified: boolean('is_verified').default(false),
-  verifiedBy: text('verified_by').references(() => users.id), // Admin/judge who verified
+  verifiedBy: uuid('verified_by').references(() => users.id), // Admin/judge who verified
   verificationNotes: text('verification_notes'),
   verifiedAt: timestamp('verified_at'),
   // Payment tracking
