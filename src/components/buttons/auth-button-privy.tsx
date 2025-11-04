@@ -108,21 +108,22 @@ export default function AuthButton({
           }
         }
 
+        // Use toast IDs to prevent duplicate notifications from multiple button instances
         if (!isNewUser) {
-          toast.success('Sesión iniciada correctamente')
+          toast.success('Sesión iniciada correctamente', { id: 'auth-login-success' })
         } else {
-          toast.success('Cuenta creada correctamente')
+          toast.success('Cuenta creada correctamente', { id: 'auth-signup-success' })
         }
 
         setIsMenuOpen?.(false)
       } catch (error) {
         console.error('Error creating/fetching user:', error)
-        toast.error('Error al iniciar sesión. Por favor, intenta de nuevo.')
+        toast.error('Error al iniciar sesión. Por favor, intenta de nuevo.', { id: 'auth-login-error' })
       }
     },
     onError: (error) => {
       console.log('Login failed', error)
-      toast.error('Inicio de sesión fallido')
+      toast.error('Inicio de sesión fallido', { id: 'auth-login-failed' })
     },
   })
   const { logout: logoutWithPrivy } = useLogout()
@@ -141,7 +142,7 @@ export default function AuthButton({
     logoutFromContext()
     router.push('/')
     setIsMenuOpen?.(false)
-    toast.success('Sesión cerrada correctamente')
+    toast.success('Sesión cerrada correctamente', { id: 'auth-logout-success' })
   }
 
   if (!isPrivyReady) {

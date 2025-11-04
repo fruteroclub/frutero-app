@@ -112,7 +112,7 @@ export class UserControllerDrizzle {
 
       // Try to find existing user
       const existingUser = await db.query.users.findFirst({
-        where: eq(users.id, input.id),
+        where: eq(users.privyId, input.id),
         with: {
           profile: true,
           settings: true,
@@ -140,46 +140,115 @@ export class UserControllerDrizzle {
 
       if (existingUser) return existingUser as UserExtended
 
-      // Create new user if not found
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          id: validatedData.id,
-          username: validatedData.username || validatedData.appWallet || validatedData.email || validatedData.id,
-          displayName: validatedData.displayName || validatedData.appWallet || validatedData.email || validatedData.id,
-          email: validatedData.email || null,
-        })
-        .returning()
+      // Create new user if not found - use upsert to handle race conditions
+      try {
+        const [newUser] = await db
+          .insert(users)
+          .values({
+            privyId: validatedData.id,
+            username: validatedData.username || validatedData.appWallet || validatedData.email || validatedData.id,
+            displayName: validatedData.displayName || validatedData.appWallet || validatedData.email || validatedData.id,
+            email: validatedData.email || null,
+          })
+          .onConflictDoNothing()
+          .returning()
 
-      // Fetch the newly created user with all relations
-      const userWithRelations = await db.query.users.findFirst({
-        where: eq(users.id, newUser.id),
-        with: {
-          profile: true,
-          settings: true,
-          proofOfCommunity: {
+        // If conflict occurred (concurrent insert), fetch existing user
+        if (!newUser) {
+          const conflictUser = await db.query.users.findFirst({
+            where: eq(users.privyId, input.id),
             with: {
-              user: true,
-            },
-          },
-          programs: true,
-          projects: true,
-          quests: true,
-          badges: {
-            with: {
-              badge: {
+              profile: true,
+              settings: true,
+              proofOfCommunity: {
                 with: {
-                  quests: true,
-                  tiers: true,
+                  user: true,
                 },
               },
-              tier: true,
+              programs: true,
+              projects: true,
+              quests: true,
+              badges: {
+                with: {
+                  badge: {
+                    with: {
+                      quests: true,
+                      tiers: true,
+                    },
+                  },
+                  tier: true,
+                },
+              },
+            },
+          })
+
+          if (conflictUser) return conflictUser as UserExtended
+          throw new AppError('User creation failed - could not retrieve user after conflict', 500)
+        }
+
+        // Fetch the newly created user with all relations
+        const userWithRelations = await db.query.users.findFirst({
+          where: eq(users.id, newUser.id),
+          with: {
+            profile: true,
+            settings: true,
+            proofOfCommunity: {
+              with: {
+                user: true,
+              },
+            },
+            programs: true,
+            projects: true,
+            quests: true,
+            badges: {
+              with: {
+                badge: {
+                  with: {
+                    quests: true,
+                    tiers: true,
+                  },
+                },
+                tier: true,
+              },
             },
           },
-        },
-      })
+        })
 
-      return userWithRelations as UserExtended
+        return userWithRelations as UserExtended
+      } catch (insertError: unknown) {
+        // Handle race condition: duplicate key error means user was created by concurrent request
+        if (insertError && typeof insertError === 'object' && 'code' in insertError && insertError.code === '23505') {
+          const conflictUser = await db.query.users.findFirst({
+            where: eq(users.privyId, input.id),
+            with: {
+              profile: true,
+              settings: true,
+              proofOfCommunity: {
+                with: {
+                  user: true,
+                },
+              },
+              programs: true,
+              projects: true,
+              quests: true,
+              badges: {
+                with: {
+                  badge: {
+                    with: {
+                      quests: true,
+                      tiers: true,
+                    },
+                  },
+                  tier: true,
+                },
+              },
+            },
+          })
+
+          if (conflictUser) return conflictUser as UserExtended
+        }
+        throw insertError
+      }
     } catch (error) {
       console.error('Error in findOrCreate:', error)
 

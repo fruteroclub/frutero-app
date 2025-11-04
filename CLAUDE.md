@@ -163,6 +163,113 @@ The project is configured for **Dynamic Wallet** integration supporting the **$P
 - Icons use Lucide React library
 - Fonts loaded via `src/lib/fonts.ts`
 
+### Page Layout Components & Utility Classes
+
+**MANDATORY Page Structure**:
+
+All pages in this application MUST follow the PageWrapper pattern for consistent navbar and footer inclusion.
+
+**Required Components**:
+
+1. **`PageWrapper`** - MANDATORY for all pages
+   - Automatically includes navbar and footer
+   - Sets up main layout structure with proper spacing
+   - Located at `@/components/layout/page-wrapper`
+   - Usage: Wrap your entire page content
+
+2. **`Section`** - Reusable content section component
+   - Adds vertical padding (`py-8`)
+   - Enforces responsive max-width constraints (sm/md/lg/xl/2xl breakpoints)
+   - Prevents content overflow and ensures visual consistency
+   - Perfect for pages with cards, grids, tables, or galleries
+   - Located at `@/components/layout/section`
+   - Usage: Wrap your page content inside PageWrapper
+
+**Utility Class System** (for understanding):
+
+- `.page` - Adds vertical padding, creates flex column layout, centers content
+- `.container` - Adds horizontal padding, enforces consistent width constraints
+- `.section` - Max-width enforcement (handled by Section component automatically)
+
+**Pattern Structure**:
+
+```
+PageWrapper (provides navbar + footer)
+  └─ Section (spacing + responsive max-width)
+      └─ Your content (headers, cards, grids, etc.)
+```
+
+**When to use Section component**:
+
+✅ Gallery/showcase pages with card grids
+✅ Content pages with data tables
+✅ Profile pages with bounded content
+✅ Any page needing responsive max-width constraints
+✅ Club/community member pages
+
+**Code Examples**:
+
+```tsx
+// Example 1: Simple content page with Section
+import PageWrapper from '@/components/layout/page-wrapper';
+import { Section } from '@/components/layout/section';
+
+export default function ShowcasePage() {
+  return (
+    <PageWrapper>
+      <Section>
+        <h1 className="text-4xl font-bold">Page Title</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Your cards */}
+        </div>
+      </Section>
+    </PageWrapper>
+  );
+}
+
+// Example 2: Landing page with custom sections
+import PageWrapper from '@/components/layout/page-wrapper';
+import HeroSection from '@/components/landing/hero-section';
+import StatsSection from '@/components/landing/stats-section';
+
+export default function Home() {
+  return (
+    <PageWrapper>
+      <HeroSection />      {/* Custom section components */}
+      <StatsSection />     {/* Each handles own layout */}
+      <CTASection />
+    </PageWrapper>
+  );
+}
+
+// Example 3: JAM platform page with sidebar navigation
+import PageWrapper from '@/components/layout/page-wrapper';
+import { JamNav } from '@/components/jam-platform/navigation/JamNav';
+
+export default function ProjectsPage() {
+  return (
+    <PageWrapper>
+      <div className="page">
+        <JamNav />
+        <div className="container">
+          {/* Platform content */}
+        </div>
+      </div>
+    </PageWrapper>
+  );
+}
+```
+
+**Rules**:
+
+- ✅ **ALL pages MUST use PageWrapper** - no exceptions for navbar/footer consistency
+- ✅ **Use Section component** instead of `<div className="section">` or `<section>` tag
+- ✅ **Section changes propagate** - modify Section component, all pages update automatically
+- ✅ **Add `w-full` class** to direct children of Section when needed for full-width content
+- ❌ **Never manually add navbar/footer** - PageWrapper handles this automatically
+- ❌ **Never use div with section class** - always use the Section component
+- ❌ **Never skip PageWrapper** - it's mandatory for layout consistency
+
 ## Programs & Initiatives
 
 ### "De Cero a Hacker" Methodology
