@@ -1,0 +1,87 @@
+-- UUID Primary Key Migration for Users Table
+-- This migration replaces Privy ID text-based primary key with auto-generated UUID
+-- WARNING: This is a destructive operation - all existing data will be lost
+--
+-- Prerequisites:
+-- 1. Backup any critical data
+-- 2. Ensure all foreign key relationships are documented
+-- 3. Update application code to handle new UUID generation
+--
+-- Execution: This is documentation only. Use Drizzle Kit push for actual migration.
+-- Command: bun x drizzle-kit push
+
+-- ============================================
+-- SCHEMA CHANGES SUMMARY
+-- ============================================
+
+-- 1. USERS TABLE (Primary Change)
+-- BEFORE:
+--   id: TEXT PRIMARY KEY (Privy DID format: did:privy:...)
+-- AFTER:
+--   id: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+--   privy_id: TEXT UNIQUE (Privy DID moved to separate field)
+
+-- 2. FOREIGN KEY UPDATES (14 tables affected)
+--
+-- profiles.user_id: TEXT → UUID
+-- projects.admin_id: TEXT → UUID
+-- posts.author_id: TEXT → UUID
+-- comments.author_id: TEXT → UUID
+-- rewards.user_id: TEXT → UUID
+-- user_badges.user_id: TEXT → UUID
+-- user_quests.user_id: TEXT → UUID
+-- program_users.user_id: TEXT → UUID
+-- project_members.user_id: TEXT → UUID
+-- project_quests.submitted_by: TEXT → UUID
+-- project_quests.verified_by: TEXT → UUID
+-- proof_of_communities.user_id: TEXT → UUID
+-- mentorships.mentor_id: TEXT → UUID
+-- mentorships.participant_id: TEXT → UUID
+-- user_settings.user_id: TEXT → UUID
+-- mentor_profiles.user_id: TEXT → UUID
+
+-- ============================================
+-- MIGRATION STRATEGY
+-- ============================================
+--
+-- This migration uses Drizzle Kit's push command for a clean schema update:
+--
+-- 1. Schema Changes: All changes made to src/db/schema/index.ts
+-- 2. Database Reset: Drop all tables (data loss acceptable)
+-- 3. Schema Push: Push new schema with Drizzle Kit
+-- 4. Verification: Check foreign key constraints
+--
+-- Manual SQL not required - Drizzle Kit handles DDL generation
+
+-- ============================================
+-- POST-MIGRATION CONSIDERATIONS
+-- ============================================
+--
+-- 1. Application Code Updates Required:
+--    - User creation flow must generate UUID (Drizzle handles via defaultRandom())
+--    - Privy ID stored in privy_id field instead of id
+--    - All user lookups must use UUID primary key
+--    - Auth integration needs to map Privy ID → UUID
+--
+-- 2. API Changes:
+--    - Update user creation endpoints to handle new schema
+--    - Modify user lookup queries to use privy_id for Privy auth
+--    - Ensure all foreign key references use UUID type
+--
+-- 3. Data Import Strategy:
+--    - New users created with auto-generated UUIDs
+--    - Privy IDs stored in privy_id field during account linking
+--    - Legacy Privy ID references no longer valid as primary keys
+
+-- ============================================
+-- VERIFICATION CHECKLIST
+-- ============================================
+--
+-- After migration, verify:
+-- [ ] Users table has UUID primary key with defaultRandom()
+-- [ ] Users table has privy_id TEXT UNIQUE field
+-- [ ] All 14 tables have UUID foreign keys to users.id
+-- [ ] Foreign key constraints are ON DELETE CASCADE where expected
+-- [ ] Unique constraints maintained (privy_id, username, email)
+-- [ ] Application can create new users with Privy authentication
+-- [ ] User lookups work with both UUID and privy_id
