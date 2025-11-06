@@ -44,3 +44,7 @@ next-env.d.ts
 
 # Omi test logs
 omi-logs/
+
+# temporary files and directories
+tmp/
+scripts/*.bak
