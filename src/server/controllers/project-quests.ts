@@ -48,22 +48,27 @@ export async function getAvailableTeamQuestsForProject(projectId: string) {
 
   const availableQuests = await query.orderBy(quests.availableFrom)
 
-  // Calculate current submissions for each quest
-  const questsWithSubmissions = await Promise.all(
-    availableQuests.map(async (quest) => {
-      const [submissionCount] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(projectQuests)
-        .where(eq(projectQuests.questId, quest.id))
-
-      return {
-        ...quest,
-        currentSubmissions: Number(submissionCount.count),
-      }
+  // Calculate current submissions for each quest in a single query
+  const questsWithSubmissions = await db
+    .select({
+      quest: quests,
+      submissionCount: sql<number>`count(${projectQuests.id})`.as('submission_count'),
     })
-  )
+    .from(quests)
+    .leftJoin(projectQuests, eq(quests.id, projectQuests.questId))
+    .where(
+      and(
+        or(eq(quests.questType, 'TEAM'), eq(quests.questType, 'BOTH')),
+        inArray(quests.id, availableQuests.map((q) => q.id))
+      )
+    )
+    .groupBy(quests.id)
+    .orderBy(quests.availableFrom)
 
-  return questsWithSubmissions
+  return questsWithSubmissions.map((item) => ({
+    ...item.quest,
+    currentSubmissions: Number(item.submissionCount),
+  }))
 }
 
 /**

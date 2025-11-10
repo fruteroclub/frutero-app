@@ -32,16 +32,19 @@ export default function TeamPage({ params }: TeamPageProps) {
     {
       queryKey: ['project', slug],
       queryFn: () => getProject(slug),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     },
   )
 
-  // Fetch team members
+  // Fetch team members (parallel, no dependency)
   const { data: members = [], isLoading: membersLoading } = useQuery<
     ProjectMember[]
   >({
     queryKey: ['project-members', slug],
     queryFn: () => getProjectMembers(slug),
-    enabled: !!project,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   })
 
   if (projectLoading || membersLoading) {

@@ -32,6 +32,8 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
     {
       queryKey: ['project', slug],
       queryFn: () => getProject(slug),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     },
   )
 
@@ -39,20 +41,23 @@ export default function ProgramsPage({ params }: ProgramsPageProps) {
     useQuery<ProgramParticipation[]>({
       queryKey: ['project-programs', slug, 'ACTIVE'],
       queryFn: () => getProjectPrograms(slug, 'ACTIVE'),
-      enabled: !!project,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     })
 
   const { data: completedPrograms = [], isLoading: completedProgramsLoading } =
     useQuery<ProgramParticipation[]>({
       queryKey: ['project-programs', slug, 'COMPLETED'],
       queryFn: () => getProjectPrograms(slug, 'COMPLETED'),
-      enabled: !!project,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
     })
 
   const { data: members = [] } = useQuery<ProjectMember[]>({
     queryKey: ['project-members', slug],
     queryFn: () => getProjectMembers(slug),
-    enabled: !!project,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   })
 
   if (projectLoading) {
