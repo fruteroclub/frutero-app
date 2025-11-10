@@ -8,7 +8,7 @@ import { Plus, Users, ArrowRight } from 'lucide-react'
 
 interface ProjectChoiceStepProps {
   userId: string
-  choice: 'create' | 'join' | 'skip'
+  choice?: 'create' | 'join' | 'skip'
   onUpdate: (choice: 'create' | 'join' | 'skip', projectId?: string) => void
   onNext: () => void
   onBack: () => void
@@ -21,7 +21,7 @@ export function ProjectChoiceStep({
   onBack,
 }: ProjectChoiceStepProps) {
   const [selected, setSelected] = useState<'create' | 'join' | 'skip' | null>(
-    choice === 'skip' ? null : choice,
+    choice && choice !== 'skip' ? choice : null,
   )
   const [joinCode, setJoinCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)

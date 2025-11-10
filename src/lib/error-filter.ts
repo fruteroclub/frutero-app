@@ -27,6 +27,15 @@ if (typeof window !== 'undefined') {
       return
     }
 
+    // Suppress Coinbase Wallet SDK COOP check failures (development only)
+    // SDK checks Cross-Origin-Opener-Policy but resource returns 404 in dev
+    if (
+      errorString.includes('Cross-Origin-Opener-Policy') &&
+      errorString.includes('HTTP error! status: 404')
+    ) {
+      return
+    }
+
     originalError.apply(console, args)
   }
 }

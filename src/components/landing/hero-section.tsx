@@ -9,14 +9,14 @@ export default function HeroSection() {
         {/* Título Principal */}
         <div className="mx-auto max-w-4xl">
           <h1 className="text-4xl leading-tight font-semibold text-foreground md:text-5xl">
-            Gana{' '}
+            Acelera tu{' '}
             <span className="inline-block -rotate-2 transform rounded-lg bg-accent px-4 py-2 text-foreground">
-              $30 USD
+              Crecimiento
             </span>{' '}
             <br className="md:hidden" />
-            en 30 días
+            con
             <br />
-            mientras dominas{' '}
+            oportunidades en{' '}
             <span className="inline-block rotate-2 transform rounded-lg bg-secondary px-4 py-2 text-white">
               IA y Cripto
             </span>

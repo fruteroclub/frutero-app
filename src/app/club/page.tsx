@@ -6,8 +6,21 @@ import FrutaCard from '@/components/cards/fruta-card'
 import { Section } from '@/components/layout/section'
 import PageWrapper from '@/components/layout/page-wrapper'
 import { Rocket, GraduationCap, Grape } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 
-const users = [
+interface ClubMember {
+  name: string
+  username: string
+  description: string
+  socialNetworks: string[]
+  avatar: string
+  calendarUrl: string
+  email: string
+  roles: string[]
+}
+
+// Fallback data in case API fails
+const fallbackUsers = [
   {
     name: 'Robin',
     username: 'robinhodl69',
@@ -187,6 +200,19 @@ const roleConfig = [
 export default function FrutasPage() {
   const [selectedRole, setSelectedRole] = useState('hacker')
 
+  // Fetch club members from API
+  const { data: members, isLoading, error } = useQuery<ClubMember[]>({
+    queryKey: ['club-members'],
+    queryFn: async () => {
+      const response = await fetch('/api/club/members')
+      if (!response.ok) throw new Error('Failed to fetch members')
+      return response.json()
+    },
+  })
+
+  // Use fetched data or fallback
+  const users = members || fallbackUsers
+
   const filteredUsers =
     selectedRole === 'hacker'
       ? [...users].sort(() => Math.random() - 0.5)
@@ -205,6 +231,12 @@ export default function FrutasPage() {
         >
           Miembros del Club
         </motion.h1>
+
+        {error && (
+          <div className="mb-4 rounded-lg bg-yellow-50 p-4 text-center text-sm text-yellow-800">
+            ⚠️ Usando datos de respaldo. La conexión a la base de datos falló.
+          </div>
+        )}
 
         <div className="mb-4 flex justify-center">
           <div className="inline-flex gap-2 rounded-lg">
@@ -232,14 +264,23 @@ export default function FrutasPage() {
           </div>
         </div>
 
-        <motion.div
-          layout
-          className="grid grid-cols-1 gap-8 px-6 md:grid-cols-2 md:px-0 lg:grid-cols-3"
-        >
-          {filteredUsers.map((user) => (
-            <FrutaCard key={user.username} {...user} />
-          ))}
-        </motion.div>
+        {isLoading ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <div className="text-center">
+              <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+              <p className="text-sm text-gray-600">Cargando miembros del club...</p>
+            </div>
+          </div>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-1 gap-8 px-6 md:grid-cols-2 md:px-0 lg:grid-cols-3"
+          >
+            {filteredUsers.map((user) => (
+              <FrutaCard key={user.username} {...user} />
+            ))}
+          </motion.div>
+        )}
       </Section>
     </PageWrapper>
   )

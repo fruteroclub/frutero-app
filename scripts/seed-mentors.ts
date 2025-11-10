@@ -253,29 +253,36 @@ async function seedMentors() {
 
   for (const mentor of mentorData) {
     try {
-      const userId = `mentor-${mentor.username.toLowerCase()}`
       const expertiseAreas = extractExpertise(mentor.description, mentor.roles)
       const xUsername = extractXUsername(mentor.socialNetworks)
 
-      // Check if user exists
-      const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1)
+      // Check if user exists by username
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, mentor.username))
+        .limit(1)
 
       if (existingUser.length === 0) {
-        // Create user
-        await db.insert(users).values({
-          id: userId,
-          username: mentor.username,
-          displayName: mentor.name,
-          email: mentor.email || null,
-          bio: mentor.description,
-          avatarUrl: mentor.avatar,
-          website: mentor.calendarUrl || null,
-          metadata: {
-            socialNetworks: mentor.socialNetworks,
-            roles: mentor.roles,
-          },
-          isAdmin: false,
-        })
+        // Create user (UUID will be auto-generated)
+        const [newUser] = await db
+          .insert(users)
+          .values({
+            username: mentor.username,
+            displayName: mentor.name,
+            email: mentor.email || null,
+            bio: mentor.description,
+            avatarUrl: mentor.avatar,
+            website: mentor.calendarUrl || null,
+            metadata: {
+              socialNetworks: mentor.socialNetworks,
+              roles: mentor.roles,
+            },
+            isAdmin: false,
+          })
+          .returning()
+
+        const userId = newUser.id
 
         // Create profile
         await db.insert(profiles).values({
@@ -297,6 +304,8 @@ async function seedMentors() {
         console.log(`✅ Created mentor: ${mentor.name} (@${mentor.username})`)
         console.log(`   Expertise: ${expertiseAreas.join(', ')}`)
       } else {
+        const userId = existingUser[0].id
+
         // Update existing user
         await db
           .update(users)
@@ -380,12 +389,14 @@ async function seedMentors() {
 
 // Run seed function
 seedMentors()
-  .then(() => {
+  .then(async () => {
     console.log('✨ Mentor seeding completed successfully!')
-    // Force immediate exit (db connection will be cleaned up by process termination)
+    // Properly close database connection before exit
+    await client.end()
     process.exit(0)
   })
-  .catch((error) => {
+  .catch(async (error) => {
     console.error('💥 Mentor seeding failed:', error)
+    await client.end()
     process.exit(1)
   })
