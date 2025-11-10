@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAppAuth } from '@/store/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
@@ -18,16 +20,43 @@ import {
   type DashboardStats,
 } from '@/services/jam/dashboard.service'
 
+async function checkOnboardingStatus(userId: string): Promise<{ completed: boolean }> {
+  const res = await fetch(`/api/jam/settings?userId=${userId}`)
+  if (!res.ok) return { completed: false }
+  const settings = await res.json()
+  return { completed: !!settings.onboardingCompletedAt }
+}
+
 export default function DashboardPage() {
+  const router = useRouter()
   const { user, isAppAuthenticated, isLoading } = useAppAuth()
+
+  // Check onboarding status
+  const { data: onboardingStatus, isLoading: checkingOnboarding } = useQuery({
+    queryKey: ['onboarding-status', user?.id],
+    queryFn: () => checkOnboardingStatus(user!.id),
+    enabled: isAppAuthenticated && !!user,
+  })
 
   const { data: stats, isLoading: loadingStats } = useQuery<DashboardStats>({
     queryKey: ['dashboard', user?.id],
     queryFn: () => getDashboardStats(user!.id),
-    enabled: isAppAuthenticated && !!user,
+    enabled: isAppAuthenticated && !!user && onboardingStatus?.completed,
   })
 
-  if (isLoading || loadingStats) {
+  // Redirect to onboarding if not completed
+  useEffect(() => {
+    if (!checkingOnboarding && onboardingStatus && !onboardingStatus.completed && !isLoading) {
+      router.push('/jam/onboarding')
+    }
+  }, [onboardingStatus, checkingOnboarding, isLoading, router])
+
+  // Don't render if redirecting to onboarding
+  if (!checkingOnboarding && onboardingStatus && !onboardingStatus.completed) {
+    return null
+  }
+
+  if (isLoading || loadingStats || checkingOnboarding) {
     return (
       <PageWrapper>
         <div className="page py-6">
