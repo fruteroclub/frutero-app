@@ -30,7 +30,7 @@ export function OnboardingWizard({ userId }: { userId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<OnboardingData>>({
     profile: { firstName: '' },
-    projectChoice: 'skip',
+    projectChoice: undefined, // Let user make explicit choice
   });
 
   // Load draft from localStorage on mount
@@ -139,7 +139,7 @@ export function OnboardingWizard({ userId }: { userId: string }) {
         return (
           <ProjectChoiceStep
             userId={userId}
-            choice={formData.projectChoice || 'skip'}
+            choice={formData.projectChoice}
             onUpdate={(choice, projectId) =>
               updateFormData({ projectChoice: choice, projectId })
             }

@@ -39,12 +39,12 @@ export default function JourneyPage() {
       <div className="container items-center gap-y-12">
         <div className="space-y-4 text-center">
           <h2 className="text-4xl font-bold md:text-5xl">
-            Tu camino a <span className="text-primary">$30 USD</span>
+            Tu camino al <span className="text-primary">Éxito</span>
             <br />
             en cuatro simples <span className="text-secondary">Etapas</span>
           </h2>
           <p className="text-2xl text-muted">
-            Una metodología probada que transforma talento en éxito
+            Una metodología probada que transforma talento en impacto
             <br />
             en solo{' '}
             <span className="font-semibold underline decoration-secondary decoration-2 underline-offset-4">
