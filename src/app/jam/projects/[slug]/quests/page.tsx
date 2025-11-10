@@ -32,10 +32,12 @@ export default function QuestsPage({ params }: QuestsPageProps) {
     {
       queryKey: ['project', slug],
       queryFn: () => getProject(slug),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     },
   )
 
-  // Fetch available team quests
+  // Fetch available team quests (parallel, no dependency)
   const {
     data: availableQuests = [],
     isLoading: loadingAvailable,
@@ -43,10 +45,11 @@ export default function QuestsPage({ params }: QuestsPageProps) {
   } = useQuery<TeamQuest[]>({
     queryKey: ['available-quests', slug],
     queryFn: () => getAvailableTeamQuests(slug),
-    enabled: !!project,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   })
 
-  // Fetch active project quests
+  // Fetch active project quests (parallel, no dependency)
   const {
     data: activeQuests = [],
     isLoading: loadingActive,
@@ -54,7 +57,8 @@ export default function QuestsPage({ params }: QuestsPageProps) {
   } = useQuery<ProjectQuest[]>({
     queryKey: ['project-quests', slug],
     queryFn: () => getProjectQuests(slug),
-    enabled: !!project,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   })
 
   const handleQuestApplied = () => {
