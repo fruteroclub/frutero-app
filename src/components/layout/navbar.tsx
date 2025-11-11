@@ -31,7 +31,7 @@ const MENU_ITEMS: MenuItemType[] = [
     href: '/jam',
     isMobileOnly: false,
   },
-  { displayText: 'recursos', href: '/recursos', isMobileOnly: false },
+  // { displayText: 'recursos', href: '/recursos', isMobileOnly: false },
   { displayText: '$PULPA', href: '/pulpa', isMobileOnly: false },
 ]
 
