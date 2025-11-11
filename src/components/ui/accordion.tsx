@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as AccordionPrimitive from "@radix-ui/react-accordion"
+import * as React from 'react'
+import * as AccordionPrimitive from '@radix-ui/react-accordion'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 function Accordion({
   ...props
@@ -18,7 +18,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("border-2 rounded-lg", className)}
+      className={cn('rounded-lg border-2', className)}
       {...props}
     />
   )
@@ -34,8 +34,8 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all hover:text-primary focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50  [&[data-state=open]>div>svg]:text-primary [&[data-state=open]>h4]:text-primary [&[data-state=open]>svg]:rotate-180",
-          className
+          'flex flex-1 items-center justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all hover:cursor-pointer hover:text-primary focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>div>svg]:text-primary [&[data-state=open]>h4]:text-primary [&[data-state=open]>svg]:rotate-180',
+          className,
         )}
         {...props}
       >
@@ -53,10 +53,10 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-base"
+      className="overflow-hidden text-base data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       {...props}
     >
-      <div className={cn("pt-0 pb-4", className)}>{children}</div>
+      <div className={cn('pt-0 pb-4', className)}>{children}</div>
     </AccordionPrimitive.Content>
   )
 }
