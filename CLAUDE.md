@@ -128,6 +128,12 @@ src/components/
 - Image optimization configured for external sources
 - Selective component loading patterns
 
+**Styling Rules**:
+
+- **NEVER use `bg-muted` class** - it creates poor visual contrast and looks terrible
+- Use clean backgrounds (`bg-background`, `bg-card`) with subtle gradients instead
+- Example: `bg-gradient-to-br from-primary/5 via-transparent to-accent/5`
+
 ### Web3 Integration (Planned)
 
 The project is configured for **Dynamic Wallet** integration supporting the **$PULPA Token Ecosystem**:
